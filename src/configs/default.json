@@ -1,0 +1,62 @@
+{
+    "categories": [
+    {
+        "name": "UI",
+        "description": "Testy zaměřené na uživatelské rozhraní",
+        "subcategories": [
+          {
+            "name": "Login",
+            "tests": [
+              {
+                "name": "Login Test",
+                "marker": "login",
+                "widget": "checkbox",
+                "parameters": {}
+              },
+              {
+                "name": "Logout Test",
+                "marker": "logout",
+                "widget": "text_input",
+                "parameters": {
+                  "placeholder": "Zadej text"
+                }
+              }
+            ]
+          },
+          {
+            "name": "Navigace",
+            "tests": [
+              {
+                "name": "Menu Test",
+                "marker": "menu",
+                "widget": "dropdown",
+                "parameters": {
+                  "options": ["Home", "Profile", "Settings"]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "",
+        "description": "Testy API endpointů",
+        "subcategories": [
+          {
+            "name": "",
+            "tests": [
+              {
+                "name": "GET /users",
+                "marker": "users",
+                "widget": "dropdown",
+                "parameters": {
+                  "options": ["admin", "user", "guest"]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
