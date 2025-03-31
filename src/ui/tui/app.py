@@ -4,6 +4,7 @@ from textual.widgets import Header, Footer, TabbedContent, TabPane, Button, Labe
 
 from src.ui.tui.pages.terminal_view import TerminalView
 from src.ui.tui.pages.tests_view import TestsView
+from src.ui.tui.pages.performance_view import PerformanceView
 
 
 class TestRunnerApp(App):
@@ -14,10 +15,12 @@ class TestRunnerApp(App):
         yield Footer()
 
         with TabbedContent():
-            with TabPane("Testy"):
+            with TabPane("Tests"):
                 yield TestsView()
             with TabPane("Terminal"):
                 yield TerminalView()
+            with TabPane("Performance"):
+                yield PerformanceView()
 
 
 if __name__ == "__main__":

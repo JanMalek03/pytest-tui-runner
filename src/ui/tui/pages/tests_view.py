@@ -42,8 +42,9 @@ class TestsView(Vertical):
             yield category_container
 
         yield Horizontal(
-            Button("Spustit testy", id="run_tests", classes="button"),
-            Button("Zaškrtnout vše", id="check_all", classes="button"),
-            Button("Odškrtnout vše", id="uncheck_all", classes="button"),
+            Button("Run tests", id="run_tests", classes="button"),
+            Button("Check all", id="check_all", classes="button"),
+            Button("Uncheck all", id="uncheck_all", classes="button"),
+            Button("Exit", id="exit", classes="button"),
             classes="button-container"
         )
