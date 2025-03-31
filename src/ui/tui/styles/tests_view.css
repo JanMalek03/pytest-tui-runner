@@ -1,0 +1,12 @@
+Horizontal {
+    background: $boost;
+}
+
+Button {
+    margin: 1;
+}
+
+.button-container {
+    height: 5;
+    background: black;
+}

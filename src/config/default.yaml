@@ -1,0 +1,43 @@
+categories:
+  - name: "Unit Tests"
+    subcategories:
+      - name: "Login"
+        tests:
+          - name: "Login button visible"
+            marker: "login"
+            widget: "checkbox"
+            parameters: {}
+          - name: "Login button clickable"
+            marker: "logout"
+            widget: "checkbox"
+            parameters: {}
+          - name: "Login button enabled"
+            marker: "testing"
+            widget: "checkbox"
+            parameters: {}
+      - name: "Navigation"
+        tests:
+          - name: "Navigation bar visible"
+            marker: "menu"
+            widget: "checkbox"
+            parameters: {}
+          - name: "Navigation bar clickable"
+            marker: "test"
+            widget: "checkbox"
+            parameters: {}
+  - name: "Images"
+    subcategories:
+      - name: "Mode"
+        tests:
+          - name: "mode"
+            marker: "users"
+            widget: "dropdown"
+            parameters:
+              options: ["Add image", "Delete image", "Copy image"]
+      - name: "Image name"
+        tests:
+          - name: "image name"
+            marker: "menu"
+            widget: "text_input"
+            parameters:
+              placeholder: "Enter image name"
