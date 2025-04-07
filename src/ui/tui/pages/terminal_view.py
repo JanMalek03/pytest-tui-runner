@@ -1,12 +1,11 @@
-from textual.containers import Vertical, ScrollableContainer
-from textual.widgets import Label
+from textual.containers import Vertical
+from textual.widgets import RichLog
 
 
 class TerminalView(Vertical):
-
-    def __init__(self):
-        super().__init__()
-        self.output = ScrollableContainer(Label("Here will be the output of the tests."))
-
     def compose(self):
-        yield self.output
+        yield RichLog(id="pytest_log", highlight=True, wrap=True)
+
+    def write_line(self, line: str):
+        log = self.query_one("#pytest_log", RichLog)
+        log.write(line)

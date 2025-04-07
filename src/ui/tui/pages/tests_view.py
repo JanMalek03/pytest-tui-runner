@@ -1,6 +1,7 @@
 from textual.containers import Vertical, Horizontal
 from textual.widgets import Label, Checkbox, Input, Select, Button
 from src.config.config_loader import ConfigLoader
+from src.ui.tui.handlers.button_handler import ButtonHandler
 
 
 class TestsView(Vertical):
@@ -9,6 +10,10 @@ class TestsView(Vertical):
         self.config = ConfigLoader.load_config("src/config/default.yaml")
         self.widgets = {}
         self.generate_widgets()
+
+    async def on_mount(self) -> None:
+        terminal_view = self.app.terminal_view
+        self.button_handler = ButtonHandler(self.widgets, terminal_view)
 
     def generate_widgets(self):
         for category in self.config["categories"]:
@@ -48,3 +53,14 @@ class TestsView(Vertical):
             Button("Exit", id="exit", classes="button"),
             classes="button-container"
         )
+
+    def on_button_pressed(self, event):
+        match event.button.id:
+            case "run_tests":
+                self.button_handler.run_tests()
+            case "check_all":
+                self.button_handler.check_all()
+            case "uncheck_all":
+                self.button_handler.uncheck_all()
+            case "exit":
+                self.app.exit()

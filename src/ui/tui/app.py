@@ -18,7 +18,8 @@ class TestRunnerApp(App):
             with TabPane("Tests"):
                 yield TestsView()
             with TabPane("Terminal"):
-                yield TerminalView()
+                self.terminal_view = TerminalView()
+                yield self.terminal_view
             with TabPane("Performance"):
                 yield PerformanceView()
 

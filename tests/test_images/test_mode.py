@@ -1,4 +1,5 @@
 import pytest
+import time
 
 @pytest.mark.images
 # @pytest.mark.parametrize(
@@ -14,4 +15,5 @@ import pytest
 # )
 def test_mode(mode, image_name):
     print(f"Mode: {mode}, Image name: {image_name}")
+    time.sleep(1)
     assert True
