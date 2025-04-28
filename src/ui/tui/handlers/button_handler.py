@@ -1,4 +1,6 @@
 import asyncio
+from pathlib import Path
+from logs.logger_config import logger
 
 class ButtonHandler:
     def __init__(self, widgets: dict, terminal_view):
@@ -9,12 +11,23 @@ class ButtonHandler:
         asyncio.create_task(self._run_tests_async())
 
     async def _run_tests_async(self):
+        test_path = Path("N:/", "SKOLA", "Bakalarka", "project_with_tests")
+
+        logger.info(f"Testing: {test_path}")
+
+        if not test_path.exists():
+            logger.error(f"Test path {test_path} does not exist.")
+            return
+
         process = await asyncio.create_subprocess_exec(
-            "uv", "run", "pytest", "-s", "--run-login", "--run-images", "modes:[Add image,Delete image];images:[image1.jpg, image2.png]",
+            "uv", "run", "pytest", "-s", "--run-login", "--run-images",
+            "modes:[Add image,Delete image];images:[image1.jpg, image2.png]",
             stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.STDOUT
+            stderr=asyncio.subprocess.STDOUT,
+            cwd=test_path,
         )
 
+        logger.info(f"Running tests in {test_path}")
         self.terminal_view.write_line("Running tests...\n")
 
         assert process.stdout
