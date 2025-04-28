@@ -1,5 +1,5 @@
 from typing import Iterator
-from textual.widgets import Checkbox, Input, Select, Label
+from textual.widgets import Checkbox, Input, Select, Label, Button
 from textual.containers import Vertical, Horizontal
 from logs.logger_config import logger
 
@@ -59,7 +59,7 @@ def _get_widget_for_special_test(test):
 
 def compose_widgets(widgets: dict[str, dict[str, dict[str, list]]]) -> Iterator[Horizontal]:
     for category_name, subcategories in widgets.items():
-        yield Label(category_name)
+        yield Label(category_name, classes="category_label")
         category_content = []
 
         for subcategory_name, tests in subcategories.items():
@@ -70,13 +70,22 @@ def compose_widgets(widgets: dict[str, dict[str, dict[str, list]]]) -> Iterator[
                 if len(widget_list) == 1 and isinstance(widget_list[0], Checkbox):
                     normal_test_widgets.append(widget_list[0])
                 else:
-                    special_test_layout = Vertical(Label(test_name), *widget_list)
+                    add_button = Button("+", variant="primary", classes="add_button")
+
+                    special_test_layout = Vertical(
+                        Label(test_name, classes="subcategory_label"),
+                        Horizontal(
+                            add_button,
+                            *widget_list,
+                            classes="special_test_row"
+                        ),
+                    )
                     special_test_layouts.append(special_test_layout)
 
             if normal_test_widgets:
-                category_content.append(Vertical(Label(subcategory_name), *normal_test_widgets))
+                category_content.append(Vertical(Label(subcategory_name, classes="subcategory_label"), *normal_test_widgets))
 
             category_content.extend(special_test_layouts)
         
         if category_content:
-            yield Horizontal(*category_content)
+            yield Horizontal(classes="category_horizontal", *category_content)

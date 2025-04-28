@@ -1,12 +1,29 @@
-Horizontal {
+.category_horizontal {
     background: $boost;
 }
 
-Button {
+.category_label {
     margin: 1;
 }
 
-.button-container {
+.subcategory_label{
+    margin: 1;
+}
+
+.button {
+    margin: 1;
+}
+
+.button_container {
     height: 5;
     background: black;
+}
+
+.special_test_row > Input,
+.special_test_row > Select {
+    width: 1fr;
+}
+
+.special_test_row {
+    background: rgb(36, 36, 36);
 }
