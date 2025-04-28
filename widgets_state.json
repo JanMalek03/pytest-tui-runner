@@ -1,0 +1,31 @@
+{
+  "Unit Tests": {
+    "Login": {
+      "Login button visible": [
+        false
+      ],
+      "Login button clickable": [
+        false
+      ],
+      "Login button enabled": [
+        false
+      ]
+    },
+    "Navigation": {
+      "Navigation bar visible": [
+        false
+      ],
+      "Navigation bar clickable": [
+        true
+      ]
+    }
+  },
+  "Images": {
+    "Mode": {
+      "Image rendering": [
+        "Delete image",
+        "de"
+      ]
+    }
+  }
+}

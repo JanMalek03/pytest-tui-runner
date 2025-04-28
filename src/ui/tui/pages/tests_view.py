@@ -2,8 +2,7 @@ from textual.containers import Vertical, Horizontal
 from textual.widgets import Label, Button
 from src.config.config_loader import ConfigLoader
 from src.ui.tui.handlers.button_handler import ButtonHandler
-from src.utils.widgets import generate_widgets
-from src.utils.widgets import compose_widgets
+from src.utils.widgets import generate_widgets, compose_widgets, save_widget_values
 from logs.logger_config import logger
 
 
@@ -39,4 +38,5 @@ class TestsView(Vertical):
             case "uncheck_all":
                 self.button_handler.uncheck_all()
             case "exit":
+                save_widget_values(self.widgets, "widgets_state.json")
                 self.app.exit()

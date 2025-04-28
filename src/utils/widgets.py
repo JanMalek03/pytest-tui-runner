@@ -1,3 +1,4 @@
+import json
 from typing import Iterator
 from textual.widgets import Checkbox, Input, Select, Label, Button
 from textual.containers import Vertical, Horizontal
@@ -13,6 +14,8 @@ def generate_widgets(config):
         for subcategory in category.get("subcategories", []):
             subcategory_name = subcategory["name"]
             widgets[category_name][subcategory_name] = _generate_subcategory_widgets(subcategory)
+
+    initialize_widgets(widgets)
 
     return widgets
 
@@ -50,11 +53,54 @@ def _get_widget_for_special_test(test):
     for arg in arguments:
         if arg["arg_type"] == "select":
             options = arg.get("options")
-            widgets.append(Select([(opt, opt) for opt in options]))
+            widgets.append(Select([(opt, opt) for opt in options], allow_blank=False))
         elif arg["arg_type"] == "text_input":
             widgets.append(Input(placeholder=arg.get("placeholder")))
 
     return widgets
+
+
+def initialize_widgets(widgets: dict[str, dict[str, dict[str, list]]]):
+    for category, subcategories in widgets.items():
+        for subcategory, tests in subcategories.items():
+            for test_name, widget_list in tests.items():
+                for i, widget in enumerate(widget_list):
+                    if isinstance(widget, Input):
+                        widget.value = "default"
+                    elif isinstance(widget, Select):
+                        select_values = list(widget._legal_values)
+                        # select_values = sorted(select_values, key=int)
+                        widget_list[i] = Select.from_values(
+                            values=select_values,
+                            name=widget.name,
+                            allow_blank=widget._allow_blank,
+                            value=select_values[-1],
+                        )
+                    elif isinstance(widget, Checkbox):
+                        widget.value = True
+
+
+def save_widget_values(widgets: dict[str, dict[str, dict[str, list]]], filename: str):
+    saved_values = {}
+
+    for category, subcategories in widgets.items():
+        saved_values[category] = {}
+        for subcategory, tests in subcategories.items():
+            saved_values[category][subcategory] = {}
+            for test_name, widget_list in tests.items():
+                saved_values[category][subcategory][test_name] = []
+                for widget in widget_list:
+                    if isinstance(widget, Input):
+                        saved_values[category][subcategory][test_name].append(widget.value)
+                    elif isinstance(widget, Select):
+                        saved_values[category][subcategory][test_name].append(widget.value)
+                    elif isinstance(widget, Checkbox):
+                        saved_values[category][subcategory][test_name].append(widget.value)
+
+    logger.debug(f"Saved values: {saved_values}")
+
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(saved_values, f, indent=2)
 
 
 def compose_widgets(widgets: dict[str, dict[str, dict[str, list]]]) -> Iterator[Horizontal]:
