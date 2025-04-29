@@ -4,7 +4,7 @@
       "Login button visible": [
         [
           null,
-          false
+          true
         ]
       ],
       "Login button clickable": [
@@ -16,7 +16,7 @@
       "Login button enabled": [
         [
           null,
-          true
+          false
         ]
       ]
     },
@@ -30,7 +30,7 @@
       "Navigation bar clickable": [
         [
           null,
-          false
+          true
         ]
       ]
     }
