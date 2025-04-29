@@ -12,7 +12,7 @@ class ButtonHandler:
 
     async def _run_tests_async(self):
         # test_path = Path("N:/", "SKOLA", "Bakalarka", "project_with_tests")
-        test_path = Path("C:/", "_SKOLA", "Bakalarka", "project_with_tests")
+        test_path = Path("C:/", "_SCHOOL", "Bakalarka", "project_with_tests")
 
         logger.info(f"Testing: {test_path}")
 

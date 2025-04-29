@@ -35,6 +35,8 @@ class TestsView(Vertical):
                 self.button_handler.check_all()
             case "uncheck_all":
                 self.button_handler.uncheck_all()
+            case "add_button":
+                logger.info("Add button pressed")
             case "exit":
                 save_widget_values(self.widgets, "widgets_state.json")
                 self.app.exit()

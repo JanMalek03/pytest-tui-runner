@@ -4,7 +4,7 @@
       "Login button visible": [
         [
           null,
-          true
+          false
         ]
       ],
       "Login button clickable": [
@@ -30,7 +30,7 @@
       "Navigation bar clickable": [
         [
           null,
-          true
+          false
         ]
       ]
     }
@@ -40,11 +40,11 @@
       "Image rendering": [
         [
           "action",
-          "Add image"
+          null
         ],
         [
           "image",
-          "uoyofvuovouovy"
+          ""
         ]
       ]
     }
