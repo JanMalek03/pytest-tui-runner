@@ -11,8 +11,6 @@ class TestsView(Vertical):
         super().__init__()
         self.config = ConfigLoader.load_config("src/config/default.yaml")
         self.widgets = generate_widgets(self.config)
-        logger.debug(f"Generated tests: {self.widgets}")
-
 
     async def on_mount(self) -> None:
         terminal_view = self.app.terminal_view

@@ -2,29 +2,50 @@
   "Unit Tests": {
     "Login": {
       "Login button visible": [
-        false
+        [
+          null,
+          true
+        ]
       ],
       "Login button clickable": [
-        false
+        [
+          null,
+          false
+        ]
       ],
       "Login button enabled": [
-        false
+        [
+          null,
+          true
+        ]
       ]
     },
     "Navigation": {
       "Navigation bar visible": [
-        false
+        [
+          null,
+          false
+        ]
       ],
       "Navigation bar clickable": [
-        true
+        [
+          null,
+          true
+        ]
       ]
     }
   },
   "Images": {
     "Mode": {
       "Image rendering": [
-        "Delete image",
-        "de"
+        [
+          "action",
+          "Add image"
+        ],
+        [
+          "image",
+          "uoyofvuovouovy"
+        ]
       ]
     }
   }
