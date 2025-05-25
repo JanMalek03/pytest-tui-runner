@@ -20,7 +20,7 @@ class ButtonHandler:
             return
 
         process = await asyncio.create_subprocess_exec(
-            "uv", "run", "pytest", "-s", "--run-login", "--run-images",
+            "uv", "run", "pytest", "-c", "N:\SKOLA\Bakalarka\pytest-gui\pytest.ini", "-s", "--run-login", "--run-images",
             "modes:[Add image,Delete image];images:[image1.jpg, image2.png]",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,

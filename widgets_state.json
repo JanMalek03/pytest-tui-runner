@@ -2,18 +2,18 @@
   "Unit Tests": {
     "Login": {
       "Login button visible": [
-        false
+        true
       ],
       "Login button clickable": [
-        false
+        true
       ],
       "Login button enabled": [
-        false
+        true
       ]
     },
     "Navigation": {
       "Navigation bar visible": [
-        false
+        true
       ],
       "Navigation bar clickable": [
         true
@@ -23,8 +23,8 @@
   "Images": {
     "Mode": {
       "Image rendering": [
-        "Delete image",
-        "de"
+        "Add image",
+        "default"
       ]
     }
   }
