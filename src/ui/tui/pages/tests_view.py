@@ -11,8 +11,6 @@ class TestsView(Vertical):
         super().__init__()
         self.config = ConfigLoader.load_config("src/config/default.yaml")
         self.widgets = generate_widgets(self.config)
-        logger.debug(f"Generated tests: {self.widgets}")
-
 
     async def on_mount(self) -> None:
         terminal_view = self.app.terminal_view
@@ -37,6 +35,8 @@ class TestsView(Vertical):
                 self.button_handler.check_all()
             case "uncheck_all":
                 self.button_handler.uncheck_all()
+            case "add_button":
+                logger.info("Add button pressed")
             case "exit":
                 save_widget_values(self.widgets, "widgets_state.json")
                 self.app.exit()

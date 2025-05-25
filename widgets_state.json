@@ -2,29 +2,50 @@
   "Unit Tests": {
     "Login": {
       "Login button visible": [
-        true
+        [
+          null,
+          true
+        ]
       ],
       "Login button clickable": [
-        true
+        [
+          null,
+          false
+        ]
       ],
       "Login button enabled": [
-        true
+        [
+          null,
+          false
+        ]
       ]
     },
     "Navigation": {
       "Navigation bar visible": [
-        true
+        [
+          null,
+          false
+        ]
       ],
       "Navigation bar clickable": [
-        true
+        [
+          null,
+          true
+        ]
       ]
     }
   },
   "Images": {
     "Mode": {
       "Image rendering": [
-        "Add image",
-        "default"
+        [
+          "action",
+          null
+        ],
+        [
+          "image",
+          ""
+        ]
       ]
     }
   }
