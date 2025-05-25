@@ -1,13 +1,8 @@
 import sys
-from pathlib import Path
-
+from src.config.paths import LOG_DIR, LOG_FILE
 from loguru import logger
 
-LOG_DIR = Path("logs")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
-
-# LOG_FILE = LOG_DIR / "app-{time:YYYY-MM-DD}.log"
-LOG_FILE = LOG_DIR / "app.log"
 
 LOG_FORMAT = "<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | Line{line: >4} ({file}): <b>{message}</b>"
 STDOUT_FORMAT = "    <green>{time:HH:mm:ss}</green> | <b>{message}</b>"

@@ -2,9 +2,10 @@ from src.utils.widgets.factory import generate_widgets_from_config
 from src.utils.widgets.serializer import load_widget_state, save_widget_state
 from src.utils.widgets.composer import compose_widgets
 from logs.logger_config import logger
+from src.config.paths import STATE_PATH
 
 class WidgetManager:
-    def __init__(self, config: dict, state_path: str = "data/widgets_state.json"):
+    def __init__(self, config: dict, state_path: str = STATE_PATH):
         self.config = config
         self.state_path = state_path
         self.widgets = {}
@@ -17,6 +18,8 @@ class WidgetManager:
     def generate(self):
         try:
             self.widgets = generate_widgets_from_config(self.config)
+            if not self.widgets:
+                logger.warning("No widgets generated from the configuration.")
         except Exception as e:
             logger.error(f"Error generating widgets: {e}", exc_info=True)
 

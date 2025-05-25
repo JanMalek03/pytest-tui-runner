@@ -4,12 +4,13 @@ from src.config.config_loader import ConfigLoader
 from src.ui.tui.handlers.button_handler import ButtonHandler
 from src.utils.widgets.manager import WidgetManager
 from logs.logger_config import logger
+from src.config.paths import CONFIG_PATH
 
 
 class TestsView(Vertical):
     def __init__(self):
         super().__init__()
-        self.config = ConfigLoader.load_config("src/config/default.yaml")
+        self.config = ConfigLoader.load_config(CONFIG_PATH)
         self.widgetManager = WidgetManager(self.config)
 
     async def on_mount(self) -> None:
