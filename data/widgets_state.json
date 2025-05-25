@@ -10,7 +10,7 @@
       "Login button clickable": [
         [
           null,
-          false
+          true
         ]
       ],
       "Login button enabled": [

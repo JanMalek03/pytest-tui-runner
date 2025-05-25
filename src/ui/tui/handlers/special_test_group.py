@@ -14,7 +14,7 @@ class SpecialTestGroup(Vertical):
 
     async def add_instance(self):
         widgets = self._clone_widgets()
-        add_button = Button("+", variant="primary", id=f"add_button_{self.test_name.replace(" ", "_")}_{self.instance_counter}")
+        add_button = Button("+", variant="primary", id=f"add_button_{self.test_name.replace(' ', '_')}_{self.instance_counter}")
         self.instance_counter += 1
 
         row = Horizontal(
@@ -34,5 +34,5 @@ class SpecialTestGroup(Vertical):
         return cloned
 
     async def on_button_pressed(self, event):
-        if event.button.id and event.button.id.startswith(f"add_button_{self.test_name.replace(" ", "_")}"):
+        if event.button.id and event.button.id.startswith(f"add_button_{self.test_name.replace(' ', '_')}"):
             await self.add_instance()

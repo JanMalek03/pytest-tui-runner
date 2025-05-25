@@ -43,6 +43,7 @@ logger.add(
     filter=lambda record: record["level"].name == "TERMINAL",
 )
 
+# Uncomment the line below to clear the log file on each run
 # Path.open("logs/app.log", "w").close()
 
 __all__ = ["logger"]

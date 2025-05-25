@@ -2,7 +2,7 @@ from textual.containers import Vertical, Horizontal
 from textual.widgets import Label, Button
 from src.config.config_loader import ConfigLoader
 from src.ui.tui.handlers.button_handler import ButtonHandler
-from src.utils.widgets import generate_widgets, compose_widgets, save_widget_values
+from src.utils.widgets.manager import WidgetManager
 from logs.logger_config import logger
 
 
@@ -10,14 +10,14 @@ class TestsView(Vertical):
     def __init__(self):
         super().__init__()
         self.config = ConfigLoader.load_config("src/config/default.yaml")
-        self.widgets = generate_widgets(self.config)
+        self.widgetManager = WidgetManager(self.config)
 
     async def on_mount(self) -> None:
         terminal_view = self.app.terminal_view
-        self.button_handler = ButtonHandler(self.widgets, terminal_view)
+        self.button_handler = ButtonHandler(self.widgetManager.widgets, terminal_view)
 
     def compose(self):
-        yield from compose_widgets(self.widgets)
+        yield from self.widgetManager.compose()
 
         yield Horizontal(
             Button("Run tests", id="run_tests", classes="button"),
@@ -38,5 +38,5 @@ class TestsView(Vertical):
             case "add_button":
                 logger.info("Add button pressed")
             case "exit":
-                save_widget_values(self.widgets, "widgets_state.json")
+                self.widgetManager.save_state()
                 self.app.exit()
