@@ -1,29 +1,50 @@
-.category_horizontal {
-    background: $boost;
-}
-
-/* .category_label {
-    margin: 1;
-}
-
-.subcategory_label{
-    margin: 1;
-} */
-
 .button {
-    margin: 1;
+    margin: 0 1;
 }
 
-.button_container {
+Input, Select {
+    height: 3;
+}
+
+#button_container {
     height: 5;
+    padding: 1;
     background: black;
+}
+
+.category {
+    background: rgb(36, 51, 97);
+    margin-top: 1;
+    margin-bottom: 1;
+    height: auto;
+}
+
+.subcategory {
+    background: gray;
+    margin: 1;
+    height: auto;
+}
+
+.subcategory_content {
+    background: rgb(36, 36, 36);
+    margin: 1;
+    height: auto;
+    width: auto;
+}
+
+.special_test_row {
+    background: rgb(72, 125, 239);
+    margin: 1;
+    height: auto;
+    width: auto;
+}
+
+.special_test_class {
+    width: auto;
+    height: auto;
 }
 
 .special_test_row > Input,
 .special_test_row > Select {
-    width: 1fr;
-}
-
-.special_test_row {
-    background: rgb(36, 36, 36);
+    width: auto;
 }

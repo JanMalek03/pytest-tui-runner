@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.containers import Container
+from textual.containers import Container, ScrollableContainer, Horizontal
 from textual.widgets import Header, Footer, TabbedContent, TabPane, Button, Label
 
 from src.ui.tui.pages.terminal_view import TerminalView
@@ -11,8 +11,7 @@ class TestRunnerApp(App):
     CSS_PATH = "styles/tests_view.css"
     
     def compose(self) -> ComposeResult:
-        yield Header()
-        yield Footer()
+        # yield Header()
 
         with TabbedContent():
             with TabPane("Tests"):
@@ -22,6 +21,8 @@ class TestRunnerApp(App):
                 yield self.terminal_view
             with TabPane("Performance"):
                 yield PerformanceView()
+
+        # yield Footer()
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
-from textual.containers import Vertical, Horizontal
+from textual.containers import Vertical, Horizontal, ScrollableContainer, VerticalScroll
 from textual.widgets import Label, Button
+from textual.scroll_view import ScrollView
 from src.config.config_loader import ConfigLoader
 from src.ui.tui.handlers.button_handler import ButtonHandler
 from src.utils.widgets.manager import WidgetManager
@@ -18,14 +19,14 @@ class TestsView(Vertical):
         self.button_handler = ButtonHandler(self.widgetManager.widgets, terminal_view)
 
     def compose(self):
-        yield from self.widgetManager.compose()
+        yield ScrollableContainer(*self.widgetManager.compose())
 
         yield Horizontal(
             Button("Run tests", id="run_tests", classes="button"),
             Button("Check all", id="check_all", classes="button"),
             Button("Uncheck all", id="uncheck_all", classes="button"),
             Button("Exit", id="exit", classes="button"),
-            classes="button-container"
+            id="button_container",
         )
 
     def on_button_pressed(self, event):

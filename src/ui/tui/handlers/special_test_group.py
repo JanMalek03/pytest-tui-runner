@@ -4,7 +4,7 @@ from textual.widgets import Button, Label, Input, Select
 
 class SpecialTestGroup(Vertical):
     def __init__(self, test_name: str, widget_template: list[Widget]):
-        super().__init__()
+        super().__init__(classes="special_test_class")
         self.test_name = test_name
         self.widget_template = widget_template
         self.instance_counter = 0
