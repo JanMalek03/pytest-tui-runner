@@ -24,12 +24,10 @@ Input, Select {
     background: gray;
     margin: 1;
     height: auto;
-    /* width: auto; */
 }
 
 .subcategory_row {
     margin: 1;
-    width: auto;
     height: auto;
 }
 

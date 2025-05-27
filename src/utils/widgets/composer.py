@@ -29,7 +29,7 @@ def compose_subcategory(subcat_name, tests):
     row = []
     for test_name, widget_list in tests.items():
         if len(widget_list) == 1:
-            row.append(widget_list[0])
+            row.append(compose_subcategory_content(test_name, widget_list))
             if len(row) == max_row_length:
                 subcat.append(Horizontal(*row, classes="subcategory_row"))
                 row = []
