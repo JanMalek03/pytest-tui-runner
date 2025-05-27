@@ -7,6 +7,7 @@ class SpecialTestGroup(Vertical):
         super().__init__(classes="special_test_class")
         self.test_name = test_name
         self.widget_template = widget_template
+        self.rows: list[Horizontal] = []
         self.instance_counter = 0
 
     async def on_mount(self):
@@ -14,15 +15,27 @@ class SpecialTestGroup(Vertical):
 
     async def add_instance(self):
         widgets = self._clone_widgets()
-        add_button = Button("+", variant="success", id=f"add_button_{self.test_name.replace(' ', '_')}_{self.instance_counter}")
+        row_id = f"{self.test_name.replace(' ', '_')}_{self.instance_counter}"
         self.instance_counter += 1
 
-        row = Horizontal(
-            add_button,
-            *widgets,
-            classes="special_test_row"
-        )
+        row = Horizontal(*widgets, classes="special_test_row", id=f"row_{row_id}")
+        self.rows.append(row)
         await self.mount(row)
+        await self._refresh_buttons()
+
+    async def _refresh_buttons(self):
+        for row in self.rows:
+            for child in row.children:
+                if isinstance(child, Button):
+                    await child.remove()
+
+        for i, row in enumerate(self.rows):
+            if i == len(self.rows) - 1:
+                add_button = Button("+", variant="success", id=f"add_button_{row.id}")
+                await row.mount(add_button, before=row.children[0] if row.children else None)
+            else:
+                delete_button = Button("-", variant="error", id=f"delete_button_{row.id}")
+                await row.mount(delete_button, before=row.children[0] if row.children else None)
 
     def _clone_widgets(self) -> list[Widget]:
         cloned = []
@@ -34,5 +47,17 @@ class SpecialTestGroup(Vertical):
         return cloned
 
     async def on_button_pressed(self, event):
-        if event.button.id and event.button.id.startswith(f"add_button_{self.test_name.replace(' ', '_')}"):
+        btn_id = event.button.id
+        if not btn_id:
+            return
+
+        if btn_id.startswith("add_button_"):
             await self.add_instance()
+
+        elif btn_id.startswith("delete_button_"):
+            row_id = btn_id.replace("delete_button_", "")
+            row_to_delete = self.query_one(f"#{row_id}", Horizontal)
+            if row_to_delete in self.rows:
+                self.rows.remove(row_to_delete)
+                await row_to_delete.remove()
+                await self._refresh_buttons()
