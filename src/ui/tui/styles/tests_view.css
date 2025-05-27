@@ -31,11 +31,10 @@ Input, Select {
     background: rgb(36, 36, 36);
     margin: 1;
     height: auto;
-    width: auto;
+    layout: grid;
 }
 
 .special_test_row {
-    background: rgb(72, 125, 239);
     margin: 1;
     height: auto;
     width: auto;
