@@ -4,6 +4,8 @@ from textual.containers import Vertical, Horizontal, Grid
 from src.ui.tui.handlers.special_test_group import SpecialTestGroup
 from logs.logger_config import logger
 
+MAX_ROW_LENGTH = 3
+
 def compose_widgets(widgets):
     layout = []
 
@@ -24,23 +26,19 @@ def compose_category(category_name, subcat):
 
 def compose_subcategory(subcat_name, tests):
     subcat = [Label(subcat_name, classes="subcategory_label")]
-    max_row_length = 3
+    row_items = []
 
-    row = []
     for test_name, widget_list in tests.items():
+        content = compose_subcategory_content(test_name, widget_list)
         if len(widget_list) == 1:
-            row.append(compose_subcategory_content(test_name, widget_list))
-            if len(row) == max_row_length:
-                subcat.append(Horizontal(*row, classes="subcategory_row"))
-                row = []
+            row_items.append(content)
         else:
-            subcat.append(compose_subcategory_content(test_name, widget_list))
+            subcat.append(content)
 
-    if row:
+    for i in range(0, len(row_items), MAX_ROW_LENGTH):
+        row = row_items[i:i + MAX_ROW_LENGTH]
         subcat.append(Horizontal(*row, classes="subcategory_row"))
 
-    logger.debug(subcat_name)
-    logger.debug(subcat)
     return Vertical(*subcat, classes="subcategory")
 
 
