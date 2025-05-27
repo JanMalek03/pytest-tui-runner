@@ -1,7 +1,8 @@
 from typing import Iterator
 from textual.widgets import Checkbox, Label
-from textual.containers import Vertical, Horizontal
+from textual.containers import Vertical, Horizontal, Grid
 from src.ui.tui.handlers.special_test_group import SpecialTestGroup
+from logs.logger_config import logger
 
 def compose_widgets(widgets):
     layout = []
@@ -23,11 +24,24 @@ def compose_category(category_name, subcat):
 
 def compose_subcategory(subcat_name, tests):
     subcat = [Label(subcat_name, classes="subcategory_label")]
+    max_row_length = 3
 
+    row = []
     for test_name, widget_list in tests.items():
-        subcat.append(compose_subcategory_content(test_name, widget_list))
+        if len(widget_list) == 1:
+            row.append(widget_list[0])
+            if len(row) == max_row_length:
+                subcat.append(Horizontal(*row, classes="subcategory_row"))
+                row = []
+        else:
+            subcat.append(compose_subcategory_content(test_name, widget_list))
 
-    return Horizontal(*subcat, classes="subcategory")
+    if row:
+        subcat.append(Horizontal(*row, classes="subcategory_row"))
+
+    logger.debug(subcat_name)
+    logger.debug(subcat)
+    return Vertical(*subcat, classes="subcategory")
 
 
 def compose_subcategory_content(test_name, widget_list):

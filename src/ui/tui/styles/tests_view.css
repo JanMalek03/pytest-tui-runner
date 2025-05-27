@@ -23,7 +23,13 @@ Input, Select {
 .subcategory {
     background: gray;
     margin: 1;
-    padding-right: 1;
+    height: auto;
+    /* width: auto; */
+}
+
+.subcategory_row {
+    margin: 1;
+    width: auto;
     height: auto;
 }
 
