@@ -11,8 +11,8 @@ class ButtonHandler:
         asyncio.create_task(self._run_tests_async())
 
     async def _run_tests_async(self):
-        test_path = Path("N:/", "SKOLA", "Bakalarka", "project_with_tests")
-        # test_path = Path("C:/", "_SCHOOL", "Bakalarka", "project_with_tests")
+        # test_path = Path("N:/", "SKOLA", "Bakalarka", "project_with_tests")
+        test_path = Path("C:/", "_SCHOOL", "Bakalarka", "project_with_tests")
 
         logger.info(f"Testing: {test_path}")
 
@@ -20,8 +20,11 @@ class ButtonHandler:
             logger.error(f"Test path {test_path} does not exist.")
             return
 
+        # pytest_ini_paht = Path("N:/", "SKOLA", "Bakalarka", "pytest-gui", "pytest.ini")
+        pytest_ini_path = Path("C:/", "_SCHOOL", "Bakalarka", "pytest-gui", "pytest.ini")
+
         process = await asyncio.create_subprocess_exec(
-            "uv", "run", "pytest", "-c", "N:\SKOLA\Bakalarka\pytest-gui\pytest.ini", "-s", "--run-login", "--run-images",
+            "uv", "run", "pytest", "-c", pytest_ini_path, "-s", "--run-login", "--run-images",
             "modes:[Add image,Delete image];images:[image1.jpg, image2.png]",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
