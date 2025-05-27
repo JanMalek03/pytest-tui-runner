@@ -29,7 +29,7 @@ class WidgetManager:
         except FileNotFoundError:
             logger.warning(f"Soubor se stavem widgetů '{self.state_path}' nenalezen")
         except Exception as e:
-            logger.error(f"Chyba při načítání stavu widgetů: {e}", exc_info=True)
+            logger.error(f"Error loading widget state: {e}", exc_info=True)
 
     def save_state(self):
         try:

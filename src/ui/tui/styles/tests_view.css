@@ -4,6 +4,7 @@
 
 Input, Select {
     height: 3;
+    width: 1fr;
 }
 
 #button_container {
@@ -43,9 +44,4 @@ Input, Select {
 .special_test_class {
     width: auto;
     height: auto;
-}
-
-.special_test_row > Input,
-.special_test_row > Select {
-    width: 1fr;
 }
