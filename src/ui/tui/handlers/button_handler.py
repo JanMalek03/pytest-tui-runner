@@ -1,6 +1,8 @@
 import asyncio
 from pathlib import Path
 from logs.logger_config import logger
+from src.utils.pytest.arguments import build_pytest_arguments
+from src.config.paths import TEST_PATH, PYTEST_INI_PATH
 
 class ButtonHandler:
     def __init__(self, widgets: dict, terminal_view):
@@ -11,27 +13,22 @@ class ButtonHandler:
         asyncio.create_task(self._run_tests_async())
 
     async def _run_tests_async(self):
-        # test_path = Path("N:/", "SKOLA", "Bakalarka", "project_with_tests")
-        test_path = Path("C:/", "_SCHOOL", "Bakalarka", "project_with_tests")
+        logger.info(f"Testing: {TEST_PATH}")
 
-        logger.info(f"Testing: {test_path}")
-
-        if not test_path.exists():
-            logger.error(f"Test path {test_path} does not exist.")
+        if not TEST_PATH.exists():
+            logger.error(f"Test path {TEST_PATH} does not exist.")
             return
 
-        # pytest_ini_paht = Path("N:/", "SKOLA", "Bakalarka", "pytest-gui", "pytest.ini")
-        pytest_ini_path = Path("C:/", "_SCHOOL", "Bakalarka", "pytest-gui", "pytest.ini")
+        args = build_pytest_arguments(self.widgets, PYTEST_INI_PATH)
 
         process = await asyncio.create_subprocess_exec(
-            "uv", "run", "pytest", "-c", pytest_ini_path, "-s", "--run-login", "--run-images",
-            "modes:[Add image,Delete image];images:[image1.jpg, image2.png]",
+            *args,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
-            cwd=test_path,
+            cwd=TEST_PATH,
         )
 
-        logger.info(f"Running tests in {test_path}")
+        logger.info(f"Running tests in {TEST_PATH}")
         self.terminal_view.write_line("Running tests...\n")
 
         assert process.stdout
