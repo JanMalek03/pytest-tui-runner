@@ -6,12 +6,16 @@ from src.ui.tui.handlers.button_handler import ButtonHandler
 from src.utils.widgets.manager import WidgetManager
 from logs.logger_config import logger
 from src.config.paths import CONFIG_PATH
+import yaml
 
 
 class TestsView(Vertical):
     def __init__(self):
         super().__init__()
-        self.config = ConfigLoader.load_config(CONFIG_PATH)
+        assert CONFIG_PATH.exists(), f"Configuration file {CONFIG_PATH} does not exist."
+        with open(CONFIG_PATH, "r", encoding="utf-8") as file:
+            self.config = yaml.safe_load(file)
+
         self.widgetManager = WidgetManager(self.config)
 
     async def on_mount(self) -> None:

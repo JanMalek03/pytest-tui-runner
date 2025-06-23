@@ -8,14 +8,15 @@ def find_project_root(start_path: Path = Path(__file__).resolve()) -> Path:
 
 ROOT_DIR = find_project_root()
 
-CONFIG_PATH = ROOT_DIR / "src" / "config" / "default.yaml"
-STATE_PATH = ROOT_DIR / "data" / "widgets_state.json"
-
 # TEST_PATH="C:/_SCHOOL/Bakalarka/project_with_tests"
 TEST_PATH="N:/SKOLA/Bakalarka/project_with_tests"
 TEST_PATH = Path(TEST_PATH).resolve()
 
-PYTEST_INI_PATH= ROOT_DIR / "pytest.ini"
+# CONFIG_PATH = ROOT_DIR / "src" / "config" / "default.yaml"
+CONFIG_PATH = TEST_PATH / "tests" / "pytest_gui" / "default.yaml"
+STATE_PATH = ROOT_DIR / "data" / "widgets_state.json"
+
+PYTEST_INI_PATH = ROOT_DIR / "pytest.ini"
 
 # LOG_DIR = ROOT_DIR / "logs"
 LOG_DIR = TEST_PATH / "tests" / "pytest_gui" / "logs"
