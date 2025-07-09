@@ -50,7 +50,7 @@ class SpecialTestGroup(Vertical):
         cloned = []
         for widget in self.widget_template:
             if isinstance(widget, Input):
-                cloned.append(Input(placeholder=widget.placeholder, name=widget.name))
+                cloned.append(Input(placeholder=widget.placeholder, name=widget.name, value=widget.value))
             elif isinstance(widget, Select):
                 cloned.append(Select.from_values(sorted(widget._legal_values), name=widget.name, allow_blank=widget._allow_blank, value=widget.value))
         return cloned
