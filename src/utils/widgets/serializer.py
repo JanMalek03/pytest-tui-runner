@@ -1,5 +1,5 @@
 import json
-from textual.widgets import Input, Select, Checkbox
+from textual.widgets import Select
 
 def load_widget_state(widgets, filename):
     with open(filename, "r", encoding="utf-8") as f:
@@ -10,18 +10,7 @@ def load_widget_state(widgets, filename):
             for test_name, widget_list in tests.items():
                 for i, widget in enumerate(widget_list):
                     val = saved[cat][subcat][test_name][i][1]
-                    if isinstance(widget, Input):
-                        widget.value = val
-                    elif isinstance(widget, Select):
-                        select_values = list(widget._legal_values)
-                        widget_list[i] = Select.from_values(
-                            values=select_values,
-                            name=widget.name,
-                            allow_blank=widget._allow_blank,
-                            value=val
-                        )
-                    elif isinstance(widget, Checkbox):
-                        widget.value = val
+                    widget.value = val
 
 
 def save_widget_state(widgets, filename):
