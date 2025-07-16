@@ -34,22 +34,18 @@ def save_widget_state(widgets, filename):
             saved[cat][subcat] = {}
             for test_name, widget_list in tests.items():
                 saved[cat][subcat][test_name] = []
-                group = {}
+
                 for widget in widget_list:
-                    val = "" if widget.value == Select.BLANK else widget.value
-
                     if isinstance(widget, Checkbox):
-                        saved[cat][subcat][test_name].append(val)
+                        saved[cat][subcat][test_name].append(widget.value)
                     else:
-                        # if widgets are repeating, start a new group
-                        if group and widget.name in group:
-                            saved[cat][subcat][test_name].append(group)
-                            group = {}
+                        widget_data = {}
 
-                        group[widget.name] = val
+                        for instance in widget:
+                            widget_data[instance.name] = instance.value
+
+                        saved[cat][subcat][test_name].append(widget_data)
                 
-                if group:
-                    saved[cat][subcat][test_name].append(group)
 
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(saved, f, indent=2)

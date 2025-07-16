@@ -35,10 +35,12 @@ class WidgetManager:
             logger.error(f"Error loading widget state: {e}", exc_info=True)
 
     def save_state(self):
-        try:
-            save_widget_state(self.widgets, self.state_path)
-        except Exception as e:
-            logger.error(f"Error saving widget state: {e}", exc_info=True)
+        # try:
+        #     save_widget_state(self.widgets, self.state_path)
+        # except Exception as e:
+        #     logger.error(f"Error saving widget state: {e}", exc_info=True)
+        save_widget_state(self.widgets, self.state_path)
+
 
     def compose(self):
         return compose_widgets(self.widgets)
