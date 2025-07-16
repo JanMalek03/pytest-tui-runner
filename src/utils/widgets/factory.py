@@ -1,6 +1,14 @@
 from textual.widgets import Checkbox, Input, Select
+from logs.logger_config import logger
+import json
 
-def generate_widgets_from_config(config):
+def generate_widgets_from_config(config, state_path=None):
+    if state_path:
+        with open(state_path, "r", encoding="utf-8") as f:
+            saved = json.load(f)
+            if not saved:
+                logger.warning("No saved state found, generating widgets from config only.")
+
     widgets = {}
 
     for category in config["categories"]:
@@ -13,7 +21,11 @@ def generate_widgets_from_config(config):
 
             for test in subcat.get("tests", []):
                 test_name = test["name"]
-                widgets[cat_name][subcat_name][test_name] = _create_widgets_for_test(test)
+                if test["type"] == "special":
+                    special_group = [_create_widgets_for_test(test) for _ in range(len(saved[cat_name][subcat_name][test_name]))]
+                    widgets[cat_name][subcat_name][test_name] = special_group
+                else:
+                    widgets[cat_name][subcat_name][test_name] = _create_widgets_for_test(test)
 
     return widgets
 

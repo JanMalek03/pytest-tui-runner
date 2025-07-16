@@ -2,50 +2,39 @@
   "Unit Tests": {
     "Login": {
       "Login button visible": [
-        [
-          null,
-          true
-        ]
+        false
       ],
       "Login button clickable": [
-        [
-          null,
-          true
-        ]
+        false
       ],
       "Login button enabled": [
-        [
-          null,
-          false
-        ]
+        false
       ]
     },
     "Navigation": {
       "Navigation bar visible": [
-        [
-          null,
-          false
-        ]
+        false
       ],
       "Navigation bar clickable": [
-        [
-          null,
-          true
-        ]
+        false
       ]
     }
   },
   "Images": {
     "Mode": {
       "Image rendering": [
-        [
-          "action",
-          null
-        ],
-        [
-          "image",
-          ""
-        ]
+        {
+          "action": "Add image",
+          "image": "123"
+        },
+        {
+          "action": "Copy image",
+          "image": "456"
+        },
+        {
+          "action": "Delete image",
+          "image": "789"
+        }
       ]
     }
   }

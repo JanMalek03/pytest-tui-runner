@@ -3,6 +3,7 @@ from textual.widgets import Checkbox, Label
 from textual.containers import Vertical, Horizontal, Grid
 from src.ui.tui.handlers.special_test_group import SpecialTestGroup
 from logs.logger_config import logger
+import json
 
 MAX_ROW_LENGTH = 3
 
@@ -43,9 +44,13 @@ def compose_subcategory(subcat_name, tests):
 
 
 def compose_subcategory_content(test_name, widget_list):
+    if not widget_list:
+            logger.error(f"No widgets found for test {test_name}.")
+            raise ValueError(f"No widgets found for test {test_name}.")
+
     subcat_content = []
 
-    if len(widget_list) == 1 and isinstance(widget_list[0], Checkbox):
+    if is_basic_test(widget_list):
         subcat_content.append(widget_list[0])
     else:
         group = SpecialTestGroup(test_name, widget_list)
@@ -53,3 +58,8 @@ def compose_subcategory_content(test_name, widget_list):
         subcat_content.append(group)
 
     return Vertical(*subcat_content, classes="subcategory_content")
+
+
+def is_basic_test(widget_list):
+    """Check if the widget list contains only a single Checkbox."""
+    return len(widget_list) == 1 and isinstance(widget_list[0], Checkbox)

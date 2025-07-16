@@ -44,5 +44,5 @@ class TestsView(Vertical):
             case "add_button":
                 logger.info("Add button pressed")
             case "exit":
-                self.widgetManager.save_state()
+                # self.widgetManager.save_state()
                 self.app.exit()

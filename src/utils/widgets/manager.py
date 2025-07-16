@@ -12,12 +12,15 @@ class WidgetManager:
 
         logger.debug("Initializing WidgetManager...")
         self.generate()
-        self.load_state()
+        # self.load_state()
         logger.info("WidgetManager initialized.")
 
     def generate(self):
+        """Generates widgets from the provided configuration.
+        It will generate widgets based on the user configuration and also according to the saved state of the widgets."""
+
         try:
-            self.widgets = generate_widgets_from_config(self.config)
+            self.widgets = generate_widgets_from_config(self.config, self.state_path)
             if not self.widgets:
                 logger.warning("No widgets generated from the configuration.")
         except Exception as e:

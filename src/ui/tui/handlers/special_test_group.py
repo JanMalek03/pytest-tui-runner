@@ -1,32 +1,40 @@
 from textual.widget import Widget
 from textual.containers import Vertical, Horizontal
 from textual.widgets import Button, Input, Select
+from logs.logger_config import logger
 
 class SpecialTestGroup(Vertical):
-    def __init__(self, test_name: str, widget_list: list[Widget]):
+    def __init__(self, test_name: str, widget_list: list[list[Widget]]):
         super().__init__(classes="special_test_class")
         self.test_name = test_name
-        self.widget_template = widget_list.copy()
+        self.widget_template = widget_list[0].copy()
         self.widget_list = widget_list
         self.rows: list[Horizontal] = []
         self.instance_counter = 0
 
     async def on_mount(self):
-        self._clean_old_widget_list()
-        await self.add_instance()
+        for widgets in self.widget_list:
+            await self.add_instance(widgets)
 
     def _clean_old_widget_list(self):
         self.widget_list.clear()
 
-    def _update_widget_list(self, widgets: list[Widget]):
-        self.widget_list.extend(widgets)
+    def _add_to_widget_list(self, widgets: list[Widget]):
+        self.widget_list.append(widgets)
 
-    async def add_instance(self):
-        widgets = self._clone_widgets()
-        self._update_widget_list(widgets)
+    def _remove_one_from_widget_list(self):
+        if not self.widget_list:
+            logger.warning("No widgets to remove from the widget list.")
+            return
+        self.widget_list.pop()
+
+    async def add_instance(self, widgets: list[Widget] = None):
+        if not widgets:
+            widgets = self._clone_widgets()
+            self._add_to_widget_list(widgets)
+
         row_id = f"{self.test_name.replace(' ', '_')}_{self.instance_counter}"
         self.instance_counter += 1
-
         row = Horizontal(*widgets, classes="special_test_row", id=f"row_{row_id}")
         self.rows.append(row)
         await self.mount(row)
@@ -67,6 +75,7 @@ class SpecialTestGroup(Vertical):
             row_id = btn_id.replace("delete_button_", "")
             row_to_delete = self.query_one(f"#{row_id}", Horizontal)
             if row_to_delete in self.rows:
+                self._remove_one_from_widget_list()
                 self.rows.remove(row_to_delete)
                 await row_to_delete.remove()
                 await self._refresh_buttons()
