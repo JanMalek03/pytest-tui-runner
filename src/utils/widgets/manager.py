@@ -12,7 +12,7 @@ class WidgetManager:
 
         logger.debug("Initializing WidgetManager...")
         self.generate()
-        self.load_state()
+        # self.load_state()
         logger.info("WidgetManager initialized.")
 
     def generate(self):

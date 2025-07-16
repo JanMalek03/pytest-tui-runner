@@ -25,6 +25,8 @@ class TestsView(Vertical):
     def compose(self):
         yield ScrollableContainer(*self.widgetManager.compose())
 
+        self.widgetManager.load_state()
+
         yield Horizontal(
             Button("Run tests", id="run_tests", classes="button"),
             Button("Check all", id="check_all", classes="button"),

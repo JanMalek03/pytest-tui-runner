@@ -7,7 +7,7 @@ class SpecialTestGroup(Vertical):
     def __init__(self, test_name: str, widget_list: list[list[Widget]]):
         super().__init__(classes="special_test_class")
         self.test_name = test_name
-        self.widget_template = widget_list[0].copy()
+        self.widget_template = self._clone_widgets(widget_list[0])
         self.widget_list = widget_list
         self.rows: list[Horizontal] = []
         self.instance_counter = 0
@@ -54,9 +54,11 @@ class SpecialTestGroup(Vertical):
                 delete_button = Button("-", variant="error", id=f"delete_button_{row.id}")
                 await row.mount(delete_button, before=row.children[0] if row.children else None)
 
-    def _clone_widgets(self) -> list[Widget]:
+    def _clone_widgets(self, template=None) -> list[Widget]:
         cloned = []
-        for widget in self.widget_template:
+        widget_template = template if template else self.widget_template
+
+        for widget in widget_template:
             if isinstance(widget, Input):
                 cloned.append(Input(placeholder=widget.placeholder, name=widget.name))
             elif isinstance(widget, Select):
