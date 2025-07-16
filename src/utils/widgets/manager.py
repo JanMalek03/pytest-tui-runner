@@ -12,7 +12,7 @@ class WidgetManager:
 
         logger.debug("Initializing WidgetManager...")
         self.generate()
-        # self.load_state()
+        self.load_state()
         logger.info("WidgetManager initialized.")
 
     def generate(self):
@@ -35,11 +35,10 @@ class WidgetManager:
             logger.error(f"Error loading widget state: {e}", exc_info=True)
 
     def save_state(self):
-        # try:
-        #     save_widget_state(self.widgets, self.state_path)
-        # except Exception as e:
-        #     logger.error(f"Error saving widget state: {e}", exc_info=True)
-        save_widget_state(self.widgets, self.state_path)
+        try:
+            save_widget_state(self.widgets, self.state_path)
+        except Exception as e:
+            logger.error(f"Error saving widget state: {e}", exc_info=True)
 
 
     def compose(self):

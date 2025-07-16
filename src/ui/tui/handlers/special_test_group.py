@@ -58,9 +58,9 @@ class SpecialTestGroup(Vertical):
         cloned = []
         for widget in self.widget_template:
             if isinstance(widget, Input):
-                cloned.append(Input(placeholder=widget.placeholder, name=widget.name, value=widget.value))
+                cloned.append(Input(placeholder=widget.placeholder, name=widget.name))
             elif isinstance(widget, Select):
-                cloned.append(Select.from_values(sorted(widget._legal_values), name=widget.name, allow_blank=widget._allow_blank, value=widget.value))
+                cloned.append(Select.from_values(sorted(widget._legal_values), name=widget.name, allow_blank=widget._allow_blank))
         return cloned
 
     async def on_button_pressed(self, event):

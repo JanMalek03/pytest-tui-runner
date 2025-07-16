@@ -8,21 +8,13 @@ def load_widget_state(widgets, filename):
 
     for cat, subcats in widgets.items():
         for subcat, tests in subcats.items():
-            # logger.critical(tests)
             for test_name, widget_list in tests.items():
                 if len(widget_list) == 1 and isinstance(widget_list[0], Checkbox):
                     widget_list[0].value = saved[cat][subcat][test_name][0]
                 else:
-                    pass
-                    # logger.warning(widget_list)
-                    # for widget in widget_list:
-                    #     if widget.name in saved[cat][subcat][test_name][i]:
-                    #         val = saved[cat][subcat][test_name][i][widget.name]
-                    #         logger.warning(saved[cat][subcat][test_name][i][widget.name])
-                    #     else:
-                    #         logger.error(f"Widget {widget.name} not found in saved state for {cat}/{subcat}/{test_name}.")
-                    #         continue
-                    #     widget.value = val
+                    for i, widgets in enumerate(widget_list):
+                        for widget in widgets:
+                            widget.value = saved[cat][subcat][test_name][i][widget.name]
 
 
 def save_widget_state(widgets, filename):
