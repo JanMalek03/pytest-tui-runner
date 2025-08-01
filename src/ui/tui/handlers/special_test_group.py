@@ -15,9 +15,8 @@ class SpecialTestGroup(Vertical):
             await self._add_row(widget_row, update_rows=False)
         await self._refresh_buttons()
 
-    async def _add_row(self, widgets: list[Widget] | None = None, update_rows=True) -> None:
-        if widgets is None:
-            widgets = self._clone_widgets(self.row_template)
+    async def _add_row(self, to_clone: list[Widget] | None = None, update_rows=True) -> None:
+        widgets = self._clone_widgets(to_clone)
 
         row = Horizontal(classes="special_test_row")
         self.rows.append(row)
@@ -72,7 +71,7 @@ class SpecialTestGroup(Vertical):
             return
 
         if btn_id.startswith("add_"):
-            await self._add_row()
+            await self._add_row(self.row_template)
             await self._refresh_buttons()
 
         elif btn_id.startswith("remove_"):
