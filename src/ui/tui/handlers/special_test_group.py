@@ -4,80 +4,88 @@ from textual.widgets import Button, Input, Select
 from logs.logger_config import logger
 
 class SpecialTestGroup(Vertical):
-    def __init__(self, test_name: str, widget_list: list[list[Widget]]):
+    def __init__(self, initial_rows: list[list[Widget]]):
         super().__init__(classes="special_test_class")
-        self.test_name = test_name
-        self.widget_template = self._clone_widgets(widget_list[0])
-        self.widget_list = widget_list
+        self.row_template = self._clone_widgets(initial_rows[0]) if initial_rows else []
+        self.original_input = initial_rows
         self.rows: list[Horizontal] = []
-        self.instance_counter = 0
-
-    async def on_mount(self):
-        for widgets in self.widget_list:
-            await self.add_instance(widgets)
-
-    def _clean_old_widget_list(self):
-        self.widget_list.clear()
-
-    def _add_to_widget_list(self, widgets: list[Widget]):
-        self.widget_list.append(widgets)
-
-    def _remove_one_from_widget_list(self):
-        if not self.widget_list:
-            logger.warning("No widgets to remove from the widget list.")
-            return
-        self.widget_list.pop()
-
-    async def add_instance(self, widgets: list[Widget] = None):
-        if not widgets:
-            widgets = self._clone_widgets()
-            self._add_to_widget_list(widgets)
-
-        row_id = f"{self.test_name.replace(' ', '_')}_{self.instance_counter}"
-        self.instance_counter += 1
-        row = Horizontal(*widgets, classes="special_test_row", id=f"row_{row_id}")
-        self.rows.append(row)
-        await self.mount(row)
+    
+    async def on_mount(self) -> None:
+        for widget_row in self.original_input:
+            await self._add_row(widget_row, update_rows=False)
         await self._refresh_buttons()
 
-    async def _refresh_buttons(self):
+    async def _add_row(self, widgets: list[Widget] | None = None, update_rows=True) -> None:
+        if widgets is None:
+            widgets = self._clone_widgets(self.row_template)
+
+        row = Horizontal(classes="special_test_row")
+        self.rows.append(row)
+        await self.mount(row)
+
+        for widget in widgets:
+            await row.mount(widget)
+
+        if update_rows:
+            self._update_initial_rows()
+
+    def _clone_widgets(self, widgets: list[Widget]) -> list[Widget]:
+        cloned = []
+        for widget in widgets:
+            if isinstance(widget, Input):
+                cloned.append(Input(value=widget.value, name=widget.name, placeholder=widget.placeholder))
+            elif isinstance(widget, Select):
+                cloned.append(
+                    Select.from_values(
+                        values=widget._legal_values,
+                        name=widget.name,
+                        allow_blank=widget._allow_blank,
+                        value=widget.value
+                    )
+                )
+        return cloned
+
+    async def _remove_row(self, row: Horizontal) -> None:
+        if row in self.rows:
+            self.rows.remove(row)
+            await row.remove()
+            self._update_initial_rows()
+            await self._refresh_buttons()
+
+    # TODO: co se stane, kdyz bude vice specialTestGroup? Potom budou kolidovat id ne? Asi potreba zahrnout test name do id
+    async def _refresh_buttons(self) -> None:
         for row in self.rows:
-            for child in row.children:
-                if isinstance(child, Button):
-                    await child.remove()
+            if row.children and isinstance(row.children[0], Button):
+                await row.children[0].remove()
 
         for i, row in enumerate(self.rows):
             if i == len(self.rows) - 1:
-                add_button = Button("+", variant="success", id=f"add_button_{row.id}")
-                await row.mount(add_button, before=row.children[0] if row.children else None)
+                button = Button("+", id=f"add_{i}", variant="success")
             else:
-                delete_button = Button("-", variant="error", id=f"delete_button_{row.id}")
-                await row.mount(delete_button, before=row.children[0] if row.children else None)
+                button = Button("-", id=f"remove_{i}", variant="error")
 
-    def _clone_widgets(self, template=None) -> list[Widget]:
-        cloned = []
-        widget_template = template if template else self.widget_template
+            await row.mount(button, before=row.children[0] if row.children else None)
 
-        for widget in widget_template:
-            if isinstance(widget, Input):
-                cloned.append(Input(placeholder=widget.placeholder, name=widget.name))
-            elif isinstance(widget, Select):
-                cloned.append(Select.from_values(sorted(widget._legal_values), name=widget.name, allow_blank=widget._allow_blank))
-        return cloned
-
-    async def on_button_pressed(self, event):
+    async def on_button_pressed(self, event: Button.Pressed) -> None:
         btn_id = event.button.id
         if not btn_id:
             return
 
-        if btn_id.startswith("add_button_"):
-            await self.add_instance()
+        if btn_id.startswith("add_"):
+            await self._add_row()
+            await self._refresh_buttons()
 
-        elif btn_id.startswith("delete_button_"):
-            row_id = btn_id.replace("delete_button_", "")
-            row_to_delete = self.query_one(f"#{row_id}", Horizontal)
-            if row_to_delete in self.rows:
-                self._remove_one_from_widget_list()
-                self.rows.remove(row_to_delete)
-                await row_to_delete.remove()
-                await self._refresh_buttons()
+        elif btn_id.startswith("remove_"):
+            index = int(btn_id.replace("remove_", ""))
+            if 0 <= index < len(self.rows):
+                await self._remove_row(self.rows[index])
+
+    def _update_initial_rows(self) -> None:
+        self.original_input.clear()
+
+        for row in self.rows:
+            widgets = []
+            for widget in row.children:
+                if isinstance(widget, (Input, Select)):
+                    widgets.append(widget)
+            self.original_input.append(widgets)

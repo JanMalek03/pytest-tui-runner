@@ -53,7 +53,7 @@ def compose_subcategory_content(test_name, widget_list):
     if is_basic_test(widget_list):
         subcat_content.append(widget_list[0])
     else:
-        group = SpecialTestGroup(test_name, widget_list)
+        group = SpecialTestGroup(widget_list)
         subcat_content.append(Label(test_name, classes="subcategory_label"))
         subcat_content.append(group)
 
