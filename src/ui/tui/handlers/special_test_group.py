@@ -36,7 +36,7 @@ class SpecialTestGroup(Vertical):
             elif isinstance(widget, Select):
                 cloned.append(
                     Select.from_values(
-                        values=widget._legal_values,
+                        values=sorted(widget._legal_values),
                         name=widget.name,
                         allow_blank=widget._allow_blank,
                         value=widget.value
