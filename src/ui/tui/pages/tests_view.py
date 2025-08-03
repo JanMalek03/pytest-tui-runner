@@ -1,30 +1,56 @@
+from collections.abc import Iterator
+from pathlib import Path
+from typing import TYPE_CHECKING
+
 import yaml
 from textual.containers import Horizontal, ScrollableContainer, Vertical
+from textual.widget import Widget
 from textual.widgets import Button
 
 from logs.logger_config import logger
 from src.config.paths import CONFIG_PATH
 from src.ui.tui.handlers.button_handler import ButtonHandler
+
+if TYPE_CHECKING:
+    from src.ui.tui.pages.terminal_view import TerminalView
 from src.utils.widgets.manager import WidgetManager
 
 
 class TestsView(Vertical):
-    def __init__(self):
-        super().__init__()
-        assert CONFIG_PATH.exists(), f"Configuration file {CONFIG_PATH} does not exist."
-        with open(CONFIG_PATH, encoding="utf-8") as file:
-            self.config = yaml.safe_load(file)
+    """A page for displaying and managing tests widgets in the TUI.
 
-        self.widgetManager = WidgetManager(self.config)
+    Handles loading configuration, managing widgets, and responding to button events.
+    """
+
+    def __init__(self) -> None:
+        """Initialize the TestsView, loading configuration and setting up the widget manager."""
+        super().__init__()
+        self.config: dict = self._load_config(CONFIG_PATH)
+        self.widget_manager = WidgetManager(self.config)
+
+    def _load_config(self, path: Path) -> dict:
+        if not path.exists():
+            raise FileNotFoundError(f"Configuration file {path} does not exist.")
+        with path.open(encoding="utf-8") as file:
+            return yaml.safe_load(file)
 
     async def on_mount(self) -> None:
-        terminal_view = self.app.terminal_view
-        self.button_handler = ButtonHandler(self.widgetManager.widgets, terminal_view)
+        """Set up the button handler when the view is mounted."""
+        terminal_view: TerminalView = self.app.terminal_view
+        self.button_handler = ButtonHandler(self.widget_manager.widgets, terminal_view)
 
-    def compose(self):
-        yield ScrollableContainer(*self.widgetManager.compose())
+    def compose(self) -> Iterator[Widget]:
+        """Compose the widgets for the tests view, including the scrollable test widgets and control buttons.
 
-        self.widgetManager.load_state()
+        Yields
+        ------
+        Widget
+            The scrollable container of test widgets and the horizontal container of control buttons.
+
+        """
+        yield ScrollableContainer(*self.widget_manager.compose())
+
+        self.widget_manager.load_state()
 
         yield Horizontal(
             Button("Run tests", id="run_tests", classes="button"),
@@ -34,7 +60,15 @@ class TestsView(Vertical):
             id="button_container",
         )
 
-    def on_button_pressed(self, event):
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        """Handle button press events and trigger corresponding actions.
+
+        Parameters
+        ----------
+        event : Button.Pressed
+            The button press event containing the button ID.
+
+        """
         match event.button.id:
             case "run_tests":
                 self.button_handler.run_tests()
@@ -45,5 +79,5 @@ class TestsView(Vertical):
             case "add_button":
                 logger.info("Add button pressed")
             case "exit":
-                self.widgetManager.save_state()
+                self.widget_manager.save_state()
                 self.app.exit()

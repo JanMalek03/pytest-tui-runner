@@ -12,6 +12,7 @@ dependencies = [
 ]
 
 [tool.ruff]
+line-length = 100
 lint.extend-select = [
     "E",    # Pycodestyle errors (style issues)
     "W",    # Pycodestyle warnings (style issues)
@@ -75,16 +76,20 @@ lint.extend-select = [
 ]
 
 lint.ignore = [
-    "E501",  # Pycodestyle - line too long
-    "D1",    # Pydocstyle - missing docstring in public module, class, or function
-    "FBT003", # Flake8-boolean-trap - boolean position value in function call
-    "D203",  # Pydocstyle - one blank line required before class docstring
-    "D212",  # Pydocstyle - summary line should be immediately after the opening quotes.
-    "D401",  # Pydocstyle - Checks for docstring first lines that are not in an imperative mood.
-    "S311",  # Flake8-bandit - Standard pseudo-random generators are not suitable for security/cryptographic purposes
-    "PERF401", # Perflint - Checks for for loops that can be replaced by a list comprehension.
-    "RET504", # Flake8-return - Checks for variable assignments that immediately precede a return of the assigned variable.
-    "FA102", # Flake8-future-annotations - Missing `from __future__ import annotations`, but uses PEP 604 union
+    "INP001",
+    "D100",
+    "EM102",
+    "EM101",
+    # "E501",  # Pycodestyle - line too long
+    # "D1",    # Pydocstyle - missing docstring in public module, class, or function
+    # "FBT003", # Flake8-boolean-trap - boolean position value in function call
+    # "D203",  # Pydocstyle - one blank line required before class docstring
+    # "D212",  # Pydocstyle - summary line should be immediately after the opening quotes.
+    # "D401",  # Pydocstyle - Checks for docstring first lines that are not in an imperative mood.
+    # "S311",  # Flake8-bandit - Standard pseudo-random generators are not suitable for security/cryptographic purposes
+    # "PERF401", # Perflint - Checks for for loops that can be replaced by a list comprehension.
+    # "RET504", # Flake8-return - Checks for variable assignments that immediately precede a return of the assigned variable.
+    # "FA102", # Flake8-future-annotations - Missing `from __future__ import annotations`, but uses PEP 604 union
     "TRY003", # Tryceratops - Checks for long exception messages that are not defined in the exception class itself.
-    "EM101", # Flake8-errmsg - Checks for the use of string literals in exception constructors.
+    # "EM101", # Flake8-errmsg - Checks for the use of string literals in exception constructors.
 ]

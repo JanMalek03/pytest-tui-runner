@@ -7,9 +7,15 @@ from src.ui.tui.pages.tests_view import TestsView
 
 
 class TestRunnerApp(App):
+    """Main application class for the pytest-gui TUI.
+
+    Handles the layout and navigation between Tests, Terminal, and Performance views.
+    """
+
     CSS_PATH = "styles/tests_view.css"
 
     def compose(self) -> ComposeResult:
+        """Compose the main layout with tabbed views for Tests, Terminal, and Performance."""
         # yield Header()
 
         with TabbedContent():

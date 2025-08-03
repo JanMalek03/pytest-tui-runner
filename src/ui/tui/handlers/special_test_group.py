@@ -4,18 +4,38 @@ from textual.widgets import Button, Input, Select
 
 
 class SpecialTestGroup(Vertical):
-    def __init__(self, initial_rows: list[list[Widget]]):
+    """A container widget for managing a dynamic group of test input rows.
+
+    Each row consists of Input and Select widgets, with add/remove buttons.
+    Allows cloning, adding, and removing rows, and keeps track of the initial input state.
+    """
+
+    def __init__(self, initial_rows: list[list[Widget]]) -> None:
+        """Initialize the SpecialTestGroup with a list of initial widget rows.
+
+        Args:
+            initial_rows (list[list[Widget]]): The initial rows of widgets to populate the group.
+
+        """
         super().__init__(classes="special_test_class")
-        self.row_template = self._clone_widgets(initial_rows[0]) if initial_rows else []
+        self.row_template: list[Widget] = (
+            self._clone_widgets(initial_rows[0]) if initial_rows else []
+        )
         self.original_input = initial_rows
         self.rows: list[Horizontal] = []
 
     async def on_mount(self) -> None:
+        """Mounts the initial rows and refreshes the control buttons when the widget is added to the app."""
         for widget_row in self.original_input:
             await self._add_row(widget_row, update_rows=False)
         await self._refresh_buttons()
 
-    async def _add_row(self, to_clone: list[Widget] | None = None, update_rows=True) -> None:
+    async def _add_row(
+        self,
+        to_clone: list[Widget] | None = None,
+        *,
+        update_rows: bool = True,
+    ) -> None:
         widgets = self._clone_widgets(to_clone)
 
         row = Horizontal(classes="special_test_row")
@@ -32,7 +52,13 @@ class SpecialTestGroup(Vertical):
         cloned = []
         for widget in widgets:
             if isinstance(widget, Input):
-                cloned.append(Input(value=widget.value, name=widget.name, placeholder=widget.placeholder))
+                cloned.append(
+                    Input(
+                        value=widget.value,
+                        name=widget.name,
+                        placeholder=widget.placeholder,
+                    ),
+                )
             elif isinstance(widget, Select):
                 cloned.append(
                     Select.from_values(
@@ -66,6 +92,12 @@ class SpecialTestGroup(Vertical):
             await row.mount(button, before=row.children[0] if row.children else None)
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
+        """Handle button press events for adding or removing rows.
+
+        Args:
+            event (Button.Pressed): The button press event containing the button information.
+
+        """
         btn_id = event.button.id
         if not btn_id:
             return
@@ -83,8 +115,7 @@ class SpecialTestGroup(Vertical):
         self.original_input.clear()
 
         for row in self.rows:
-            widgets = []
-            for widget in row.children:
-                if isinstance(widget, (Input, Select)):
-                    widgets.append(widget)
+            widgets: list[Input | Select] = [
+                widget for widget in row.children if isinstance(widget, Input | Select)
+            ]
             self.original_input.append(widgets)

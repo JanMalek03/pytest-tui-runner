@@ -6,19 +6,55 @@ from src.utils.widgets.widget_generator import generate_widgets_from_config
 
 
 class WidgetManager:
-    def __init__(self, config: dict, state_path: str = STATE_PATH):
-        self.config = config
-        self.state_path = state_path
-        self.widgets = {}
+    """Manages the creation, state, and composition of widgets.
+
+    Attributes
+    ----------
+    config : dict
+        The configuration dictionary for widgets.
+    state_path : str
+        The path to the widget state file.
+    widgets : dict
+        Dictionary holding the generated widgets.
+
+    Methods
+    -------
+    generate()
+        Generates widgets from the configuration.
+    load_state()
+        Loads the state of widgets from a file.
+    save_state()
+        Saves the current state of widgets to a file.
+    compose()
+        Composes widgets for display or use.
+    get_widgets()
+        Returns the dictionary of widgets.
+
+    """
+
+    def __init__(self, config: dict, state_path: str = STATE_PATH) -> None:
+        """Initialize the WidgetManager with a configuration and optional state path.
+
+        Parameters
+        ----------
+        config : dict
+            The configuration dictionary for widgets.
+        state_path : str, optional
+            The path to the widget state file (default is STATE_PATH).
+
+        """
+        self.config: dict = config
+        self.state_path: str = state_path
+        self.widgets: dict = {}
 
         logger.debug("Initializing WidgetManager...")
         self.generate()
         self.load_state()
         logger.info("WidgetManager initialized.")
 
-    def generate(self):
-        """
-        Generates widgets from the provided configuration.
+    def generate(self) -> None:
+        """Generate widgets from the provided configuration.
+
         It will generate widgets based on the user configuration and also according to the saved state of the widgets.
         """
         try:
@@ -28,7 +64,17 @@ class WidgetManager:
         except Exception as e:
             logger.error(f"Error generating widgets: {e}", exc_info=True)
 
-    def load_state(self):
+    def load_state(self) -> None:
+        """Load the state of widgets from the state file.
+
+        Raises
+        ------
+        FileNotFoundError
+            If the state file is not found.
+        Exception
+            For any other errors during loading.
+
+        """
         try:
             load_widget_state(self.widgets, self.state_path)
         except FileNotFoundError:
@@ -36,15 +82,30 @@ class WidgetManager:
         except Exception as e:
             logger.error(f"Error loading widget state: {e}", exc_info=True)
 
-    def save_state(self):
+    def save_state(self) -> None:
+        """Save the current state of widgets to a file.
+
+        Raises
+        ------
+        Exception
+            If an error occurs during saving.
+
+        """
         try:
             save_widget_state(self.widgets, self.state_path)
         except Exception as e:
             logger.error(f"Error saving widget state: {e}", exc_info=True)
 
+    def compose(self) -> object:
+        """Compose widgets for display or use.
 
-    def compose(self):
+        Returns
+        -------
+        object
+            The composed widgets, ready for display or further use.
+
+        """
         return compose_widgets(self.widgets)
 
-    def get_widgets(self):
+    def get_widgets(self) -> dict:
         return self.widgets

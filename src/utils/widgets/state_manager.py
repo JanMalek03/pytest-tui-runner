@@ -1,10 +1,11 @@
 import json
+from pathlib import Path
 
 from textual.widgets import Checkbox
 
 
-def load_widget_state(widgets, filename):
-    with open(filename, encoding="utf-8") as f:
+def load_widget_state(widgets: dict, filename: str) -> None:
+    with Path.open(filename, encoding="utf-8") as f:
         saved = json.load(f)
 
     for cat, subcats in widgets.items():
@@ -18,8 +19,8 @@ def load_widget_state(widgets, filename):
                             widget.value = saved[cat][subcat][test_name][i][widget.name]
 
 
-def save_widget_state(widgets, filename):
-    saved = {}
+def save_widget_state(widgets: dict, filename: str) -> None:
+    saved: dict = {}
 
     for cat, subcats in widgets.items():
         saved[cat] = {}
@@ -39,10 +40,5 @@ def save_widget_state(widgets, filename):
 
                         saved[cat][subcat][test_name].append(widget_data)
 
-
-    with open(filename, "w", encoding="utf-8") as f:
+    with Path.open(filename, "w", encoding="utf-8") as f:
         json.dump(saved, f, indent=2)
-
-
-def is_boolean_list(value):
-    return isinstance(value, list) and len(value) == 1 and isinstance(value[0], bool)

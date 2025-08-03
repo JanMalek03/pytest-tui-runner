@@ -2,18 +2,54 @@ import asyncio
 
 from logs.logger_config import logger
 from src.config.paths import PYTEST_INI_PATH, TEST_PATH
+from src.ui.tui.pages.terminal_view import TerminalView
 from src.utils.pytest.arguments import build_pytest_arguments
 
 
 class ButtonHandler:
-    def __init__(self, widgets: dict, terminal_view):
+    """Handles button actions in the TUI, such as running tests and managing widget states.
+
+    Attributes
+    ----------
+    widgets : dict
+        Dictionary of widgets representing test options.
+    terminal_view
+        The terminal view interface for displaying output.
+
+    Methods
+    -------
+    run_tests()
+        Initiates running tests asynchronously.
+    check_all()
+        Checks all test option widgets.
+    uncheck_all()
+        Unchecks all test option widgets.
+
+    """
+
+    def __init__(self, widgets: dict, terminal_view: TerminalView) -> None:
+        """Initialize ButtonHandler with widgets and terminal view.
+
+        Parameters
+        ----------
+        widgets : dict
+            Dictionary of widgets representing test options.
+        terminal_view
+            The terminal view interface for displaying output.
+
+        """
         self.widgets = widgets
         self.terminal_view = terminal_view
+        self._background_tasks = set()
 
-    def run_tests(self):
+    def run_tests(self) -> None:
+        """Initiate running tests asynchronously.
+
+        This method schedules the asynchronous test runner to execute in the event loop.
+        """
         asyncio.create_task(self._run_tests_async())
 
-    async def _run_tests_async(self):
+    async def _run_tests_async(self) -> None:
         logger.info(f"Testing: {TEST_PATH}")
 
         if not TEST_PATH.exists():
@@ -32,7 +68,8 @@ class ButtonHandler:
         logger.info(f"Running tests in {TEST_PATH}")
         self.terminal_view.write_line("Running tests...\n")
 
-        assert process.stdout
+        if process.stdout is None:
+            raise RuntimeError("Process stdout is not available.")
         async for line in process.stdout:
             decoded = line.decode().rstrip()
             self.terminal_view.write_line(decoded)
@@ -40,23 +77,29 @@ class ButtonHandler:
         await process.wait()
         self.terminal_view.write_line("\nTests finished.")
 
-    def check_all(self):
-        pass
+    def check_all(self) -> None:
+        """Check all test option widgets.
+
+        Sets the value of all boolean widgets in the test options to True.
+        """
         # for category in self.widgets.values():
         #     for subcategory in category.values():
         #         for widget in subcategory.values():
         #             if hasattr(widget, "value") and isinstance(widget.value, bool):
         #                 widget.value = True
 
-    def uncheck_all(self):
-        pass
+    def uncheck_all(self) -> None:
+        """Uncheck all test option widgets.
+
+        Sets the value of all boolean widgets in the test options to False.
+        """
         # for category in self.widgets.values():
         #     for subcategory in category.values():
         #         for widget in subcategory.values():
         #             if hasattr(widget, "value") and isinstance(widget.value, bool):
         #                 widget.value = False
 
-    def _build_pytest_args(self):
+    def _build_pytest_args(self) -> None:
         pass
         # args = []
         # for category, subcategories in self.widgets.items():

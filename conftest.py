@@ -5,9 +5,10 @@ import yaml
 current_dir = Path(__file__).parent
 FILE_PATH = current_dir / "tests" / "pytest_gui" / "default.yaml"
 
-def pytest_addoption(parser):
+
+def pytest_addoption(parser) -> None:
     assert FILE_PATH.exists(), f"Configuration file {FILE_PATH} does not exist."
-    with open(FILE_PATH, encoding="utf-8") as file:
+    with Path.open(FILE_PATH, encoding="utf-8") as file:
         config = yaml.safe_load(file)
 
     for category in config["categories"]:
@@ -15,14 +16,17 @@ def pytest_addoption(parser):
             for test in subcat.get("tests", []):
                 option_name = test_name_to_flag(test["name"])
                 parser.addoption(
-                    option_name, action="store_true", default=False, help="Run login tests",
+                    option_name,
+                    action="store_true",
+                    default=False,
+                    help="Run login tests",
                 )
 
 
-def pytest_collection_modifyitems(config, items):
+def pytest_collection_modifyitems(config, items) -> None:
     selected_items = []
 
-    with open(FILE_PATH, encoding="utf-8") as file:
+    with Path.open(FILE_PATH, encoding="utf-8") as file:
         config_data = yaml.safe_load(file)
 
     enabled_marker_sets = []
@@ -65,6 +69,7 @@ def pytest_collection_modifyitems(config, items):
 #             if "mode" in metafunc.fixturenames and "image_name" in metafunc.fixturenames:
 #                 combinations = [(mode, image) for mode in modes for image in images]
 #                 metafunc.parametrize("mode, image_name", combinations)
+
 
 def test_name_to_flag(name: str) -> str:
     return f"--run-{name.replace(' ', '-').lower()}"

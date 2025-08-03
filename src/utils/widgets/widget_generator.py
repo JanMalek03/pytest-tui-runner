@@ -1,18 +1,19 @@
 import json
+from pathlib import Path
 
 from textual.widgets import Checkbox, Input, Select
 
 from logs.logger_config import logger
 
 
-def generate_widgets_from_config(config, state_path=None):
+def generate_widgets_from_config(config: dict, state_path: str = None) -> dict:
     if state_path:
-        with open(state_path, encoding="utf-8") as f:
+        with Path.open(state_path, encoding="utf-8") as f:
             saved = json.load(f)
             if not saved:
                 logger.warning("No saved state found, generating widgets from config only.")
 
-    widgets = {}
+    widgets: dict = {}
 
     for category in config["categories"]:
         cat_name = category["name"]
@@ -25,7 +26,10 @@ def generate_widgets_from_config(config, state_path=None):
             for test in subcat.get("tests", []):
                 test_name = test["name"]
                 if test["type"] == "special":
-                    special_group = [_create_widgets_for_test(test) for _ in range(len(saved[cat_name][subcat_name][test_name]))]
+                    special_group = [
+                        _create_widgets_for_test(test)
+                        for _ in range(len(saved[cat_name][subcat_name][test_name]))
+                    ]
                     widgets[cat_name][subcat_name][test_name] = special_group
                 else:
                     widgets[cat_name][subcat_name][test_name] = _create_widgets_for_test(test)
