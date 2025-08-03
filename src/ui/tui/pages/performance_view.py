@@ -1,4 +1,4 @@
-from textual.containers import Vertical, ScrollableContainer
+from textual.containers import ScrollableContainer, Vertical
 from textual.widgets import Label
 
 

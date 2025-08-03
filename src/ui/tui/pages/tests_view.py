@@ -1,19 +1,18 @@
-from textual.containers import Vertical, Horizontal, ScrollableContainer, VerticalScroll
-from textual.widgets import Label, Button
-from textual.scroll_view import ScrollView
-from src.config.config_loader import ConfigLoader
-from src.ui.tui.handlers.button_handler import ButtonHandler
-from src.utils.widgets.manager import WidgetManager
+import yaml
+from textual.containers import Horizontal, ScrollableContainer, Vertical
+from textual.widgets import Button
+
 from logs.logger_config import logger
 from src.config.paths import CONFIG_PATH
-import yaml
+from src.ui.tui.handlers.button_handler import ButtonHandler
+from src.utils.widgets.manager import WidgetManager
 
 
 class TestsView(Vertical):
     def __init__(self):
         super().__init__()
         assert CONFIG_PATH.exists(), f"Configuration file {CONFIG_PATH} does not exist."
-        with open(CONFIG_PATH, "r", encoding="utf-8") as file:
+        with open(CONFIG_PATH, encoding="utf-8") as file:
             self.config = yaml.safe_load(file)
 
         self.widgetManager = WidgetManager(self.config)

@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 def find_project_root(start_path: Path = Path(__file__).resolve()) -> Path:
     for parent in [start_path, *start_path.parents]:
         if (parent / "README.md").is_file():

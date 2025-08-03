@@ -1,7 +1,7 @@
+from textual.containers import Horizontal, Vertical
 from textual.widget import Widget
-from textual.containers import Vertical, Horizontal
 from textual.widgets import Button, Input, Select
-from logs.logger_config import logger
+
 
 class SpecialTestGroup(Vertical):
     def __init__(self, initial_rows: list[list[Widget]]):
@@ -9,7 +9,7 @@ class SpecialTestGroup(Vertical):
         self.row_template = self._clone_widgets(initial_rows[0]) if initial_rows else []
         self.original_input = initial_rows
         self.rows: list[Horizontal] = []
-    
+
     async def on_mount(self) -> None:
         for widget_row in self.original_input:
             await self._add_row(widget_row, update_rows=False)
@@ -39,8 +39,8 @@ class SpecialTestGroup(Vertical):
                         values=sorted(widget._legal_values),
                         name=widget.name,
                         allow_blank=widget._allow_blank,
-                        value=widget.value
-                    )
+                        value=widget.value,
+                    ),
                 )
         return cloned
 

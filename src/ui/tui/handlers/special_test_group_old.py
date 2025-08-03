@@ -1,7 +1,9 @@
+from textual.containers import Horizontal, Vertical
 from textual.widget import Widget
-from textual.containers import Vertical, Horizontal
 from textual.widgets import Button, Input, Select
+
 from logs.logger_config import logger
+
 
 class SpecialTestGroup(Vertical):
     def __init__(self, test_name: str, widget_list: list[list[Widget]]):

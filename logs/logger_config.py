@@ -1,6 +1,8 @@
 import sys
-from src.config.paths import LOG_DIR, LOG_FILE
+
 from loguru import logger
+
+from src.config.paths import LOG_DIR, LOG_FILE
 
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -1,6 +1,8 @@
 import subprocess
 import sys
+
 from logs.logger_config import logger
+
 
 def main():
     try:

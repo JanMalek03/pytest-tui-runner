@@ -1,5 +1,7 @@
 from textual.widgets import Checkbox
+
 from logs.logger_config import logger
+
 
 def build_pytest_arguments(widgets, pytest_init_path = ""):
     # Default arguments to run pytest with uv

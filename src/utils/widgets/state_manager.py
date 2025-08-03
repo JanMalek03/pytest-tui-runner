@@ -1,9 +1,10 @@
 import json
-from textual.widgets import Select, Checkbox
-from logs.logger_config import logger
+
+from textual.widgets import Checkbox
+
 
 def load_widget_state(widgets, filename):
-    with open(filename, "r", encoding="utf-8") as f:
+    with open(filename, encoding="utf-8") as f:
         saved = json.load(f)
 
     for cat, subcats in widgets.items():
@@ -37,7 +38,7 @@ def save_widget_state(widgets, filename):
                             widget_data[instance.name] = instance.value
 
                         saved[cat][subcat][test_name].append(widget_data)
-                
+
 
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(saved, f, indent=2)

@@ -1,8 +1,9 @@
-from src.utils.widgets.widget_generator import generate_widgets_from_config
-from src.utils.widgets.state_manager import load_widget_state, save_widget_state
-from src.utils.widgets.composer import compose_widgets
 from logs.logger_config import logger
 from src.config.paths import STATE_PATH
+from src.utils.widgets.composer import compose_widgets
+from src.utils.widgets.state_manager import load_widget_state, save_widget_state
+from src.utils.widgets.widget_generator import generate_widgets_from_config
+
 
 class WidgetManager:
     def __init__(self, config: dict, state_path: str = STATE_PATH):
@@ -16,9 +17,10 @@ class WidgetManager:
         logger.info("WidgetManager initialized.")
 
     def generate(self):
-        """Generates widgets from the provided configuration.
-        It will generate widgets based on the user configuration and also according to the saved state of the widgets."""
-
+        """
+        Generates widgets from the provided configuration.
+        It will generate widgets based on the user configuration and also according to the saved state of the widgets.
+        """
         try:
             self.widgets = generate_widgets_from_config(self.config, self.state_path)
             if not self.widgets:

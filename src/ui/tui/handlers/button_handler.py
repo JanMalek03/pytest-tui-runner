@@ -1,8 +1,9 @@
 import asyncio
-from pathlib import Path
+
 from logs.logger_config import logger
+from src.config.paths import PYTEST_INI_PATH, TEST_PATH
 from src.utils.pytest.arguments import build_pytest_arguments
-from src.config.paths import TEST_PATH, PYTEST_INI_PATH
+
 
 class ButtonHandler:
     def __init__(self, widgets: dict, terminal_view):

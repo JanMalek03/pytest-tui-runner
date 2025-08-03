@@ -1,9 +1,8 @@
-from typing import Iterator
+from textual.containers import Horizontal, Vertical
 from textual.widgets import Checkbox, Label
-from textual.containers import Vertical, Horizontal, Grid
-from src.ui.tui.handlers.special_test_group import SpecialTestGroup
+
 from logs.logger_config import logger
-import json
+from src.ui.tui.handlers.special_test_group import SpecialTestGroup
 
 MAX_ROW_LENGTH = 3
 
