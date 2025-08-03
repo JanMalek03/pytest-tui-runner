@@ -1,5 +1,5 @@
-from src.utils.widgets.factory import generate_widgets_from_config
-from src.utils.widgets.serializer import load_widget_state, save_widget_state
+from src.utils.widgets.widget_generator import generate_widgets_from_config
+from src.utils.widgets.state_manager import load_widget_state, save_widget_state
 from src.utils.widgets.composer import compose_widgets
 from logs.logger_config import logger
 from src.config.paths import STATE_PATH
@@ -12,7 +12,7 @@ class WidgetManager:
 
         logger.debug("Initializing WidgetManager...")
         self.generate()
-        # self.load_state()
+        self.load_state()
         logger.info("WidgetManager initialized.")
 
     def generate(self):
