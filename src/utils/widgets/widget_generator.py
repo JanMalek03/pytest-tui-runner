@@ -17,10 +17,14 @@ def generate_widgets_from_config(config: TestConfig, state_path: str = None) -> 
     """
     saved = {}
     if state_path:
-        with Path.open(state_path, encoding="utf-8") as f:
-            saved = json.load(f)
-            if not saved:
-                logger.warning("No saved state found, generating widgets from config only.")
+        try:
+            with Path.open(state_path, encoding="utf-8") as f:
+                saved = json.load(f)
+                if not saved:
+                    logger.warning("No saved state found, generating widgets from config only.")
+        except Exception as e:
+            logger.error(f"An error occurred while loading saved data: {e}", exc_info=True)
+            saved = {}
 
     widgets: WidgetsDict = {}
 
