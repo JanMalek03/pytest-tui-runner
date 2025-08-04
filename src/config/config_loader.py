@@ -1,52 +1,42 @@
 import json
 from pathlib import Path
-from typing import Any
 
 import yaml
 
+from src.utils.types.config import TestConfig
 
-class ConfigLoader:
-    """Loads configuration files in YAML or JSON format.
 
-    Methods
+def load_config(file_path: str) -> TestConfig:
+    """Load and parses a configuration file.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the configuration file.
+
+    Returns
     -------
-    load_config(file_path: str) -> dict[str, Any]
-        Loads and parses a configuration file.
+    TestConfig
+        An object representing the parsed test configuration.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the configuration file does not exist.
+    ValueError
+        If the file format is not YAML or JSON.
 
     """
+    path = Path(file_path)
 
-    @staticmethod
-    def load_config(file_path: str) -> dict[str, Any]:
-        """Load and parses a configuration file.
+    if not path.exists():
+        raise FileNotFoundError(f"Configuration file {file_path} does not exist.")
 
-        Parameters
-        ----------
-        file_path : str
-            The path to the configuration file.
-
-        Returns
-        -------
-        dict[str, Any]
-            The parsed configuration as a dictionary.
-
-        Raises
-        ------
-        FileNotFoundError
-            If the configuration file does not exist.
-        ValueError
-            If the file format is not YAML or JSON.
-
-        """
-        path = Path(file_path)
-
-        if not path.exists():
-            raise FileNotFoundError(f"Configuration file {file_path} does not exist.")
-
-        if path.suffix in {".yaml", ".yml"}:
-            with Path.open(path, encoding="utf-8") as file:
-                return yaml.safe_load(file)
-        elif path.suffix == ".json":
-            with Path.open(path, encoding="utf-8") as file:
-                return json.load(file)
-        else:
-            raise ValueError("Only YAML and JSON files are supported.")
+    if path.suffix in {".yaml", ".yml"}:
+        with Path.open(path, encoding="utf-8") as file:
+            return yaml.safe_load(file)
+    elif path.suffix == ".json":
+        with Path.open(path, encoding="utf-8") as file:
+            return json.load(file)
+    else:
+        raise ValueError("Only YAML and JSON files are supported.")
