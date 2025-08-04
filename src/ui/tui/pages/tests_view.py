@@ -1,8 +1,6 @@
 from collections.abc import Iterator
-from pathlib import Path
 from typing import TYPE_CHECKING
 
-import yaml
 from textual.containers import Horizontal, ScrollableContainer, Vertical
 from textual.widget import Widget
 from textual.widgets import Button
@@ -13,6 +11,8 @@ from src.ui.tui.handlers.button_handler import ButtonHandler
 
 if TYPE_CHECKING:
     from src.ui.tui.pages.terminal_view import TerminalView
+    from src.utils.types.config import TestConfig
+from src.config.config_loader import load_config
 from src.utils.widgets.manager import WidgetManager
 
 
@@ -25,14 +25,8 @@ class TestsView(Vertical):
     def __init__(self) -> None:
         """Initialize the TestsView, loading configuration and setting up the widget manager."""
         super().__init__()
-        self.config: dict = self._load_config(CONFIG_PATH)
+        self.config: TestConfig = load_config(CONFIG_PATH)
         self.widget_manager = WidgetManager(self.config)
-
-    def _load_config(self, path: Path) -> dict:
-        if not path.exists():
-            raise FileNotFoundError(f"Configuration file {path} does not exist.")
-        with path.open(encoding="utf-8") as file:
-            return yaml.safe_load(file)
 
     async def on_mount(self) -> None:
         """Set up the button handler when the view is mounted."""

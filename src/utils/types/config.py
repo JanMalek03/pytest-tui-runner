@@ -80,6 +80,29 @@ class TestConfig(TypedDict):
 
     Describes the complete hierarchy of categories, subcategories, and tests.
     This format is expected to be loaded from a YAML or JSON file.
+
+    Example:
+    --------
+    Example YAML structure this type represents:
+
+        categories:
+          - name: "Unit Tests"
+            subcategories:
+              - name: "Login"
+                tests:
+                  - name: "Login button visible"
+                    markers: ["login"]
+                    type: "normal"
+                  - name: "Login with credentials"
+                    markers: ["login"]
+                    type: "special"
+                    arguments:
+                      - name: "username"
+                        arg_type: "text_input"
+                        placeholder: "Enter username"
+                      - name: "role"
+                        arg_type: "select"
+                        options: ["admin", "user", "guest"]
     """
 
     categories: list[Category]

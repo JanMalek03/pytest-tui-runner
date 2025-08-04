@@ -1,5 +1,6 @@
 from logs.logger_config import logger
 from src.config.paths import STATE_PATH
+from src.utils.types.config import TestConfig
 from src.utils.widgets.composer import compose_widgets
 from src.utils.widgets.state_manager import load_widget_state, save_widget_state
 from src.utils.widgets.widget_generator import generate_widgets_from_config
@@ -10,7 +11,7 @@ class WidgetManager:
 
     Attributes
     ----------
-    config : dict
+    config : TestConfig
         The configuration dictionary for widgets.
     state_path : str
         The path to the widget state file.
@@ -32,7 +33,7 @@ class WidgetManager:
 
     """
 
-    def __init__(self, config: dict, state_path: str = STATE_PATH) -> None:
+    def __init__(self, config: TestConfig, state_path: str = STATE_PATH) -> None:
         """Initialize the WidgetManager with a configuration and optional state path.
 
         Parameters
@@ -43,7 +44,7 @@ class WidgetManager:
             The path to the widget state file (default is STATE_PATH).
 
         """
-        self.config: dict = config
+        self.config: TestConfig = config
         self.state_path: str = state_path
         self.widgets: dict = {}
 

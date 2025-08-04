@@ -4,16 +4,23 @@ from pathlib import Path
 from textual.widgets import Checkbox, Input, Select
 
 from logs.logger_config import logger
+from src.utils.types.widgets import WidgetsDict
 
 
-def generate_widgets_from_config(config: dict, state_path: str = None) -> dict:
+def generate_widgets_from_config(config: dict, state_path: str = None) -> WidgetsDict:
+    """
+    Generate a nested dictionary of widgets from the given test configuration.
+
+    The dictionary is structured as:
+        {category_name: {subcategory_name: {test_name: widget or list of widgets}}}
+    """
     if state_path:
         with Path.open(state_path, encoding="utf-8") as f:
             saved = json.load(f)
             if not saved:
                 logger.warning("No saved state found, generating widgets from config only.")
 
-    widgets: dict = {}
+    widgets: WidgetsDict = {}
 
     for category in config["categories"]:
         cat_name = category["name"]
@@ -28,7 +35,9 @@ def generate_widgets_from_config(config: dict, state_path: str = None) -> dict:
                 if test["type"] == "special":
                     special_group = [
                         _create_widgets_for_test(test)
-                        for _ in range(len(saved[cat_name][subcat_name][test_name]))
+                        for _ in range(
+                            len(saved.get(cat_name, {}).get(subcat_name, {}).get(test_name, [])),
+                        )
                     ]
                     widgets[cat_name][subcat_name][test_name] = special_group
                 else:
@@ -45,7 +54,7 @@ def _create_widgets_for_test(test):
     return []
 
 
-def _widget_from_argument(arg):
+def _widget_from_argument(arg) -> Select | Input | None:
     if arg["arg_type"] == "select":
         return Select([(opt, opt) for opt in arg["options"]], allow_blank=False, name=arg["name"])
     if arg["arg_type"] == "text_input":
