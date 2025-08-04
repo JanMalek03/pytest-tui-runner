@@ -16,7 +16,9 @@ def load_widget_state(widgets: dict, filename: str) -> None:
                 else:
                     for i, widgets in enumerate(widget_list):
                         for widget in widgets:
-                            widget.value = saved[cat][subcat][test_name][i][widget.name]
+                            group_list = saved.get(cat, {}).get(subcat, {}).get(test_name, [])
+                            if i < len(group_list):
+                                widget.value = group_list[i].get(widget.name)
 
 
 def save_widget_state(widgets: dict, filename: str) -> None:

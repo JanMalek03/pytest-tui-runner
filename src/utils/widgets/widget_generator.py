@@ -4,16 +4,18 @@ from pathlib import Path
 from textual.widgets import Checkbox, Input, Select
 
 from logs.logger_config import logger
+from src.utils.types.config import TestConfig
 from src.utils.types.widgets import WidgetsDict
 
 
-def generate_widgets_from_config(config: dict, state_path: str = None) -> WidgetsDict:
+def generate_widgets_from_config(config: TestConfig, state_path: str = None) -> WidgetsDict:
     """
     Generate a nested dictionary of widgets from the given test configuration.
 
     The dictionary is structured as:
         {category_name: {subcategory_name: {test_name: widget or list of widgets}}}
     """
+    saved = {}
     if state_path:
         with Path.open(state_path, encoding="utf-8") as f:
             saved = json.load(f)
@@ -33,12 +35,14 @@ def generate_widgets_from_config(config: dict, state_path: str = None) -> Widget
             for test in subcat.get("tests", []):
                 test_name = test["name"]
                 if test["type"] == "special":
-                    special_group = [
-                        _create_widgets_for_test(test)
-                        for _ in range(
-                            len(saved.get(cat_name, {}).get(subcat_name, {}).get(test_name, [])),
-                        )
-                    ]
+                    saved_group = saved.get(cat_name, {}).get(subcat_name, {}).get(test_name, [])
+
+                    if saved_group:
+                        special_group = [
+                            _create_widgets_for_test(test) for _ in range(len(saved_group))
+                        ]
+                    else:
+                        special_group = [_create_widgets_for_test(test)]
                     widgets[cat_name][subcat_name][test_name] = special_group
                 else:
                     widgets[cat_name][subcat_name][test_name] = _create_widgets_for_test(test)
