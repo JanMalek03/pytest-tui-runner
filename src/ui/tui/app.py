@@ -16,6 +16,7 @@ class TestRunnerApp(App):
 
     def compose(self) -> ComposeResult:
         """Compose the main layout with tabbed views for Tests, Terminal, and Performance."""
+        # Uncomment this if you want to have Header on the page
         # yield Header()
 
         with TabbedContent():
@@ -27,6 +28,7 @@ class TestRunnerApp(App):
             with TabPane("Performance"):
                 yield PerformanceView()
 
+        # Uncomment this if you want to have Footer on the page
         # yield Footer()
 
 

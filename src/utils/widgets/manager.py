@@ -1,3 +1,10 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.utils.types.widgets import WidgetsDict
+
+from pathlib import Path
+
 from logs.logger_config import logger
 from src.config.paths import STATE_PATH
 from src.utils.types.config import TestConfig
@@ -28,12 +35,10 @@ class WidgetManager:
         Saves the current state of widgets to a file.
     compose()
         Composes widgets for display or use.
-    get_widgets()
-        Returns the dictionary of widgets.
 
     """
 
-    def __init__(self, config: TestConfig, state_path: str = STATE_PATH) -> None:
+    def __init__(self, config: TestConfig, state_path: Path = STATE_PATH) -> None:
         """Initialize the WidgetManager with a configuration and optional state path.
 
         Parameters
@@ -45,8 +50,8 @@ class WidgetManager:
 
         """
         self.config: TestConfig = config
-        self.state_path: str = state_path
-        self.widgets: dict = {}
+        self.state_path: Path = state_path
+        self.widgets: WidgetsDict = {}
 
         logger.debug("Initializing WidgetManager...")
         self.generate()
@@ -107,6 +112,3 @@ class WidgetManager:
 
         """
         return compose_widgets(self.widgets)
-
-    def get_widgets(self) -> dict:
-        return self.widgets

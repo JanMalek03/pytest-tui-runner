@@ -12,6 +12,7 @@ from src.ui.tui.handlers.button_handler import ButtonHandler
 if TYPE_CHECKING:
     from src.ui.tui.pages.terminal_view import TerminalView
     from src.utils.types.config import TestConfig
+
 from src.config.config_loader import load_config
 from src.utils.widgets.manager import WidgetManager
 
@@ -25,12 +26,22 @@ class TestsView(Vertical):
     def __init__(self) -> None:
         """Initialize the TestsView, loading configuration and setting up the widget manager."""
         super().__init__()
+
+        # Load a user-defined test configuration.
+        # Categories, subcategories, tests and their arguments are defined here
         self.config: TestConfig = load_config(CONFIG_PATH)
+
+        # Create a WidgetManager class that is responsible for all work with widgets.
+        # It will create widgets according to the config and then load their stored values
         self.widget_manager = WidgetManager(self.config)
 
     async def on_mount(self) -> None:
         """Set up the button handler when the view is mounted."""
+        # Gets a handler for the terminal page, which is stored in the main application.
+        # Thanks to this, we will be able to display the progress of the tests in the terminal
         terminal_view: TerminalView = self.app.terminal_view
+
+        # ButtonHandler handles all actions associated with pressing buttons
         self.button_handler = ButtonHandler(self.widget_manager.widgets, terminal_view)
 
     def compose(self) -> Iterator[Widget]:
@@ -42,10 +53,10 @@ class TestsView(Vertical):
             The scrollable container of test widgets and the horizontal container of control buttons.
 
         """
+        # A container that contains all widgets associated with tests
         yield ScrollableContainer(*self.widget_manager.compose())
 
-        self.widget_manager.load_state()
-
+        # A container that contains all the additional buttons for controlling the test
         yield Horizontal(
             Button("Run tests", id="run_tests", classes="button"),
             Button("Check all", id="check_all", classes="button"),
@@ -71,6 +82,7 @@ class TestsView(Vertical):
             case "uncheck_all":
                 self.button_handler.uncheck_all()
             case "add_button":
+                # TODO: presunout logger fo button_handler.add()
                 logger.info("Add button pressed")
             case "exit":
                 self.widget_manager.save_state()
