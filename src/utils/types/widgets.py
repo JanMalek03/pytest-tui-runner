@@ -1,7 +1,7 @@
 from textual.widget import Widget
 
-TestWidget = Widget | list[Widget]
+TestArguments = list[Widget]
 
-Category = str
+TestWidgets = list[Widget] | list[TestArguments]
 
-WidgetsDict = dict[str, dict[str, dict[str, TestWidget]]]
+WidgetsDict = dict[str, dict[str, dict[str, TestWidgets]]]

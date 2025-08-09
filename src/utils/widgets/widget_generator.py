@@ -1,13 +1,12 @@
-import json
 from pathlib import Path
 
 from textual.widget import Widget
 from textual.widgets import Checkbox, Input, Select
 
-from logs.logger_config import logger
 from src.utils.types.config import Argument, ArgumentType, Test, TestConfig, TestType
 from src.utils.types.saved_state import SavedState, SavedSubcat, TestValue
 from src.utils.types.widgets import WidgetsDict
+from src.utils.widgets.state_manager import read_json_state_file
 
 
 def generate_widgets_from_config(config: TestConfig, state_path: Path | None = None) -> WidgetsDict:
@@ -29,7 +28,7 @@ def generate_widgets_from_config(config: TestConfig, state_path: Path | None = N
             }
         }
     """
-    saved_state: SavedState = _load_saved_state(state_path)
+    saved_state: SavedState = read_json_state_file(state_path)
     widgets: WidgetsDict = {}
 
     for category in config["categories"]:
@@ -47,21 +46,6 @@ def generate_widgets_from_config(config: TestConfig, state_path: Path | None = N
                 )
 
     return widgets
-
-
-def _load_saved_state(state_path: Path | None) -> SavedState:
-    """Load previously saved widget state from a JSON file."""
-    if not state_path:
-        return {}
-    try:
-        with Path.open(state_path, encoding="utf-8") as f:
-            data: SavedState = json.load(f)
-            if not data:
-                logger.warning("No saved state found.")
-            return data
-    except Exception as e:
-        logger.error(f"Error loading saved state: {e}", exc_info=True)
-        return {}
 
 
 def _create_test_widgets(test: Test, saved_subcat: SavedSubcat) -> list[Widget]:
