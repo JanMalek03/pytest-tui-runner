@@ -5,8 +5,9 @@ from textual.widget import Widget
 from textual.widgets import Checkbox, Input, Select
 
 from logs.logger_config import logger
-from src.utils.types.config import Argument, Test, TestConfig
-from src.utils.types.widgets import SavedState, SavedSubcat, WidgetsDict
+from src.utils.types.config import Argument, ArgumentType, Test, TestConfig, TestType
+from src.utils.types.saved_state import SavedState, SavedSubcat, TestValue
+from src.utils.types.widgets import WidgetsDict
 
 
 def generate_widgets_from_config(config: TestConfig, state_path: Path | None = None) -> WidgetsDict:
@@ -64,14 +65,15 @@ def _load_saved_state(state_path: Path | None) -> SavedState:
 
 
 def _create_test_widgets(test: Test, saved_subcat: SavedSubcat) -> list[Widget]:
-    test_type = test.get("type")
+    """Create a list of widgets by test type."""
+    test_type: TestType = test.get("type")
 
     if test_type == "normal":
         return [Checkbox(test["name"])]
 
     if test_type == "special":
         # Get the number of saved states of the test argument
-        saved_group: list[dict[str, str]] = saved_subcat.get(test["name"], [])
+        saved_group: TestValue = saved_subcat.get(test["name"], [])
         num_groups: int = max(1, len(saved_group))
 
         return [_create_widgets_from_arguments(test["arguments"]) for _ in range(num_groups)]
@@ -91,7 +93,7 @@ def _create_widgets_from_arguments(arguments: list[Argument]) -> list[Widget]:
 
 def _widget_from_argument(arg: Argument) -> Widget | None:
     """Create a single widget based on argument definition."""
-    arg_type = arg.get("arg_type")
+    arg_type: ArgumentType = arg.get("arg_type")
     if arg_type == "select":
         return Select(
             [(opt, opt) for opt in arg["options"]],
