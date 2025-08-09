@@ -31,7 +31,7 @@ class Argument(TypedDict):
     """
 
 
-class TestDefinition(TypedDict):
+class Test(TypedDict):
     """Represents an individual test definition within a subcategory."""
 
     name: str
@@ -62,7 +62,7 @@ class Subcategory(TypedDict):
 
     name: str
     """The name of the subcategory (e.g., 'Login', 'Navigation')."""
-    tests: list[TestDefinition]
+    tests: list[Test]
     """A list of individual tests under this subcategory."""
 
 

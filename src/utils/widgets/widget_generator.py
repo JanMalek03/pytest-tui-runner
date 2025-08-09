@@ -1,70 +1,106 @@
 import json
 from pathlib import Path
 
+from textual.widget import Widget
 from textual.widgets import Checkbox, Input, Select
 
 from logs.logger_config import logger
-from src.utils.types.config import TestConfig
-from src.utils.types.widgets import WidgetsDict
+from src.utils.types.config import Argument, Test, TestConfig
+from src.utils.types.widgets import SavedState, SavedSubcat, WidgetsDict
 
 
-def generate_widgets_from_config(config: TestConfig, state_path: str = None) -> WidgetsDict:
+def generate_widgets_from_config(config: TestConfig, state_path: Path | None = None) -> WidgetsDict:
     """
     Generate a nested dictionary of widgets from the given test configuration.
 
-    The dictionary is structured as:
-        {category_name: {subcategory_name: {test_name: widget or list of widgets}}}
-    """
-    saved = {}
-    if state_path:
-        try:
-            with Path.open(state_path, encoding="utf-8") as f:
-                saved = json.load(f)
-                if not saved:
-                    logger.warning("No saved state found, generating widgets from config only.")
-        except Exception as e:
-            logger.error(f"An error occurred while loading saved data: {e}", exc_info=True)
-            saved = {}
+    Args:
+        config: Test configuration loaded from YAML/JSON.
+        state_path: Optional path to saved widget state.
 
+    Returns
+    -------
+        Nested dict in the form:
+        {
+            category: {
+                subcategory: {
+                    test_name: widget | list[widget]
+                }
+            }
+        }
+    """
+    saved_state: SavedState = _load_saved_state(state_path)
     widgets: WidgetsDict = {}
 
     for category in config["categories"]:
-        cat_name = category["name"]
+        cat_name: str = category["name"]
         widgets[cat_name] = {}
 
         for subcat in category.get("subcategories", []):
-            subcat_name = subcat["name"]
+            subcat_name: str = subcat["name"]
             widgets[cat_name][subcat_name] = {}
 
             for test in subcat.get("tests", []):
-                test_name = test["name"]
-                if test["type"] == "special":
-                    saved_group = saved.get(cat_name, {}).get(subcat_name, {}).get(test_name, [])
-
-                    if saved_group:
-                        special_group = [
-                            _create_widgets_for_test(test) for _ in range(len(saved_group))
-                        ]
-                    else:
-                        special_group = [_create_widgets_for_test(test)]
-                    widgets[cat_name][subcat_name][test_name] = special_group
-                else:
-                    widgets[cat_name][subcat_name][test_name] = _create_widgets_for_test(test)
+                widgets[cat_name][subcat_name][test["name"]] = _create_test_widgets(
+                    test,
+                    saved_state.get(cat_name, {}).get(subcat_name, {}),
+                )
 
     return widgets
 
 
-def _create_widgets_for_test(test):
-    if test["type"] == "normal":
+def _load_saved_state(state_path: Path | None) -> SavedState:
+    """Load previously saved widget state from a JSON file."""
+    if not state_path:
+        return {}
+    try:
+        with Path.open(state_path, encoding="utf-8") as f:
+            data: SavedState = json.load(f)
+            if not data:
+                logger.warning("No saved state found.")
+            return data
+    except Exception as e:
+        logger.error(f"Error loading saved state: {e}", exc_info=True)
+        return {}
+
+
+def _create_test_widgets(test: Test, saved_subcat: SavedSubcat) -> list[Widget]:
+    test_type = test.get("type")
+
+    if test_type == "normal":
         return [Checkbox(test["name"])]
-    if test["type"] == "special":
-        return [_widget_from_argument(arg) for arg in test["arguments"]]
+
+    if test_type == "special":
+        # Get the number of saved states of the test argument
+        saved_group: list[dict[str, str]] = saved_subcat.get(test["name"], [])
+        num_groups: int = max(1, len(saved_group))
+
+        return [_create_widgets_from_arguments(test["arguments"]) for _ in range(num_groups)]
+
     return []
 
 
-def _widget_from_argument(arg) -> Select | Input | None:
-    if arg["arg_type"] == "select":
-        return Select([(opt, opt) for opt in arg["options"]], allow_blank=False, name=arg["name"])
-    if arg["arg_type"] == "text_input":
-        return Input(placeholder=arg.get("placeholder", ""), name=arg["name"])
+def _create_widgets_from_arguments(arguments: list[Argument]) -> list[Widget]:
+    """Create a list of widgets from a test's argument definitions."""
+    result: list[Widget] = []
+    for arg in arguments:
+        widget: Widget | None = _widget_from_argument(arg)
+        if widget is not None:
+            result.append(widget)
+    return result
+
+
+def _widget_from_argument(arg: Argument) -> Widget | None:
+    """Create a single widget based on argument definition."""
+    arg_type = arg.get("arg_type")
+    if arg_type == "select":
+        return Select(
+            [(opt, opt) for opt in arg["options"]],
+            allow_blank=False,
+            name=arg["name"],
+        )
+    if arg_type == "text_input":
+        return Input(
+            placeholder=arg.get("placeholder", ""),
+            name=arg["name"],
+        )
     return None
