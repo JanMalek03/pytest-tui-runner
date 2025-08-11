@@ -1,6 +1,10 @@
+from urllib.parse import quote
+
+from textual.widget import Widget
 from textual.widgets import Checkbox
 
 from logs.logger_config import logger
+from src.utils.types.widgets import TestArguments, WidgetsDict
 
 
 def build_pytest_arguments(widgets: dict, pytest_init_path: str = "") -> list[str]:
@@ -31,14 +35,63 @@ def build_pytest_arguments(widgets: dict, pytest_init_path: str = "") -> list[st
     # Additional arguments for pytest
     args += ["-s"]  # -s for capturing output
 
-    for subcats in widgets.values():
-        for tests in subcats.values():
-            for test_name, widgets in tests.items():
-                for widget in widgets:
-                    if isinstance(widget, Checkbox) and widget.value:
-                        test_name = str(widget.label)
-                        args.append(f"--run-{test_name.lower().replace(' ', '-')}")
+    # Add widget-derived arguments
+    args.extend(extract_widget_arguments(widgets))
 
     logger.info(f"Built pytest arguments: {args}")
-
     return args
+
+
+def extract_widget_arguments(widgets: WidgetsDict) -> list[str]:
+    """Extract pytest CLI arguments from widget states."""
+    args: list[str] = []
+    for subcats in widgets.values():
+        for tests in subcats.values():
+            for test_name, widget_list in tests.items():
+                # Check if widget_list contains arguments for the test
+                if isinstance(widget_list[0], list):
+                    arg: str | None = widget_to_argument(test_name, widget_list)
+                    if arg:
+                        args.append(arg)
+                else:
+                    for widget in widget_list:
+                        arg: str | None = widget_to_argument(test_name, widget)
+                        if arg:
+                            args.append(arg)
+    return args
+
+
+def widget_to_argument(test_name: str, widgets: Widget | list[TestArguments]) -> str | None:
+    """Convert a widget into a pytest CLI argument, if applicable."""
+    # Basic Checkbox type test
+    if isinstance(widgets, Checkbox) and widgets.value:
+        return format_test_flag(str(widgets.label))
+
+    if isinstance(widgets, list) and widgets:
+        variant_strings: list[str] = []
+
+        for widget_list in widgets:  # one variant of the arguments
+            parts = []
+            for widget in widget_list:
+                # Select/Input -> name=value
+                if (
+                    hasattr(widget, "name")
+                    and hasattr(widget, "value")
+                    and widget.value not in (None, "")
+                ):
+                    name: str = quote(str(widget.name), safe="")
+                    value: str = quote(str(widget.value), safe="")
+                    parts.append(f"{name}:{value}")
+            if parts:
+                variant_strings.append(",".join(parts))
+
+        if variant_strings:
+            return f"{format_test_flag(test_name)}=" + ";".join(variant_strings)
+
+    return None
+
+
+def format_test_flag(test_name: str) -> str:
+    """Format test name into a pytest CLI flag."""
+    # Example: "My Test" → "--run-my-test"
+    return f"--run-{test_name.lower().replace(' ', '-')}"
