@@ -1,9 +1,12 @@
 import asyncio
+from asyncio.subprocess import Process
+from pathlib import Path
 
 from logs.logger_config import logger
 from src.config.paths import PYTEST_INI_PATH, TEST_PATH
 from src.ui.tui.pages.terminal_view import TerminalView
 from src.utils.pytest.arguments import build_pytest_arguments
+from src.utils.types.widgets import WidgetsDict
 
 
 class ButtonHandler:
@@ -27,7 +30,7 @@ class ButtonHandler:
 
     """
 
-    def __init__(self, widgets: dict, terminal_view: TerminalView) -> None:
+    def __init__(self, widgets: WidgetsDict, terminal_view: TerminalView) -> None:
         """Initialize ButtonHandler with widgets and terminal view.
 
         Parameters
@@ -38,9 +41,8 @@ class ButtonHandler:
             The terminal view interface for displaying output.
 
         """
-        self.widgets = widgets
-        self.terminal_view = terminal_view
-        self._background_tasks = set()
+        self.widgets: WidgetsDict = widgets
+        self.terminal_view: TerminalView = terminal_view
 
     def run_tests(self) -> None:
         """Initiate running tests asynchronously.
@@ -50,32 +52,49 @@ class ButtonHandler:
         asyncio.create_task(self._run_tests_async())
 
     async def _run_tests_async(self) -> None:
-        logger.info(f"Testing: {TEST_PATH}")
-
-        if not TEST_PATH.exists():
-            logger.error(f"Test path {TEST_PATH} does not exist.")
+        if not self._validate_test_path(TEST_PATH):
             return
 
-        args = build_pytest_arguments(self.widgets, PYTEST_INI_PATH)
+        args: list[str] = self._build_test_command()
 
-        process = await asyncio.create_subprocess_exec(
+        await self._execute_test_process(args, cwd=TEST_PATH)
+
+    def _validate_test_path(self, path: Path) -> bool:
+        """Check if test path exists."""
+        if not path.exists():
+            logger.error(f"Test path {path} does not exist.")
+            self.terminal_view.write_line(f"Error: Test path {path} not found.\n")
+            return False
+        return True
+
+    def _build_test_command(self) -> list[str]:
+        """Build the pytest command arguments."""
+        return build_pytest_arguments(self.widgets, PYTEST_INI_PATH)
+
+    async def _execute_test_process(self, args: list[str], cwd: Path) -> None:
+        """Run a subprocess for tests and stream output to terminal."""
+        logger.info(f"Running tests in {cwd}")
+        self.terminal_view.write_line("Running tests...\n")
+
+        process: Process = await asyncio.create_subprocess_exec(
             *args,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
-            cwd=TEST_PATH,
+            cwd=cwd,
         )
 
-        logger.info(f"Running tests in {TEST_PATH}")
-        self.terminal_view.write_line("Running tests...\n")
-
-        if process.stdout is None:
+        if not process.stdout:
             raise RuntimeError("Process stdout is not available.")
-        async for line in process.stdout:
-            decoded = line.decode().rstrip()
-            self.terminal_view.write_line(decoded)
 
+        await self._stream_process_output(process)
         await process.wait()
         self.terminal_view.write_line("\nTests finished.")
+
+    async def _stream_process_output(self, process: Process) -> None:
+        """Stream process stdout to terminal line by line."""
+        assert process.stdout is not None
+        async for line in process.stdout:
+            self.terminal_view.write_line(line.decode().rstrip())
 
     def check_all(self) -> None:
         """Check all test option widgets.
