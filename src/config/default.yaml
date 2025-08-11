@@ -25,7 +25,7 @@ categories:
       - name: "Mode"
         tests:
           - name: "Image rendering"
-            markers: ["users"]
+            markers: ["images"]
             type: "special"
             arguments:
               - name: "action"
