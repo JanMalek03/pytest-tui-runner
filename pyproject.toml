@@ -1,15 +1,22 @@
 [project]
 name = "pytest-gui"
 version = "0.1.0"
-description = "Add your description here"
+description = "Pytest plugin with GUI and configuration support"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "click>=8.2.1",
     "loguru>=0.7.3",
     "pytest>=8.3.5",
     "pyyaml>=6.0.2",
     "textual>=3.0.0",
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+pytest-gui = "pytest_gui.cli:cli"
 
 [tool.ruff]
 line-length = 100
