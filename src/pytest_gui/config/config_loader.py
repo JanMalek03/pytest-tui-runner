@@ -3,7 +3,7 @@ from pathlib import Path
 
 import yaml
 
-from src.utils.types.config import TestConfig
+from src.pytest_gui.utils.types.config import TestConfig
 
 
 def load_config(file_path: str) -> TestConfig:

@@ -2,7 +2,7 @@ import sys
 
 from loguru import logger
 
-from src.config.paths import LOG_DIR, LOG_FILE
+from src.pytest_gui.config.paths import LOG_DIR, LOG_FILE
 
 __all__ = ["logger"]
 

@@ -3,8 +3,13 @@ from textual.widget import Widget
 from textual.widgets import Checkbox, Label
 
 from logs.logger_config import logger
-from src.ui.tui.handlers.special_test_group import SpecialTestGroup
-from src.utils.types.widgets import CategoryDict, SubCategoryDict, TestWidgets, WidgetsDict
+from src.pytest_gui.ui.tui.handlers.special_test_group import SpecialTestGroup
+from src.pytest_gui.utils.types.widgets import (
+    CategoryDict,
+    SubCategoryDict,
+    TestWidgets,
+    WidgetsDict,
+)
 
 MAX_ROW_LENGTH = 3
 

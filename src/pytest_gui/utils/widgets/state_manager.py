@@ -4,8 +4,8 @@ from pathlib import Path
 from textual.widgets import Checkbox, Select
 
 from logs.logger_config import logger
-from src.utils.types.saved_state import SavedState, TestState, TestValue
-from src.utils.types.widgets import TestWidgets, WidgetsDict
+from src.pytest_gui.utils.types.saved_state import SavedState, TestState, TestValue
+from src.pytest_gui.utils.types.widgets import TestWidgets, WidgetsDict
 
 
 def load_widget_state(widgets: WidgetsDict, filename: Path) -> None:

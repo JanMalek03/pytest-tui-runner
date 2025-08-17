@@ -3,10 +3,10 @@ from asyncio.subprocess import Process
 from pathlib import Path
 
 from logs.logger_config import logger
-from src.config.paths import PYTEST_INI_PATH, TEST_PATH
-from src.ui.tui.pages.terminal_view import TerminalView
-from src.utils.pytest.arguments import build_pytest_arguments
-from src.utils.types.widgets import WidgetsDict
+from src.pytest_gui.config.paths import PYTEST_INI_PATH, TEST_PATH
+from src.pytest_gui.ui.tui.pages.terminal_view import TerminalView
+from src.pytest_gui.utils.pytest.arguments import build_pytest_arguments
+from src.pytest_gui.utils.types.widgets import WidgetsDict
 
 
 class ButtonHandler:
