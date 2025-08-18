@@ -7,6 +7,7 @@ from pytest_gui.utils.types.config import TestConfig
 
 
 def load_config(file_path: str) -> TestConfig:
+    # TODO: add json as config. Now there is no json file to be loaded
     """Load and parses a configuration file.
 
     Parameters

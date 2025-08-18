@@ -5,8 +5,8 @@ import yaml
 from _pytest.config.argparsing import Parser
 from _pytest.python import Metafunc
 
-from pytest_gui.config.paths import CONFIG_PATH
 from pytest_gui.logging import logger  # noqa: F401
+from pytest_gui.paths import CONFIG_PATH
 
 
 def pytest_addoption(parser: Parser) -> None:

@@ -2,7 +2,7 @@ import sys
 
 from loguru import logger
 
-from pytest_gui.config.paths import LOG_DIR, LOG_FILE
+from pytest_gui.paths import LOG_DIR, LOG_FILE
 
 __all__ = ["logger", "setup_logger"]
 
