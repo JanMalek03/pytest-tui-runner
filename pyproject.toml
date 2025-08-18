@@ -18,6 +18,9 @@ where = ["src"]
 [project.scripts]
 pytest-gui = "pytest_gui.cli:cli"
 
+[project.entry-points.pytest11]
+pytest-gui = "pytest_gui"
+
 [tool.ruff]
 line-length = 100
 lint.extend-select = [
