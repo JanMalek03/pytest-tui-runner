@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-from src.pytest_gui.logs.logger_config import logger
+from pytest_gui.logs.logger_config import logger
 
 
 def main() -> None:

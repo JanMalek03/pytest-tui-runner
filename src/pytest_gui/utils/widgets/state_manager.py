@@ -3,9 +3,9 @@ from pathlib import Path
 
 from textual.widgets import Checkbox, Select
 
-from src.pytest_gui.logs.logger_config import logger
-from src.pytest_gui.utils.types.saved_state import SavedState, TestState, TestValue
-from src.pytest_gui.utils.types.widgets import TestWidgets, WidgetsDict
+from pytest_gui.logs.logger_config import logger
+from pytest_gui.utils.types.saved_state import SavedState, TestState, TestValue
+from pytest_gui.utils.types.widgets import TestWidgets, WidgetsDict
 
 
 def load_widget_state(widgets: WidgetsDict, filename: Path) -> None:

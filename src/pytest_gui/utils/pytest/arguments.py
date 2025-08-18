@@ -3,8 +3,8 @@ from urllib.parse import quote
 from textual.widget import Widget
 from textual.widgets import Checkbox
 
-from src.pytest_gui.logs.logger_config import logger
-from src.pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
+from pytest_gui.logs.logger_config import logger
+from pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
 
 
 def build_pytest_arguments(widgets: dict, pytest_init_path: str = "") -> list[str]:

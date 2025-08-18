@@ -2,7 +2,7 @@ from textual.containers import Horizontal, Vertical
 from textual.widget import Widget
 from textual.widgets import Button, Input, Select
 
-from src.pytest_gui.logs.logger_config import logger
+from pytest_gui.logs.logger_config import logger
 
 
 class SpecialTestGroup(Vertical):
@@ -69,7 +69,7 @@ class SpecialTestGroup(Vertical):
                         sorted(widget._legal_values),
                         name=widget.name,
                         allow_blank=widget._allow_blank,
-                    )
+                    ),
                 )
         return cloned
 

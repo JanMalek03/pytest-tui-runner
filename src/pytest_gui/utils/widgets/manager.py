@@ -1,16 +1,16 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.pytest_gui.utils.types.widgets import WidgetsDict
+    from pytest_gui.utils.types.widgets import WidgetsDict
 
 from pathlib import Path
 
-from src.pytest_gui.config.paths import STATE_PATH
-from src.pytest_gui.logs.logger_config import logger
-from src.pytest_gui.utils.types.config import TestConfig
-from src.pytest_gui.utils.widgets.composer import compose_widgets
-from src.pytest_gui.utils.widgets.state_manager import load_widget_state, save_widget_state
-from src.pytest_gui.utils.widgets.widget_generator import generate_widgets_from_config
+from pytest_gui.config.paths import STATE_PATH
+from pytest_gui.logs.logger_config import logger
+from pytest_gui.utils.types.config import TestConfig
+from pytest_gui.utils.widgets.composer import compose_widgets
+from pytest_gui.utils.widgets.state_manager import load_widget_state, save_widget_state
+from pytest_gui.utils.widgets.widget_generator import generate_widgets_from_config
 
 
 class WidgetManager:

@@ -1,9 +1,9 @@
 from textual.app import App, ComposeResult
 from textual.widgets import TabbedContent, TabPane
 
-from src.pytest_gui.ui.tui.pages.performance_view import PerformanceView
-from src.pytest_gui.ui.tui.pages.terminal_view import TerminalView
-from src.pytest_gui.ui.tui.pages.tests_view import TestsView
+from pytest_gui.ui.tui.pages.performance_view import PerformanceView
+from pytest_gui.ui.tui.pages.terminal_view import TerminalView
+from pytest_gui.ui.tui.pages.tests_view import TestsView
 
 
 class TestRunnerApp(App):

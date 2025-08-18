@@ -3,10 +3,10 @@ from pathlib import Path
 from textual.widget import Widget
 from textual.widgets import Checkbox, Input, Select
 
-from src.pytest_gui.utils.types.config import Argument, ArgumentType, Test, TestConfig, TestType
-from src.pytest_gui.utils.types.saved_state import SavedState, SavedSubcat, TestValue
-from src.pytest_gui.utils.types.widgets import WidgetsDict
-from src.pytest_gui.utils.widgets.state_manager import read_json_state_file
+from pytest_gui.utils.types.config import Argument, ArgumentType, Test, TestConfig, TestType
+from pytest_gui.utils.types.saved_state import SavedState, SavedSubcat, TestValue
+from pytest_gui.utils.types.widgets import WidgetsDict
+from pytest_gui.utils.widgets.state_manager import read_json_state_file
 
 
 def generate_widgets_from_config(config: TestConfig, state_path: Path | None = None) -> WidgetsDict:
