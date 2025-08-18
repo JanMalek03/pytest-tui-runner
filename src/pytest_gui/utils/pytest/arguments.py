@@ -3,7 +3,7 @@ from urllib.parse import quote
 from textual.widget import Widget
 from textual.widgets import Checkbox
 
-from pytest_gui.logs.logger_config import logger
+from pytest_gui.logging import logger
 from pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
 
 

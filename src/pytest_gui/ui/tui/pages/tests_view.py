@@ -6,7 +6,7 @@ from textual.widget import Widget
 from textual.widgets import Button
 
 from pytest_gui.config.paths import CONFIG_PATH
-from pytest_gui.logs.logger_config import logger
+from pytest_gui.logging import logger
 from pytest_gui.ui.tui.handlers.button_handler import ButtonHandler
 
 if TYPE_CHECKING:

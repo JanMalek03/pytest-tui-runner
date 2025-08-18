@@ -3,7 +3,7 @@ from asyncio.subprocess import Process
 from pathlib import Path
 
 from pytest_gui.config.paths import PYTEST_INI_PATH, TEST_PATH
-from pytest_gui.logs.logger_config import logger
+from pytest_gui.logging import logger
 from pytest_gui.ui.tui.pages.terminal_view import TerminalView
 from pytest_gui.utils.pytest.arguments import build_pytest_arguments
 from pytest_gui.utils.types.widgets import WidgetsDict
