@@ -2,7 +2,7 @@ from textual.containers import Horizontal, Vertical
 from textual.widget import Widget
 from textual.widgets import Button, Input, Select
 
-from logs.logger_config import logger
+from src.pytest_gui.logs.logger_config import logger
 
 
 class SpecialTestGroup(Vertical):
@@ -64,7 +64,13 @@ class SpecialTestGroup(Vertical):
             if isinstance(widget, Input):
                 cloned.append(Input(placeholder=widget.placeholder, name=widget.name))
             elif isinstance(widget, Select):
-                cloned.append(Select.from_values(sorted(widget._legal_values), name=widget.name, allow_blank=widget._allow_blank))
+                cloned.append(
+                    Select.from_values(
+                        sorted(widget._legal_values),
+                        name=widget.name,
+                        allow_blank=widget._allow_blank,
+                    )
+                )
         return cloned
 
     async def on_button_pressed(self, event):

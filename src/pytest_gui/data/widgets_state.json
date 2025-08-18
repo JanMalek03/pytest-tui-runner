@@ -2,10 +2,10 @@
   "Unit Tests": {
     "Login": {
       "Login button visible": [
-        false
+        true
       ],
       "Login button clickable": [
-        false
+        true
       ],
       "Login button enabled": [
         false
@@ -13,7 +13,7 @@
     },
     "Navigation": {
       "Navigation bar visible": [
-        false
+        true
       ],
       "Navigation bar clickable": [
         false
@@ -24,16 +24,8 @@
     "Mode": {
       "Image rendering": [
         {
-          "action": "Add image",
-          "image": "123"
-        },
-        {
-          "action": "Copy image",
-          "image": "456"
-        },
-        {
           "action": "Delete image",
-          "image": "789"
+          "image": "dt7ir"
         }
       ]
     }

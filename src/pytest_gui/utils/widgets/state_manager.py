@@ -3,7 +3,7 @@ from pathlib import Path
 
 from textual.widgets import Checkbox, Select
 
-from logs.logger_config import logger
+from src.pytest_gui.logs.logger_config import logger
 from src.pytest_gui.utils.types.saved_state import SavedState, TestState, TestValue
 from src.pytest_gui.utils.types.widgets import TestWidgets, WidgetsDict
 

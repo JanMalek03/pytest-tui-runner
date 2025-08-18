@@ -2,8 +2,8 @@ import asyncio
 from asyncio.subprocess import Process
 from pathlib import Path
 
-from logs.logger_config import logger
 from src.pytest_gui.config.paths import PYTEST_INI_PATH, TEST_PATH
+from src.pytest_gui.logs.logger_config import logger
 from src.pytest_gui.ui.tui.pages.terminal_view import TerminalView
 from src.pytest_gui.utils.pytest.arguments import build_pytest_arguments
 from src.pytest_gui.utils.types.widgets import WidgetsDict

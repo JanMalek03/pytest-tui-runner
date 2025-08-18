@@ -5,8 +5,8 @@ if TYPE_CHECKING:
 
 from pathlib import Path
 
-from logs.logger_config import logger
 from src.pytest_gui.config.paths import STATE_PATH
+from src.pytest_gui.logs.logger_config import logger
 from src.pytest_gui.utils.types.config import TestConfig
 from src.pytest_gui.utils.widgets.composer import compose_widgets
 from src.pytest_gui.utils.widgets.state_manager import load_widget_state, save_widget_state

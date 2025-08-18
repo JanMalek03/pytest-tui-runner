@@ -5,16 +5,16 @@ from textual.containers import Horizontal, ScrollableContainer, Vertical
 from textual.widget import Widget
 from textual.widgets import Button
 
-from logs.logger_config import logger
-from src.pytest_gui.config.paths import CONFIG_PATH
-from src.pytest_gui.ui.tui.handlers.button_handler import ButtonHandler
+from pytest_gui.config.paths import CONFIG_PATH
+from pytest_gui.logs.logger_config import logger
+from pytest_gui.ui.tui.handlers.button_handler import ButtonHandler
 
 if TYPE_CHECKING:
-    from src.pytest_gui.ui.tui.pages.terminal_view import TerminalView
-    from src.pytest_gui.utils.types.config import TestConfig
+    from pytest_gui.ui.tui.pages.terminal_view import TerminalView
+    from pytest_gui.utils.types.config import TestConfig
 
-from src.pytest_gui.config.config_loader import load_config
-from src.pytest_gui.utils.widgets.manager import WidgetManager
+from pytest_gui.config.config_loader import load_config
+from pytest_gui.utils.widgets.manager import WidgetManager
 
 
 class TestsView(Vertical):

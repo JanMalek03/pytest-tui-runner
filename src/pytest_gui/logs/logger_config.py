@@ -2,9 +2,9 @@ import sys
 
 from loguru import logger
 
-from src.pytest_gui.config.paths import LOG_DIR, LOG_FILE
+from pytest_gui.config.paths import LOG_DIR, LOG_FILE
 
-__all__ = ["logger"]
+__all__ = ["logger", "setup_logger"]
 
 
 def setup_logger() -> None:
@@ -51,18 +51,21 @@ def setup_logger() -> None:
     #
     # To log a message at this custom level, use:
     #     logger.log("TERMINAL", "This message is for the terminal only.")
-    logger.level("TERMINAL", no=25, color="<blue>")
+    try:
+        logger.level("TERMINAL", no=25, color="<blue>")
 
-    # Add special logger for terminal
-    logger.add(
-        sys.stdout,
-        level="TERMINAL",
-        format=stdout_format,
-        colorize=False,
-        backtrace=True,
-        diagnose=True,
-        filter=lambda record: record["level"].name == "TERMINAL",
-    )
+        # Add special logger for terminal
+        logger.add(
+            sys.stdout,
+            level="TERMINAL",
+            format=stdout_format,
+            colorize=False,
+            backtrace=True,
+            diagnose=True,
+            filter=lambda record: record["level"].name == "TERMINAL",
+        )
+    except Exception as e:
+        logger.warning(f"Failed to set up terminal logger: {e}")
 
     # Uncomment the line below to clear the log file on each run
     # Path.open(LOG_FILE, "w").close()

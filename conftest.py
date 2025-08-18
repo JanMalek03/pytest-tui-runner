@@ -9,7 +9,7 @@ from _pytest.python import Metafunc
 # @@@@@@@@@@@ TODO: DELETE @@@@@@@@@@@
 LIB_PATH = Path("N:/SKOLA/Bakalarka/pytest-gui")
 sys.path.insert(0, str(LIB_PATH))
-from logs.logger_config import logger
+from src.pytest_gui.logs.logger_config import logger
 
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
