@@ -24,8 +24,12 @@
     "Mode": {
       "Image rendering": [
         {
+          "action": "Add image",
+          "image": "image1"
+        },
+        {
           "action": "Delete image",
-          "image": "dt7ir"
+          "image": "image2"
         }
       ]
     }

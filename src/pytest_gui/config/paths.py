@@ -36,7 +36,7 @@ TEST_PATH: Path = Path(TEST_PATH).resolve()
 
 # CONFIG_PATH = ROOT_DIR / "src" / "config" / "default.yaml"
 CONFIG_PATH: Path = TEST_PATH / "tests" / "pytest_gui" / "default.yaml"
-STATE_PATH: Path = ROOT_DIR / "src" / "pytest_gui" / "data" / "widgets_state.json"
+STATE_PATH: Path = ROOT_DIR / "src" / "pytest_gui" / "widgets_state.json"
 
 PYTEST_INI_PATH: Path = ROOT_DIR / "pytest.ini"
 
