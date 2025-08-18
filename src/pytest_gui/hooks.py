@@ -6,7 +6,7 @@ from _pytest.config.argparsing import Parser
 from _pytest.python import Metafunc
 
 from pytest_gui.config.paths import CONFIG_PATH
-from pytest_gui.logs.logger_config import logger
+from pytest_gui.logs.logger_config import logger  # noqa: F401
 
 
 def pytest_addoption(parser: Parser) -> None:
@@ -55,10 +55,6 @@ def pytest_collection_modifyitems(config, items) -> None:
 
         if frozenset(item_markers) in enabled_marker_sets:
             selected_tests.append(item)
-
-    # logger.critical("")
-    logger.critical(enabled_marker_sets)
-    logger.warning(selected_tests)
 
     items[:] = selected_tests
 
