@@ -33,7 +33,7 @@ class TestsView(Vertical):
 
         # Create a WidgetManager class that is responsible for all work with widgets.
         # It will create widgets according to the config and then load their stored values
-        self.widget_manager = WidgetManager(self.config)
+        self.widget_manager = WidgetManager(self.config, Paths.state_file())
 
     async def on_mount(self) -> None:
         """Set up the button handler when the view is mounted."""

@@ -81,7 +81,7 @@ def _widget_from_argument(arg: Argument) -> Widget | None:
     if arg_type == "select":
         return Select(
             [(opt, opt) for opt in arg["options"]],
-            allow_blank=False,
+            allow_blank=True,
             name=arg["name"],
         )
     if arg_type == "text_input":

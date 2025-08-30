@@ -27,14 +27,12 @@ class SpecialTestGroup(Vertical):
     async def on_mount(self) -> None:
         """Mounts the initial rows and refreshes the control buttons when the widget is added to the app."""
         for widget_row in self.original_input:
-            await self._add_row(widget_row, update_rows=False)
+            await self._add_row(widget_row)
         await self._refresh_buttons()
 
     async def _add_row(
         self,
         to_clone: list[Widget] | None = None,
-        *,
-        update_rows: bool = True,
     ) -> None:
         widgets = self._clone_widgets(to_clone)
 
@@ -45,8 +43,7 @@ class SpecialTestGroup(Vertical):
         for widget in widgets:
             await row.mount(widget)
 
-        if update_rows:
-            self._update_initial_rows()
+        self._update_initial_rows()
 
     def _clone_widgets(self, widgets: list[Widget]) -> list[Widget]:
         cloned = []
@@ -60,9 +57,11 @@ class SpecialTestGroup(Vertical):
                     ),
                 )
             elif isinstance(widget, Select):
+                widget_values = {item for item in widget._legal_values if item != Select.BLANK}
+
                 cloned.append(
                     Select.from_values(
-                        values=sorted(widget._legal_values),
+                        values=sorted(widget_values),
                         name=widget.name,
                         allow_blank=widget._allow_blank,
                         value=widget.value,

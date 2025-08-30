@@ -35,7 +35,7 @@ def save_widget_state(widgets: WidgetsDict, filename: Path) -> None:
 
 def read_json_state_file(filename: Path) -> SavedState:
     """Load saved widget states from file and return as a dictionary."""
-    if not filename:
+    if not filename or not filename.is_file():
         return {}
     try:
         with Path.open(filename, encoding="utf-8") as f:
@@ -79,7 +79,9 @@ def _set_widgets_values(test_widgets: TestWidgets, saved_values: TestValue) -> N
             continue
         for widget in arguments_widgets:
             try:
-                widget.value = saved_values[i].get(widget.name)
+                value = saved_values[i].get(widget.name)
+                if value:
+                    widget.value = value
             except Exception as e:
                 logger.error(f"Error setting widget value: {e}", exc_info=True)
 

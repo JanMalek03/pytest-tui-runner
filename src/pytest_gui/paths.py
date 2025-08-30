@@ -32,6 +32,7 @@ def find_project_root(start_path: Path | None = None) -> Path:
 def find_project_root_by_tests(start: Path) -> Path | None:
     current = start.resolve()
     for parent in [current] + list(current.parents):
+        # TODO: mozna pridat vice moznosti, treba tests or README, nebo tak
         if (parent / "tests").is_dir():
             return parent
     return None
@@ -67,21 +68,21 @@ class Paths:
 
     @classmethod
     def config(cls) -> Path:
-        return cls.user_root() / "tests" / "pytest_gui" / "default.yaml"
+        return cls.user_root() / "pytest_gui" / "default.yaml"
 
     @classmethod
     def log_dir(cls) -> Path:
-        return cls.user_root() / "tests" / "pytest_gui" / "logs"
+        return cls.user_root() / "pytest_gui" / "logs"
+
+    @classmethod
+    def state_file(cls) -> Path:
+        return cls.user_root() / "pytest_gui" / "widgets_state.json"
 
     @classmethod
     def log_file(cls) -> Path:
         return cls.log_dir() / "app.log"
 
     # ------------------ PACKAGE-INTERNAL PATHS ------------------
-
-    @classmethod
-    def state_file(cls) -> Path:
-        return cls.ROOT_DIR / "src" / "pytest_gui" / "widgets_state.json"
 
     @classmethod
     def pytest_ini(cls) -> Path:

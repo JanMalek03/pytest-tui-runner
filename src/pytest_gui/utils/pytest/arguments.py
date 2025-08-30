@@ -1,7 +1,7 @@
 from urllib.parse import quote
 
 from textual.widget import Widget
-from textual.widgets import Checkbox
+from textual.widgets import Checkbox, Select
 
 from pytest_gui.logging import logger
 from pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
@@ -74,11 +74,12 @@ def widget_to_argument(test_name: str, widgets: Widget | list[TestArguments]) ->
             parts = []
             for widget in widget_list:
                 # Select/Input -> name=value
-                if (
-                    hasattr(widget, "name")
-                    and hasattr(widget, "value")
-                    and widget.value not in (None, "")
-                ):
+                if hasattr(widget, "name") and hasattr(widget, "value"):
+                    if widget.value in (None, "", Select.BLANK):
+                        logger.warning(f"Value for widget '{widget.name}' is not set")
+                        # TODO: pokud neni jeden z argumentu, nema cenu pokracovat s dalsimi
+                        continue
+
                     name: str = quote(str(widget.name), safe="")
                     value: str = quote(str(widget.value), safe="")
                     parts.append(f"{name}:{value}")
