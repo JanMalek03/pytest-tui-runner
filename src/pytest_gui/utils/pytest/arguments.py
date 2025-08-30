@@ -69,6 +69,8 @@ def widget_to_argument(test_name: str, widgets: Widget | list[TestArguments]) ->
 
     if isinstance(widgets, list) and widgets:
         variant_strings: list[str] = []
+        had_any_value = False
+        missing_value = False
 
         for widget_list in widgets:  # one variant of the arguments
             parts = []
@@ -76,15 +78,22 @@ def widget_to_argument(test_name: str, widgets: Widget | list[TestArguments]) ->
                 # Select/Input -> name=value
                 if hasattr(widget, "name") and hasattr(widget, "value"):
                     if widget.value in (None, "", Select.BLANK):
-                        logger.warning(f"Value for widget '{widget.name}' is not set")
-                        # TODO: pokud neni jeden z argumentu, nema cenu pokracovat s dalsimi
+                        missing_value = True
                         continue
-
+                    had_any_value = True
                     name: str = quote(str(widget.name), safe="")
                     value: str = quote(str(widget.value), safe="")
                     parts.append(f"{name}:{value}")
             if parts:
                 variant_strings.append(",".join(parts))
+
+        if not had_any_value:
+            return None
+
+        if missing_value:
+            logger.debug(f"Value for widget '{widget.name}' is not set.")
+            logger.warning(f"Skipping test '{test_name}'")
+            return None
 
         if variant_strings:
             return f"{format_test_flag(test_name)}=" + ";".join(variant_strings)
