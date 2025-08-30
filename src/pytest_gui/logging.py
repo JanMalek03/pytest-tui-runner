@@ -2,14 +2,14 @@ import sys
 
 from loguru import logger
 
-from pytest_gui.paths import LOG_DIR, LOG_FILE
+from pytest_gui.paths import Paths
 
 __all__ = ["logger", "setup_logger"]
 
 
 def setup_logger() -> None:
     """Configure the loguru logger with file and terminal handlers."""
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    Paths.log_dir().mkdir(parents=True, exist_ok=True)
 
     # file log format
     log_format = (
@@ -25,7 +25,7 @@ def setup_logger() -> None:
 
     # Add new logger with new log format
     logger.add(
-        LOG_FILE,
+        Paths.log_file(),
         # level="INFO",
         level="DEBUG",
         format=log_format,
@@ -68,7 +68,8 @@ def setup_logger() -> None:
         logger.warning(f"Failed to set up terminal logger: {e}")
 
     # Uncomment the line below to clear the log file on each run
+    # TODO: LOG_FILE je zastaraly
     # Path.open(LOG_FILE, "w").close()
 
 
-setup_logger()
+# setup_logger()

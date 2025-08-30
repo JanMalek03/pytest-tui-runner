@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 
@@ -28,19 +29,60 @@ def find_project_root(start_path: Path | None = None) -> Path:
     raise RuntimeError("ROOT_DIR not found - missing README.md")
 
 
-ROOT_DIR: Path = find_project_root()
+def find_project_root_by_tests(start: Path) -> Path | None:
+    current = start.resolve()
+    for parent in [current] + list(current.parents):
+        if (parent / "tests").is_dir():
+            return parent
+    return None
 
-# TEST_PATH="C:/_SCHOOL/Bakalarka/project_with_tests"
-TEST_PATH = "N:/SKOLA/Bakalarka/project_with_tests"
-TEST_PATH: Path = Path(TEST_PATH).resolve()
 
-# CONFIG_PATH = ROOT_DIR / "src" / "config" / "default.yaml"
-CONFIG_PATH: Path = TEST_PATH / "tests" / "pytest_gui" / "default.yaml"
-# TODO: change so it works in package
-STATE_PATH: Path = ROOT_DIR / "src" / "pytest_gui" / "widgets_state.json"
+class Paths:
+    """Central place for all important paths."""
 
-PYTEST_INI_PATH: Path = ROOT_DIR / "pytest.ini"
+    # root of *this* package
+    ROOT_DIR: Path = find_project_root()
 
-# LOG_DIR = ROOT_DIR / "logs"
-LOG_DIR: Path = TEST_PATH / "tests" / "pytest_gui" / "logs"
-LOG_FILE: Path = LOG_DIR / "app.log"
+    # user project root (to be set dynamically from CLI)
+    _user_root: Path | None = None
+
+    # ------------------ SET/GET ------------------
+
+    @classmethod
+    def set_user_root(cls, path: Path) -> None:
+        cls._user_root = path.resolve()
+
+    @classmethod
+    def user_root(cls) -> Path:
+        if cls._user_root is not None:
+            return cls._user_root
+
+        env_root = os.getenv("PYTEST_GUI_ROOT")
+        if env_root:
+            return Path(env_root).resolve()
+
+        raise RuntimeError("User project root is not set yet.")
+
+    # ------------------ USER-DEPENDENT PATHS ------------------
+
+    @classmethod
+    def config(cls) -> Path:
+        return cls.user_root() / "tests" / "pytest_gui" / "default.yaml"
+
+    @classmethod
+    def log_dir(cls) -> Path:
+        return cls.user_root() / "tests" / "pytest_gui" / "logs"
+
+    @classmethod
+    def log_file(cls) -> Path:
+        return cls.log_dir() / "app.log"
+
+    # ------------------ PACKAGE-INTERNAL PATHS ------------------
+
+    @classmethod
+    def state_file(cls) -> Path:
+        return cls.ROOT_DIR / "src" / "pytest_gui" / "widgets_state.json"
+
+    @classmethod
+    def pytest_ini(cls) -> Path:
+        return cls.ROOT_DIR / "pytest.ini"

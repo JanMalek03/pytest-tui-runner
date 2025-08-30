@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 from pathlib import Path
 
 from pytest_gui.logging import logger
-from pytest_gui.paths import STATE_PATH
+from pytest_gui.paths import Paths
 from pytest_gui.utils.types.config import TestConfig
 from pytest_gui.utils.widgets.composer import compose_widgets
 from pytest_gui.utils.widgets.state_manager import load_widget_state, save_widget_state
@@ -38,7 +38,7 @@ class WidgetManager:
 
     """
 
-    def __init__(self, config: TestConfig, state_path: Path = STATE_PATH) -> None:
+    def __init__(self, config: TestConfig, state_path: Path = Paths.state_file()) -> None:
         """Initialize the WidgetManager with a configuration and optional state path.
 
         Parameters

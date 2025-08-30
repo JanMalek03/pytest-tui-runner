@@ -6,7 +6,7 @@ from textual.widget import Widget
 from textual.widgets import Button
 
 from pytest_gui.logging import logger
-from pytest_gui.paths import CONFIG_PATH
+from pytest_gui.paths import Paths
 from pytest_gui.ui.tui.handlers.button_handler import ButtonHandler
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class TestsView(Vertical):
 
         # Load a user-defined test configuration.
         # Categories, subcategories, tests and their arguments are defined here
-        self.config: TestConfig = load_config(CONFIG_PATH)
+        self.config: TestConfig = load_config(Paths.config())
 
         # Create a WidgetManager class that is responsible for all work with widgets.
         # It will create widgets according to the config and then load their stored values

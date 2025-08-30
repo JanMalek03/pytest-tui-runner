@@ -1,9 +1,10 @@
 import asyncio
+import os
 from asyncio.subprocess import Process
 from pathlib import Path
 
 from pytest_gui.logging import logger
-from pytest_gui.paths import PYTEST_INI_PATH, TEST_PATH
+from pytest_gui.paths import Paths
 from pytest_gui.ui.tui.pages.terminal_view import TerminalView
 from pytest_gui.utils.pytest.arguments import build_pytest_arguments
 from pytest_gui.utils.types.widgets import WidgetsDict
@@ -52,12 +53,12 @@ class ButtonHandler:
         asyncio.create_task(self._run_tests_async())
 
     async def _run_tests_async(self) -> None:
-        if not self._validate_test_path(TEST_PATH):
+        if not self._validate_test_path(Paths.user_root()):
             return
 
         args: list[str] = self._build_test_command()
 
-        await self._execute_test_process(args, cwd=TEST_PATH)
+        await self._execute_test_process(args, cwd=Paths.user_root())
 
     def _validate_test_path(self, path: Path) -> bool:
         """Check if test path exists."""
@@ -69,7 +70,7 @@ class ButtonHandler:
 
     def _build_test_command(self) -> list[str]:
         """Build the pytest command arguments."""
-        return build_pytest_arguments(self.widgets, PYTEST_INI_PATH)
+        return build_pytest_arguments(self.widgets, Paths.pytest_ini())
 
     async def _execute_test_process(self, args: list[str], cwd: Path) -> None:
         """Run a subprocess for tests and stream output to terminal."""
@@ -78,6 +79,7 @@ class ButtonHandler:
 
         process: Process = await asyncio.create_subprocess_exec(
             *args,
+            env={**os.environ, "PYTEST_GUI_ROOT": str(Paths.user_root())},
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
             cwd=cwd,

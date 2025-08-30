@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from urllib.parse import unquote
 
 from _pytest.config.argparsing import Parser
@@ -5,14 +6,16 @@ from _pytest.python import Metafunc
 
 from pytest_gui.config import load_config
 from pytest_gui.logging import logger  # noqa: F401
-from pytest_gui.paths import CONFIG_PATH
+from pytest_gui.paths import Paths
 from pytest_gui.utils.pytest.arguments import format_test_flag
 from pytest_gui.utils.pytest.hooks import iter_tests, parse_variants
-from pytest_gui.utils.types.config import TestConfig
+
+if TYPE_CHECKING:
+    from pytest_gui.utils.types.config import TestConfig
 
 
 def pytest_addoption(parser: Parser) -> None:
-    config: TestConfig = load_config(CONFIG_PATH)
+    config: TestConfig = load_config(Paths.config())
 
     for test in iter_tests(config):
         option_name: str = format_test_flag(test["name"])
@@ -34,7 +37,7 @@ def pytest_addoption(parser: Parser) -> None:
 
 
 def pytest_collection_modifyitems(config, items) -> None:
-    config_data: TestConfig = load_config(CONFIG_PATH)
+    config_data: TestConfig = load_config(Paths.config())
 
     # Go through the options given by pytest so we know which tests to run
     enabled_marker_sets: list = []
@@ -53,7 +56,7 @@ def pytest_collection_modifyitems(config, items) -> None:
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
-    config_data: TestConfig = load_config(CONFIG_PATH)
+    config_data: TestConfig = load_config(Paths.config())
     marker_names: set[str] = {marker.name for marker in metafunc.definition.iter_markers()}
 
     for test_def in iter_tests(config_data):
