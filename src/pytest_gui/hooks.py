@@ -1,5 +1,4 @@
-from typing import TYPE_CHECKING
-from urllib.parse import unquote
+from collections.abc import Iterator
 
 from _pytest.config.argparsing import Parser
 from _pytest.python import Metafunc
@@ -8,10 +7,8 @@ from pytest_gui.config import load_config
 from pytest_gui.logging import logger  # noqa: F401
 from pytest_gui.paths import Paths
 from pytest_gui.utils.pytest.arguments import format_test_flag
-from pytest_gui.utils.pytest.hooks import iter_tests, parse_variants
-
-if TYPE_CHECKING:
-    from pytest_gui.utils.types.config import TestConfig
+from pytest_gui.utils.pytest.encoding import decode_variants
+from pytest_gui.utils.types.config import Test, TestConfig
 
 
 def pytest_addoption(parser: Parser) -> None:
@@ -71,7 +68,7 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         if not raw_value:
             return
 
-        variants: list[dict[str, str]] = parse_variants(unquote(raw_value))
+        variants: list[dict[str, str]] = decode_variants(raw_value)
         if not variants:
             return
 
@@ -79,3 +76,10 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         param_values = [tuple(v[k] for k in param_names) for v in variants]
         metafunc.parametrize(param_names, param_values)
         return
+
+
+def iter_tests(config_data: TestConfig) -> Iterator[Test]:
+    """Yield all test definitions from config."""
+    for category in config_data.get("categories", []):
+        for subcat in category.get("subcategories", []):
+            yield from subcat.get("tests", [])

@@ -35,7 +35,7 @@ def setup_logger() -> None:
         enqueue=True,
         filter=lambda record: record["level"].name != "TERMINAL",
         rotation="00:00",
-        retention="7",
+        retention=7,
     )
 
     # Register a custom log level for terminal output

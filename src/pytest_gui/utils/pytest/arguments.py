@@ -1,9 +1,8 @@
-from urllib.parse import quote
-
 from textual.widget import Widget
-from textual.widgets import Checkbox, Select
+from textual.widgets import Checkbox
 
 from pytest_gui.logging import logger
+from pytest_gui.utils.pytest.encoding import encode_variants
 from pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
 
 
@@ -68,35 +67,9 @@ def widget_to_argument(test_name: str, widgets: Widget | list[TestArguments]) ->
         return format_test_flag(str(widgets.label))
 
     if isinstance(widgets, list) and widgets:
-        variant_strings: list[str] = []
-        had_any_value = False
-        missing_value = False
-
-        for widget_list in widgets:  # one variant of the arguments
-            parts = []
-            for widget in widget_list:
-                # Select/Input -> name=value
-                if hasattr(widget, "name") and hasattr(widget, "value"):
-                    if widget.value in (None, "", Select.BLANK):
-                        missing_value = True
-                        continue
-                    had_any_value = True
-                    name: str = quote(str(widget.name), safe="")
-                    value: str = quote(str(widget.value), safe="")
-                    parts.append(f"{name}:{value}")
-            if parts:
-                variant_strings.append(",".join(parts))
-
-        if not had_any_value:
-            return None
-
-        if missing_value:
-            logger.debug(f"Value for widget '{widget.name}' is not set.")
-            logger.warning(f"Skipping test '{test_name}'")
-            return None
-
-        if variant_strings:
-            return f"{format_test_flag(test_name)}=" + ";".join(variant_strings)
+        variant_strings: str = encode_variants(test_name, widgets)
+        if variant_strings is not None:
+            return f"{format_test_flag(test_name)}=" + variant_strings
 
     return None
 
