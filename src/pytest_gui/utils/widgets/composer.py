@@ -43,6 +43,7 @@ def compose_subcategory(subcategory_name: str, subcategory: SubCategoryDict) -> 
     row_buffer: list[Widget] = []
 
     for test_name, widget_list in subcategory.items():
+        logger.debug(f"Composing test '{test_name}'")
         test_layout: Vertical = compose_test(test_name, widget_list)
 
         if is_basic_test(widget_list):
@@ -71,9 +72,13 @@ def compose_test(test_name: str, widget_list: TestWidgets) -> Vertical:
         return Vertical(widget_list[0], classes="subcategory_content")
 
     # Test with arguments
+    logger.debug("Creating special test widget...")
+    special_widget = SpecialTestGroup(widget_list)
+    logger.debug("Special test widget created")
+
     return Vertical(
         Label(test_name, classes="subcategory_label"),
-        SpecialTestGroup(widget_list),
+        special_widget,
         classes="subcategory_content",
     )
 
@@ -88,11 +93,19 @@ def flush_row(row_buffer: list[Widget], items: list[Widget], *, require_full: bo
 
     If require_full is True, flush only if buffer reached MAX_ROW_LENGTH.
     """
+    # logger.debug(require_full)
     if not row_buffer:
         return
 
     if require_full and len(row_buffer) < MAX_ROW_LENGTH:
         return
+
+    if len(row_buffer) == MAX_ROW_LENGTH:
+        logger.debug(
+            f"Number of widgets per row has reached the maximum ({MAX_ROW_LENGTH}). Ending the row",
+        )
+    else:
+        logger.debug("Ending the widget row")
 
     items.append(Horizontal(*row_buffer, classes="subcategory_row"))
     row_buffer.clear()

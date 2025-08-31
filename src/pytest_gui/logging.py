@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 from loguru import logger
 
@@ -13,7 +14,7 @@ def setup_logger() -> None:
 
     # file log format
     log_format = (
-        "<green>{time:HH:mm:ss}</green> | "
+        "<green>{time:HH:mm:ss.SSS}</green> | "
         "<level>{level: <8}</level> | "
         "Line{line: >4} ({file}): <b>{message}</b>"
     )
@@ -68,8 +69,7 @@ def setup_logger() -> None:
         logger.warning(f"Failed to set up terminal logger: {e}")
 
     # Uncomment the line below to clear the log file on each run
-    # TODO: LOG_FILE je zastaraly
-    # Path.open(LOG_FILE, "w").close()
+    Path.open(Paths.log_file(), "w").close()
 
 
 # setup_logger()

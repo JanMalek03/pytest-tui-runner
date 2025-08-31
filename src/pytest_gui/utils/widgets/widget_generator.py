@@ -3,6 +3,7 @@ from pathlib import Path
 from textual.widget import Widget
 from textual.widgets import Checkbox, Input, Select
 
+from pytest_gui.logging import logger
 from pytest_gui.utils.types.config import Argument, ArgumentType, Test, TestConfig, TestType
 from pytest_gui.utils.types.saved_state import SavedState, SavedSubcat, TestValue
 from pytest_gui.utils.types.widgets import WidgetsDict
@@ -28,6 +29,7 @@ def generate_widgets_from_config(config: TestConfig, state_path: Path | None = N
             }
         }
     """
+    logger.debug(f"Loading saved states from '{state_path}' file")
     saved_state: SavedState = read_json_state_file(state_path)
     widgets: WidgetsDict = {}
 
@@ -45,11 +47,14 @@ def generate_widgets_from_config(config: TestConfig, state_path: Path | None = N
                     saved_state.get(cat_name, {}).get(subcat_name, {}),
                 )
 
+    logger.debug(f"Generated widgets: {widgets}")
     return widgets
 
 
 def _create_test_widgets(test: Test, saved_subcat: SavedSubcat) -> list[Widget]:
     """Create a list of widgets by test type."""
+    logger.debug(f"Creating widgets for test = '{test.get('name')}', type = '{test.get('type')}'")
+
     test_type: TestType = test.get("type")
 
     if test_type == "normal":
@@ -59,6 +64,7 @@ def _create_test_widgets(test: Test, saved_subcat: SavedSubcat) -> list[Widget]:
         # Get the number of saved states of the test argument
         saved_group: TestValue = saved_subcat.get(test["name"], [])
         num_groups: int = max(1, len(saved_group))
+        logger.debug(f"Number of instances of the arguments found in state file: '{num_groups}'")
 
         return [_create_widgets_from_arguments(test["arguments"]) for _ in range(num_groups)]
 
@@ -72,6 +78,7 @@ def _create_widgets_from_arguments(arguments: list[Argument]) -> list[Widget]:
         widget: Widget | None = _widget_from_argument(arg)
         if widget is not None:
             result.append(widget)
+    logger.debug(f"Adding one instance of arguments widgets: {result}")
     return result
 
 
@@ -89,4 +96,5 @@ def _widget_from_argument(arg: Argument) -> Widget | None:
             placeholder=arg.get("placeholder", ""),
             name=arg["name"],
         )
+    logger.error(f"Unexpected argument type: '{arg_type}'")
     return None

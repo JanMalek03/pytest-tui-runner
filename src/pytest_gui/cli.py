@@ -30,16 +30,14 @@ def run(project_path: str | None) -> None:
             Paths.set_user_root(root)
 
         setup_logger()
-        logger.info(f"Using project root: {root}")
+        logger.info("=============================== NEW RECORD ===============================")
+        logger.info(f"Path to user's project found: '{root}'")
 
-        logger.info("Starting the application...")
-
+        logger.info("▶️ Starting the application...")
         # subprocess.run(["uv", "run", "-m", "pytest_gui.ui.tui.app"], check=True)
-
         app = TestRunnerApp()
         app.run()
 
     except subprocess.CalledProcessError as e:
-        print(f"Error launching the application: {e}")
         logger.error(f"Error launching the application: {e}")
         sys.exit(1)

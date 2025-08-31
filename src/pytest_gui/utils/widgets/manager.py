@@ -55,19 +55,22 @@ class WidgetManager:
         logger.debug("Initializing WidgetManager...")
         self.generate()
         self.load_state()
-        logger.info("WidgetManager initialized.")
+        logger.debug("WidgetManager initialized")
 
     def generate(self) -> None:
         """Generate widgets from the provided configuration.
 
         It will generate widgets based on the user configuration and also according to the saved state of the widgets.
         """
+        logger.debug("▶️ Starting to generate widgets...")
         try:
             self.widgets = generate_widgets_from_config(self.config, self.state_path)
             if not self.widgets:
                 logger.warning("No widgets generated from the configuration.")
         except Exception as e:
             logger.error(f"Error generating widgets: {e}", exc_info=True)
+            raise
+        logger.debug("✅ Widgets generated")
 
     def load_state(self) -> None:
         """Load the state of widgets from the state file.
@@ -80,12 +83,13 @@ class WidgetManager:
             For any other errors during loading.
 
         """
+        logger.debug("▶️ Starting to load widgets state...")
         try:
             load_widget_state(self.widgets, self.state_path)
-        except FileNotFoundError:
-            logger.warning(f"Soubor se stavem widgetů '{self.state_path}' nenalezen")
         except Exception as e:
             logger.error(f"Error loading widget state: {e}", exc_info=True)
+            raise
+        logger.debug("✅ Widgets state loaded")
 
     def save_state(self) -> None:
         """Save the current state of widgets to a file.
@@ -100,6 +104,7 @@ class WidgetManager:
             save_widget_state(self.widgets, self.state_path)
         except Exception as e:
             logger.error(f"Error saving widget state: {e}", exc_info=True)
+            raise
 
     def compose(self) -> object:
         """Compose widgets for display or use.

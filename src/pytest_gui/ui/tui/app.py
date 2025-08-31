@@ -1,6 +1,7 @@
 from textual.app import App, ComposeResult
 from textual.widgets import TabbedContent, TabPane
 
+from pytest_gui.logging import logger
 from pytest_gui.ui.tui.pages.performance_view import PerformanceView
 from pytest_gui.ui.tui.pages.terminal_view import TerminalView
 from pytest_gui.ui.tui.pages.tests_view import TestsView
@@ -31,6 +32,6 @@ class TestRunnerApp(App):
         # Uncomment this if you want to have Footer on the page
         # yield Footer()
 
-
-if __name__ == "__main__":
-    TestRunnerApp().run()
+    async def on_ready(self) -> None:
+        """Application is completely up and running."""
+        logger.info("✅ Application successfully started")

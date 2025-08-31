@@ -2,6 +2,8 @@ from textual.containers import Horizontal, Vertical
 from textual.widget import Widget
 from textual.widgets import Button, Input, Select
 
+from pytest_gui.logging import logger
+
 
 class SpecialTestGroup(Vertical):
     """A container widget for managing a dynamic group of test input rows.
@@ -18,21 +20,43 @@ class SpecialTestGroup(Vertical):
 
         """
         super().__init__(classes="special_test_class")
+        logger.debug(f"Widgets len before clonning = '{len(initial_rows)}'")
+
         self.row_template: list[Widget] = (
             self._clone_widgets(initial_rows[0]) if initial_rows else []
         )
         self.original_input = initial_rows
         self.rows: list[Horizontal] = []
 
+        logger.debug(f"Widgets len after clonning = '{len(initial_rows)}'")
+        logger.debug(f"Pointer to widgets = {self.original_input}")
+        logger.debug(f"Row template = {self.row_template}")
+
     async def on_mount(self) -> None:
         """Mounts the initial rows and refreshes the control buttons when the widget is added to the app."""
+        logger.debug("▶️ Mounting specialTestGroup...")
+        logger.debug(f"Widgets len before generating rows = '{len(self.original_input)}'")
+        debug_counter = len(self.original_input)
+
         for widget_row in self.original_input:
-            await self._add_row(widget_row)
+            logger.debug("Adding one row")
+            await self._add_row(widget_row, update_initial=False)
+            debug_counter -= 1
+        self._update_initial_rows()
         await self._refresh_buttons()
+
+        if debug_counter != 0:
+            logger.error("The original widget list was modified when adding rows")
+
+        logger.debug(f"Generated rows = {self.rows}")
+        logger.debug(f"Widgets len after generating rows = '{len(self.original_input)}'")
+        logger.debug("✅ SpecialTestGroup mounted")
 
     async def _add_row(
         self,
         to_clone: list[Widget] | None = None,
+        *,
+        update_initial: bool = True,
     ) -> None:
         widgets = self._clone_widgets(to_clone)
 
@@ -43,7 +67,8 @@ class SpecialTestGroup(Vertical):
         for widget in widgets:
             await row.mount(widget)
 
-        self._update_initial_rows()
+        if update_initial:
+            self._update_initial_rows()
 
     def _clone_widgets(self, widgets: list[Widget]) -> list[Widget]:
         cloned = []
@@ -69,15 +94,9 @@ class SpecialTestGroup(Vertical):
                 )
         return cloned
 
-    async def _remove_row(self, row: Horizontal) -> None:
-        if row in self.rows:
-            self.rows.remove(row)
-            await row.remove()
-            self._update_initial_rows()
-            await self._refresh_buttons()
-
     # TODO: co se stane, kdyz bude vice specialTestGroup? Potom budou kolidovat id ne? Asi potreba zahrnout test name do id
     async def _refresh_buttons(self) -> None:
+        logger.debug("Refreshing buttons (delete and set new)")
         for row in self.rows:
             if row.children and isinstance(row.children[0], Button):
                 await row.children[0].remove()
@@ -102,15 +121,26 @@ class SpecialTestGroup(Vertical):
             return
 
         if btn_id.startswith("add_"):
+            logger.debug("'ADD' button pressed")
             await self._add_row(self.row_template)
             await self._refresh_buttons()
 
         elif btn_id.startswith("remove_"):
+            logger.debug("'REMOVE' button pressed")
             index = int(btn_id.replace("remove_", ""))
             if 0 <= index < len(self.rows):
                 await self._remove_row(self.rows[index])
 
+    async def _remove_row(self, row: Horizontal) -> None:
+        if row in self.rows:
+            self.rows.remove(row)
+            await row.remove()
+            self._update_initial_rows()
+            await self._refresh_buttons()
+
     def _update_initial_rows(self) -> None:
+        logger.debug("Updating initial widgets (clear and set new)")
+        logger.debug(f"Widgets len before = {len(self.original_input)}")
         self.original_input.clear()
 
         for row in self.rows:
@@ -118,3 +148,4 @@ class SpecialTestGroup(Vertical):
                 widget for widget in row.children if isinstance(widget, Input | Select)
             ]
             self.original_input.append(widgets)
+        logger.debug(f"Widgets len after = {len(self.original_input)}")

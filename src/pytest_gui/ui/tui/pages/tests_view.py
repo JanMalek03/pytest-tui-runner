@@ -26,6 +26,7 @@ class TestsView(Vertical):
     def __init__(self) -> None:
         """Initialize the TestsView, loading configuration and setting up the widget manager."""
         super().__init__()
+        logger.debug("▶️ Setuping widgets for tests...")
 
         # Load a user-defined test configuration.
         # Categories, subcategories, tests and their arguments are defined here
@@ -35,14 +36,21 @@ class TestsView(Vertical):
         # It will create widgets according to the config and then load their stored values
         self.widget_manager = WidgetManager(self.config, Paths.state_file())
 
+        logger.debug("✅ Widgets for tests prepared")
+
     async def on_mount(self) -> None:
         """Set up the button handler when the view is mounted."""
+        logger.debug("▶️ Mounting page for tests...")
+
         # Gets a handler for the terminal page, which is stored in the main application.
         # Thanks to this, we will be able to display the progress of the tests in the terminal
         terminal_view: TerminalView = self.app.terminal_view
 
         # ButtonHandler handles all actions associated with pressing buttons
+        logger.debug("Initialize ButtonHandler")
         self.button_handler = ButtonHandler(self.widget_manager.widgets, terminal_view)
+
+        logger.debug("✅ Mounting test page finnished")
 
     def compose(self) -> Iterator[Widget]:
         """Compose the widgets for the tests view, including the scrollable test widgets and control buttons.
@@ -53,6 +61,8 @@ class TestsView(Vertical):
             The scrollable container of test widgets and the horizontal container of control buttons.
 
         """
+        logger.debug("▶️ Composing page for tests...")
+
         # A container that contains all widgets associated with tests
         yield ScrollableContainer(*self.widget_manager.compose())
 
@@ -64,6 +74,8 @@ class TestsView(Vertical):
             Button("Exit", id="exit", classes="button"),
             id="button_container",
         )
+
+        logger.debug("✅ Composing test page finnished")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button press events and trigger corresponding actions.

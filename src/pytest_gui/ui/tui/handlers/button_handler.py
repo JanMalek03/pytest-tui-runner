@@ -50,6 +50,7 @@ class ButtonHandler:
 
         This method schedules the asynchronous test runner to execute in the event loop.
         """
+        logger.debug("'RUN TESTS' button pressed")
         asyncio.create_task(self._run_tests_async())
 
     async def _run_tests_async(self) -> None:
@@ -119,22 +120,3 @@ class ButtonHandler:
         #         for widget in subcategory.values():
         #             if hasattr(widget, "value") and isinstance(widget.value, bool):
         #                 widget.value = False
-
-    def _build_pytest_args(self) -> None:
-        pass
-        # args = []
-        # for category, subcategories in self.widgets.items():
-        #     for subcategory, widgets in subcategories.items():
-        #         for test_name, widget in widgets.items():
-        #             if isinstance(widget.value, bool) and widget.value:
-        #                 flag = self._name_to_flag(test_name)
-        #                 if flag:
-        #                     args.append(flag)
-        #             elif hasattr(widget, "value") and isinstance(widget.value, str):
-        #                 if widget.value:
-        #                     args.append(f"--{test_name}={widget.value}")
-        # return args
-
-    def _name_to_flag(self, name: str) -> str:
-        pass
-        # return f"--run-{name.replace(' ', '_').lower()}"

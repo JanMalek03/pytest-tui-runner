@@ -26,6 +26,7 @@ def find_project_root(start_path: Path | None = None) -> Path:
     for parent in [start_path, *start_path.parents]:
         if (parent / "README.md").is_file():
             return parent
+
     raise RuntimeError("ROOT_DIR not found - missing README.md")
 
 

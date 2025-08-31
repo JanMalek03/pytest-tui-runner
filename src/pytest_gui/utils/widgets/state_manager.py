@@ -10,17 +10,22 @@ from pytest_gui.utils.types.widgets import TestWidgets, WidgetsDict
 
 def load_widget_state(widgets: WidgetsDict, filename: Path) -> None:
     """Retrieve the state of the widgets from the JSON file and set the values for the existing widgets."""
+    logger.debug(f"Loading saved states from '{filename}' file")
     saved: SavedState = read_json_state_file(filename)
 
     for cat, subcats in widgets.items():
         for subcat, tests in subcats.items():
             for test_name, test_widgets in tests.items():
                 saved_value: TestValue = _get_saved_value(saved, cat, subcat, test_name)
+                logger.debug(f"Saved value for test '{test_name}' = {saved_value}")
                 _set_widgets_values(test_widgets, saved_value)
+
+    logger.debug(f"Loaded widgets = {widgets}")
 
 
 def save_widget_state(widgets: WidgetsDict, filename: Path) -> None:
     """Save the state of the widgets from the JSON file."""
+    # TODO: logovani
     saved: SavedState = {}
 
     for cat, subcats in widgets.items():
@@ -36,6 +41,7 @@ def save_widget_state(widgets: WidgetsDict, filename: Path) -> None:
 def read_json_state_file(filename: Path) -> SavedState:
     """Load saved widget states from file and return as a dictionary."""
     if not filename or not filename.is_file():
+        logger.error(f"Configuration file '{filename}' not found")
         return {}
     try:
         with Path.open(filename, encoding="utf-8") as f:
@@ -43,8 +49,8 @@ def read_json_state_file(filename: Path) -> SavedState:
             if not data:
                 logger.warning("No saved state found.")
             return data
-    except Exception as e:
-        logger.error(f"An error occurred while loading saved data: {e}", exc_info=True)
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        logger.error(f"Invalid JSON format in saved state file '{filename}': {e}", exc_info=True)
         return {}
 
 
@@ -69,21 +75,40 @@ def _set_widgets_values(test_widgets: TestWidgets, saved_values: TestValue) -> N
         if saved_values:
             try:
                 test_widgets[0].value = saved_values[0]
-            except Exception as e:
-                logger.error(f"Error setting checkbox value: {e}", exc_info=True)
+            except (TypeError, AttributeError) as e:
+                logger.error(f"Invalid checkbox value type: {e}", exc_info=True)
         return
 
-    # Widget group (for test arguments)
+    if not _test_value_is_test_arguments(test_widgets):
+        logger.error(f"Saved values for widgets have invalid format = {test_widgets}")
+
+    logger.debug(
+        f"Number of instances the arguments found in state file: '{len(saved_values)}'",
+    )
     for i, arguments_widgets in enumerate(test_widgets):
         if i >= len(saved_values):
+            logger.warning("Number of widgets is greater than the number of stored values")
             continue
-        for widget in arguments_widgets:
-            try:
-                value = saved_values[i].get(widget.name)
+
+        saved_entry = saved_values[i]
+        if not isinstance(saved_entry, dict):
+            logger.warning(f"Invalid saved entry format at index {i} (expected dict).")
+            continue
+
+        try:
+            for widget in arguments_widgets:
+                value = saved_entry.get(widget.name)
                 if value:
+                    logger.debug(f"Setting value for widget {widget} = '{value}'")
                     widget.value = value
-            except Exception as e:
-                logger.error(f"Error setting widget value: {e}", exc_info=True)
+                else:
+                    logger.warning(f"No value saved for this widget = {widget}")
+
+        except (TypeError, AttributeError) as e:
+            logger.error(
+                f"Error setting widget '{getattr(widget, 'name', '?')}': {e}",
+                exc_info=True,
+            )
 
 
 def _serialize_test_widgets(widget_group: TestWidgets) -> TestValue:
@@ -104,3 +129,8 @@ def _test_value_is_checkbox(test_widgets: TestWidgets) -> bool:
     """Check if they are widgets for checkbox type test or not."""
     # Widgets for the checkbox type test have only one element in the list, the checkbox widget
     return len(test_widgets) == 1 and isinstance(test_widgets[0], Checkbox)
+
+
+def _test_value_is_test_arguments(test_widgets: TestWidgets) -> bool:
+    """Check if they are widgets for special type test or not."""
+    return len(test_widgets) >= 1 and isinstance(test_widgets[0], list)
