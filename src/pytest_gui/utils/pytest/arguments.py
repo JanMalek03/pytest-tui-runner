@@ -2,6 +2,7 @@ from textual.widget import Widget
 from textual.widgets import Checkbox
 
 from pytest_gui.logging import logger
+from pytest_gui.paths import Paths
 from pytest_gui.utils.pytest.encoding import encode_variants
 from pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
 
@@ -33,6 +34,12 @@ def build_pytest_arguments(widgets: dict, pytest_init_path: str = "") -> list[st
 
     # Additional arguments for pytest
     args += ["-s"]  # -s for capturing output
+
+    # Additional arguments for saving the pytest result to a json file
+    args += [
+        "--json-report",  # Plugin activation
+        f"--json-report-file={Paths.pytest_report()}",  # Path where the results are saved
+    ]
 
     logger.debug(f"Arguments to run pytest = {args}")
 
