@@ -29,8 +29,9 @@ def run(project_path: str | None) -> None:
                 sys.exit(1)
             Paths.set_user_root(root)
 
-        setup_logger()
+        setup_logger(clear_log_file=True)
         logger.info("=============================== NEW RECORD ===============================")
+        logger.debug("---------------------- APPLICATION PREPARATION ----------------------")
         logger.info(f"Path to user's project found: '{root}'")
 
         logger.info("▶️ Starting the application...")

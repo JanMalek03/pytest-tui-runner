@@ -35,3 +35,4 @@ class TestRunnerApp(App):
     async def on_ready(self) -> None:
         """Application is completely up and running."""
         logger.info("✅ Application successfully started")
+        logger.debug("---------------------- APPLICATION PREPARATION ----------------------")

@@ -50,15 +50,21 @@ class ButtonHandler:
 
         This method schedules the asynchronous test runner to execute in the event loop.
         """
+        logger.debug("------------------------- COMMAND EXECUTING -------------------------")
         logger.debug("'RUN TESTS' button pressed")
+        logger.info("------------- Executing the tests -------------")
         asyncio.create_task(self._run_tests_async())
 
     async def _run_tests_async(self) -> None:
         if not self._validate_test_path(Paths.user_root()):
             return
 
+        logger.debug("▶️ Building command to run tests...")
         args: list[str] = self._build_test_command()
+        logger.debug("✅ Command built")
 
+        logger.debug("Executing command")
+        logger.debug("------------------------- COMMAND EXECUTING -------------------------")
         await self._execute_test_process(args, cwd=Paths.user_root())
 
     def _validate_test_path(self, path: Path) -> bool:
@@ -75,7 +81,6 @@ class ButtonHandler:
 
     async def _execute_test_process(self, args: list[str], cwd: Path) -> None:
         """Run a subprocess for tests and stream output to terminal."""
-        logger.info(f"Running tests in {cwd}")
         self.terminal_view.write_line("Running tests...\n")
 
         process: Process = await asyncio.create_subprocess_exec(
@@ -89,6 +94,7 @@ class ButtonHandler:
         if not process.stdout:
             raise RuntimeError("Process stdout is not available.")
 
+        logger.debug("Starting to write output to terminal")
         await self._stream_process_output(process)
         await process.wait()
         self.terminal_view.write_line("\nTests finished.")

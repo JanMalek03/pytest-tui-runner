@@ -34,10 +34,15 @@ def build_pytest_arguments(widgets: dict, pytest_init_path: str = "") -> list[st
     # Additional arguments for pytest
     args += ["-s"]  # -s for capturing output
 
-    # Add widget-derived arguments
-    args.extend(extract_widget_arguments(widgets))
+    logger.debug(f"Arguments to run pytest = {args}")
 
-    logger.info(f"Built pytest arguments: {args}")
+    # Add widget-derived arguments
+    pytest_arguments = extract_widget_arguments(widgets)
+    logger.debug(f"Pytest arguments = {pytest_arguments}")
+    args.extend(pytest_arguments)
+
+    # TODO: vypsat realny prikaz na spusteni a ne seznam argumentu
+    logger.info(f"Command to start the tests = {args}")
     return args
 
 
@@ -51,12 +56,18 @@ def extract_widget_arguments(widgets: WidgetsDict) -> list[str]:
                 if isinstance(widget_list[0], list):
                     arg: str | None = widget_to_argument(test_name, widget_list)
                     if arg:
+                        logger.debug(f"Converted special test '{test_name}' to '{arg}'")
                         args.append(arg)
+                    else:
+                        logger.debug(f"Test '{test_name}' has no set arguments")
                 else:
                     for widget in widget_list:
                         arg: str | None = widget_to_argument(test_name, widget)
                         if arg:
+                            logger.debug(f"Converted basic test '{test_name}' to '{arg}'")
                             args.append(arg)
+                        else:
+                            logger.debug(f"Test '{test_name}' not selected")
     return args
 
 
@@ -67,7 +78,9 @@ def widget_to_argument(test_name: str, widgets: Widget | list[TestArguments]) ->
         return format_test_flag(str(widgets.label))
 
     if isinstance(widgets, list) and widgets:
+        logger.debug("▶️ Encoding special test...")
         variant_strings: str = encode_variants(test_name, widgets)
+        logger.debug("✅ Special test encoded")
         if variant_strings is not None:
             return f"{format_test_flag(test_name)}=" + variant_strings
 

@@ -1,6 +1,5 @@
 from urllib.parse import quote, unquote
 
-from textual.widget import Widget
 from textual.widgets import Select
 
 from pytest_gui.logging import logger
@@ -21,32 +20,31 @@ def encode_variants(test_name: str, variants: list[TestArguments]) -> str | None
     """
     encoded_variants: list[str] = []
     had_any_value = False
-    missing_value = False
-    last_missing_widget: Widget | None = None
 
-    for widget_list in variants:
+    for i, widget_list in enumerate(variants):
+        logger.debug(f"Processing '{i}' variant of the arguments")
         parts: list[str] = []
         for widget in widget_list:
             if hasattr(widget, "name") and hasattr(widget, "value"):
                 if widget.value in (None, "", Select.BLANK):
-                    missing_value = True
-                    last_missing_widget = widget
+                    logger.debug(f"Missing value for widget = {widget}")
                     continue
                 had_any_value = True
                 name: str = quote(str(widget.name), safe="")
                 value: str = quote(str(widget.value), safe="")
                 parts.append(f"{name}{KV_SEP}{value}")
-        if parts:
+
+        logger.debug(f"Processed variant of the arguments = {parts}")
+        if parts and len(parts) == len(widget_list):
             encoded_variants.append(PAIR_SEP.join(parts))
+        else:
+            logger.debug("WARNING: This variant will be skipped because some argument is missing")
 
     if not had_any_value:
+        logger.debug(f"Test '{test_name}' has no arguments set, so it will be skipped")
         return None
 
-    if missing_value:
-        logger.debug(f"Value for widget '{last_missing_widget.name}' is not set.")
-        logger.warning(f"Skipping test '{test_name}'")
-        return None
-
+    logger.debug(f"Final variants of the arguments = {encoded_variants}")
     return VARIANT_SEP.join(encoded_variants)
 
 
