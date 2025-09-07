@@ -8,6 +8,7 @@ from pytest_gui.paths import Paths
 from pytest_gui.ui.tui.pages.terminal_view import TerminalView
 from pytest_gui.utils.pytest.arguments import build_pytest_arguments
 from pytest_gui.utils.types.widgets import WidgetsDict
+from pytest_gui.utils.widgets.test_runner import mark_widgets_from_report, mark_widgets_running
 
 
 class ButtonHandler:
@@ -81,6 +82,10 @@ class ButtonHandler:
 
     async def _execute_test_process(self, args: list[str], cwd: Path) -> None:
         """Run a subprocess for tests and stream output to terminal."""
+        logger.debug("▶️ Marking widgets as running...")
+        mark_widgets_running(self.widgets)
+        logger.debug("✅ Widgets marked")
+
         self.terminal_view.write_line("Running tests...\n")
 
         process: Process = await asyncio.create_subprocess_exec(
@@ -97,7 +102,12 @@ class ButtonHandler:
         logger.debug("Starting to write output to terminal")
         await self._stream_process_output(process)
         await process.wait()
+
         self.terminal_view.write_line("\nTests finished.")
+
+        logger.debug("▶️ Marking widgets according to the result...")
+        mark_widgets_from_report(self.widgets, Paths.pytest_report())
+        logger.debug("✅ Widgets marked")
 
     async def _stream_process_output(self, process: Process) -> None:
         """Stream process stdout to terminal line by line."""

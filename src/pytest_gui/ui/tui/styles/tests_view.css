@@ -47,3 +47,19 @@ Input, Select {
     width: auto;
     height: auto;
 }
+
+.running {
+    background: rgb(47, 87, 152)
+}
+
+.failed {
+    background: rgb(181, 59, 59);
+}
+
+.passed {
+    background: rgb(36, 109, 36);
+}
+
+.skipped {
+    background: yellow;
+}
