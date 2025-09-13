@@ -10,6 +10,8 @@ from pytest_gui.utils.pytest.arguments import format_test_flag
 from pytest_gui.utils.pytest.encoding import decode_variants
 from pytest_gui.utils.types.config import Test, TestConfig
 
+IGNORED_MARKERS = {"skip", "xfail"}
+
 
 def pytest_addoption(parser: Parser) -> None:
     # After running the test as a new process, it is necessary to set up the logger again.
@@ -48,7 +50,11 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
     logger.debug(f"▶️ GENERATE TESTS hook for '{(test_name)}' test")
 
     config_data: TestConfig = load_config(Paths.config())
-    marker_names: set[str] = {marker.name for marker in metafunc.definition.iter_markers()}
+    marker_names: set[str] = {
+        marker.name
+        for marker in metafunc.definition.iter_markers()
+        if marker.name not in IGNORED_MARKERS
+    }
 
     try:
         for test_def in iter_tests(config_data):
@@ -56,6 +62,7 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
                 continue
 
             actual_markers = set(test_def.get("markers", []))
+
             if actual_markers != marker_names:
                 logger.debug(f"This test has no expected marks ({test_def['name']})")
                 logger.debug(f"Expected = {actual_markers}")
@@ -117,7 +124,8 @@ def pytest_collection_modifyitems(config, items) -> None:
     logger.debug("▶️ Filtering tests...")
     filtered_items = []
     for item in items:
-        item_marks = frozenset(m.name for m in item.iter_markers())
+        item_marks = frozenset(m.name for m in item.iter_markers() if m.name not in IGNORED_MARKERS)
+
         if item_marks in enabled_marker_sets:
             logger.debug(f"Required marks found ({item_marks}), leaving the test")
             filtered_items.append(item)
