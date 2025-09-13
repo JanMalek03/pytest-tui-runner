@@ -5,6 +5,7 @@ from pytest_gui.logging import logger
 from pytest_gui.paths import Paths
 from pytest_gui.utils.pytest.encoding import encode_variants
 from pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
+from pytest_gui.utils.widgets.test_runner import mark_widget_running
 
 
 def build_pytest_arguments(widgets: dict, pytest_init_path: str = "") -> list[str]:
@@ -73,6 +74,9 @@ def extract_widget_arguments(widgets: WidgetsDict) -> list[str]:
                         if arg:
                             logger.debug(f"Converted basic test '{test_name}' to '{arg}'")
                             args.append(arg)
+
+                            logger.debug(f"Marking widget as running: {widget}")
+                            mark_widget_running(widget)
                         else:
                             logger.debug(f"Test '{test_name}' not selected")
     return args

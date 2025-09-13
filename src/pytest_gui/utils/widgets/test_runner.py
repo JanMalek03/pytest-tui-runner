@@ -21,6 +21,15 @@ class TestResult:
     args: dict[str, str] | None = None
 
 
+def mark_widget_running(widget: Widget) -> None:
+    widget.add_class("running")
+
+
+def mark_widget_list_running(widget_list: list[Widget]) -> None:
+    for widget in widget_list:
+        mark_widget_running(widget)
+
+
 def mark_widgets_running(widgets: WidgetsDict) -> None:
     """Označí všechny widgety jako 'běžící' (např. modře)."""
     for category in widgets.values():

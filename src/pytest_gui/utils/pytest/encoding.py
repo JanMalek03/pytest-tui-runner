@@ -4,6 +4,7 @@ from textual.widgets import Select
 
 from pytest_gui.logging import logger
 from pytest_gui.utils.types.widgets import TestArguments
+from pytest_gui.utils.widgets.test_runner import mark_widget_list_running
 
 VARIANT_SEP = ";"
 PAIR_SEP = ","
@@ -37,6 +38,8 @@ def encode_variants(test_name: str, variants: list[TestArguments]) -> str | None
         logger.debug(f"Processed variant of the arguments = {parts}")
         if parts and len(parts) == len(widget_list):
             encoded_variants.append(PAIR_SEP.join(parts))
+            logger.debug("Marking this variant as running")
+            mark_widget_list_running(widget_list)
         else:
             logger.debug("WARNING: This variant will be skipped because some argument is missing")
 
