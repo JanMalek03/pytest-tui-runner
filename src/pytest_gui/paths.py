@@ -34,7 +34,7 @@ def find_project_root_by_tests(start: Path) -> Path | None:
     current = start.resolve()
     for parent in [current] + list(current.parents):
         # TODO: mozna pridat vice moznosti, treba tests or README, nebo tak
-        if (parent / "tests").is_dir():
+        if (parent / "pytest_gui").is_dir():
             return parent
     return None
 
