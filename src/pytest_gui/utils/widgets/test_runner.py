@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from textual.widget import Widget
+from textual.widgets import Label
 
 from pytest_gui.config import load_config
 from pytest_gui.logging import logger
@@ -171,11 +172,45 @@ def get_widget_by_test_name(widgets: WidgetsDict, test_name: str, test_result: T
                     and isinstance(widget_list[0], list)
                 ):
                     for inner_list in widget_list:
-                        for widget in inner_list:
-                            if getattr(widget, "test_name", None) == test_name:
-                                logger.debug(f"Processing widget for test '{test_name}'")
-                    #             process_widget(widget, {widget.test_nodeid: test_result.outcome})
+                        # TODO: inner_list muze byt jen widget
+                        widget_sample = inner_list[0]
+                        label = get_label_of_special_test_widget(widget_sample)
+                        if label != test_name:
+                            continue
+
+                        parsed_args = parse_result_arg_values(test_result.args)
+                        if args_match_widget_values(parsed_args, inner_list):
+                            for widget in inner_list:
+                                process_widget(widget, test_result)
                 else:
                     for widget in widget_list:
                         if getattr(widget, "label", None) == test_name:
                             process_widget(widget, test_result)
+                            return
+
+
+def get_label_of_special_test_widget(widget: Widget) -> str | None:
+    subcategory_content = widget.parent.parent.parent
+
+    for w in subcategory_content.children:
+        if isinstance(w, Label):
+            return w.renderable
+
+    logger.error(f"Label not found for special test widget {widget}.")
+    return None
+
+
+def parse_result_arg_values(args: str) -> list[str]:
+    if not args:
+        logger.error("No args to parse.")
+        return []
+
+    return [arg.strip() for arg in args.split("-")]
+
+
+def args_match_widget_values(args: list[str], widgets: list[Widget]) -> bool:
+    for i, widget in enumerate(widgets):
+        if args[i] != widget.value:
+            return False
+
+    return True
