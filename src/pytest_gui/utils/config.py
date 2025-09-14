@@ -15,6 +15,7 @@ def iter_tests(config_data: TestConfig) -> Iterator[Test]:
 
 
 def get_test_name_by_test_result(result: TestResult) -> str | None:
+    """Find the test name corresponding to the given TestResult based on its markers."""
     config_data: TestConfig = load_config(Paths.config())
     logger.debug(f"Searching: {result.markers}")
 

@@ -7,12 +7,15 @@ IGNORED_MARKERS = {"skip", "xfail"}
 
 @dataclass
 class TestResult:
+    """Represents the result of a test with its markers and outcome."""
+
     markers: list[str]
     outcome: str
     args: dict[str, str] | None = None
 
 
 def extract_marks_with_results(report) -> list[TestResult]:
+    """Extract test results and their markers from a pytest JSON report."""
     tests_results: list[TestResult] = []
 
     tests = report.get("tests", [])
