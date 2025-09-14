@@ -4,7 +4,7 @@ from textual.widgets import Select
 
 from pytest_gui.logging import logger
 from pytest_gui.utils.types.widgets import TestArguments
-from pytest_gui.utils.widgets.test_runner import mark_widget_list_running
+from pytest_gui.utils.widgets.marking import mark_widget_list_running
 
 VARIANT_SEP = ";"
 PAIR_SEP = ","

@@ -5,7 +5,7 @@ from pytest_gui.logging import logger
 from pytest_gui.paths import Paths
 from pytest_gui.utils.pytest.encoding import encode_variants
 from pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
-from pytest_gui.utils.widgets.test_runner import mark_widget_running
+from pytest_gui.utils.widgets.marking import mark_widget_running
 
 
 def build_pytest_arguments(widgets: dict, pytest_init_path: str = "") -> list[str]:

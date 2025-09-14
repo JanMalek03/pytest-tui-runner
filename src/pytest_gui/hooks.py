@@ -1,16 +1,14 @@
-from collections.abc import Iterator
-
 from _pytest.config.argparsing import Parser
 from _pytest.python import Metafunc
 
 from pytest_gui.config import load_config
 from pytest_gui.logging import logger, setup_logger
 from pytest_gui.paths import Paths
+from pytest_gui.utils.config import iter_tests
 from pytest_gui.utils.pytest.arguments import format_test_flag
 from pytest_gui.utils.pytest.encoding import decode_variants
-from pytest_gui.utils.types.config import Test, TestConfig
-
-IGNORED_MARKERS = {"skip", "xfail"}
+from pytest_gui.utils.test_results import IGNORED_MARKERS
+from pytest_gui.utils.types.config import TestConfig
 
 
 def pytest_addoption(parser: Parser) -> None:
@@ -141,10 +139,3 @@ def pytest_collection_modifyitems(config, items) -> None:
 
     # This is the last function to run when preparing the test, hence this log
     logger.debug("---------------------------- PYTEST HOOKS ----------------------------")
-
-
-def iter_tests(config_data: TestConfig) -> Iterator[Test]:
-    """Yield all test definitions from config."""
-    for category in config_data.get("categories", []):
-        for subcat in category.get("subcategories", []):
-            yield from subcat.get("tests", [])

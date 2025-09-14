@@ -8,7 +8,7 @@ from pytest_gui.paths import Paths
 from pytest_gui.ui.tui.pages.terminal_view import TerminalView
 from pytest_gui.utils.pytest.arguments import build_pytest_arguments
 from pytest_gui.utils.types.widgets import WidgetsDict
-from pytest_gui.utils.widgets.test_runner import mark_widgets_from_report, reset_widgets_style
+from pytest_gui.utils.widgets.marking import mark_widgets_from_report, reset_widgets_style
 
 
 class ButtonHandler:
