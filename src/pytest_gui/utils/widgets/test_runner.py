@@ -62,9 +62,15 @@ def reset_widgets_style(widgets: WidgetsDict) -> None:
                     for inner_list in widget_list:
                         for widget in inner_list:
                             widget.remove_class("running")
+                            widget.remove_class("passed")
+                            widget.remove_class("failed")
+                            widget.remove_class("skipped")
                 else:
                     for widget in widget_list:
                         widget.remove_class("running")
+                        widget.remove_class("passed")
+                        widget.remove_class("failed")
+                        widget.remove_class("skipped")
 
 
 def mark_widgets_from_report(widgets: WidgetsDict, report_path: Path) -> None:

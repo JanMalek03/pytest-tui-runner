@@ -8,7 +8,7 @@ from pytest_gui.paths import Paths
 from pytest_gui.ui.tui.pages.terminal_view import TerminalView
 from pytest_gui.utils.pytest.arguments import build_pytest_arguments
 from pytest_gui.utils.types.widgets import WidgetsDict
-from pytest_gui.utils.widgets.test_runner import mark_widgets_from_report
+from pytest_gui.utils.widgets.test_runner import mark_widgets_from_report, reset_widgets_style
 
 
 class ButtonHandler:
@@ -51,6 +51,9 @@ class ButtonHandler:
 
         This method schedules the asynchronous test runner to execute in the event loop.
         """
+        logger.debug("Resetting widget styles")
+        reset_widgets_style(self.widgets)
+
         logger.debug("------------------------- COMMAND EXECUTING -------------------------")
         logger.debug("'RUN TESTS' button pressed")
         logger.info("------------- Executing the tests -------------")
