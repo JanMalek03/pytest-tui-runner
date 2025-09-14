@@ -48,7 +48,11 @@ class TestsView(Vertical):
 
         # ButtonHandler handles all actions associated with pressing buttons
         logger.debug("Initialize ButtonHandler")
-        self.button_handler = ButtonHandler(self.widget_manager.widgets, terminal_view)
+        self.button_handler = ButtonHandler(
+            self.widget_manager.widgets,
+            self.buttons,
+            terminal_view,
+        )
 
         logger.debug("✅ Mounting test page finnished")
 
@@ -66,14 +70,15 @@ class TestsView(Vertical):
         # A container that contains all widgets associated with tests
         yield ScrollableContainer(*self.widget_manager.compose())
 
-        # A container that contains all the additional buttons for controlling the test
-        yield Horizontal(
+        self.buttons: list[Button] = [
             Button("Run tests", id="run_tests", classes="button"),
             Button("Check all", id="check_all", classes="button"),
             Button("Uncheck all", id="uncheck_all", classes="button"),
             Button("Exit", id="exit", classes="button"),
-            id="button_container",
-        )
+        ]
+
+        # A container that contains all the additional buttons for controlling the test
+        yield Horizontal(*self.buttons, id="button_container")
 
         logger.debug("✅ Composing test page finnished")
 

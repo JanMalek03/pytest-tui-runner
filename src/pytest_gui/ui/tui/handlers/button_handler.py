@@ -3,11 +3,17 @@ import os
 from asyncio.subprocess import Process
 from pathlib import Path
 
+from textual.widgets import Button
+
 from pytest_gui.logging import logger
 from pytest_gui.paths import Paths
 from pytest_gui.ui.tui.pages.terminal_view import TerminalView
 from pytest_gui.utils.pytest.arguments import build_pytest_arguments
 from pytest_gui.utils.types.widgets import WidgetsDict
+from pytest_gui.utils.widgets.buttons import (
+    disable_buttons_after_test_runs,
+    enable_buttons_after_test_finnished,
+)
 from pytest_gui.utils.widgets.marking import mark_widgets_from_report, reset_widgets_style
 
 
@@ -32,7 +38,12 @@ class ButtonHandler:
 
     """
 
-    def __init__(self, widgets: WidgetsDict, terminal_view: TerminalView) -> None:
+    def __init__(
+        self,
+        widgets: WidgetsDict,
+        buttons: list[Button],
+        terminal_view: TerminalView,
+    ) -> None:
         """Initialize ButtonHandler with widgets and terminal view.
 
         Parameters
@@ -44,6 +55,7 @@ class ButtonHandler:
 
         """
         self.widgets: WidgetsDict = widgets
+        self.buttons: list[Button] = buttons
         self.terminal_view: TerminalView = terminal_view
 
     def run_tests(self) -> None:
@@ -87,6 +99,9 @@ class ButtonHandler:
         """Run a subprocess for tests and stream output to terminal."""
         self.terminal_view.write_line("Running tests...\n")
 
+        logger.debug("Disabling buttons during test run")
+        await disable_buttons_after_test_runs(self.buttons)
+
         process: Process = await asyncio.create_subprocess_exec(
             *args,
             env={**os.environ, "PYTEST_GUI_ROOT": str(Paths.user_root())},
@@ -100,9 +115,12 @@ class ButtonHandler:
 
         logger.debug("Starting to write output to terminal")
         await self._stream_process_output(process)
-        await process.wait()
 
+        await process.wait()
         self.terminal_view.write_line("\nTests finished.")
+
+        logger.debug("Enabling buttons after test run")
+        await enable_buttons_after_test_finnished(self.buttons)
 
         logger.debug("▶️ Marking widgets according to the result...")
         mark_widgets_from_report(self.widgets, Paths.pytest_report())
