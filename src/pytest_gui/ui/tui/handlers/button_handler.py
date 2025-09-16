@@ -122,9 +122,11 @@ class ButtonHandler:
         logger.debug("Enabling buttons after test run")
         await enable_buttons_after_test_finnished(self.buttons)
 
+        logger.debug("------------------------- RESULTS EVALUATION -------------------------")
         logger.debug("▶️ Marking widgets according to the result...")
         mark_widgets_from_report(self.widgets, Paths.pytest_report())
         logger.debug("✅ Widgets marked")
+        logger.debug("------------------------- RESULTS EVALUATION -------------------------")
 
     async def _stream_process_output(self, process: Process) -> None:
         """Stream process stdout to terminal line by line."""

@@ -48,26 +48,14 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
     logger.debug(f"▶️ GENERATE TESTS hook for '{(test_name)}' test")
 
     config_data: TestConfig = load_config(Paths.config())
-    marker_names: set[str] = {
-        marker.name
-        for marker in metafunc.definition.iter_markers()
-        if marker.name not in IGNORED_MARKERS
-    }
 
     try:
         for test_def in iter_tests(config_data):
             if test_def["type"] != "special":
                 continue
 
-            actual_markers = set(test_def.get("markers", []))
-
-            if actual_markers != marker_names:
-                logger.debug(f"This test has no expected marks ({test_def['name']})")
-                logger.debug(f"Expected = {actual_markers}")
-                logger.debug(f"Have = {marker_names}")
+            if not compare_test(metafunc, test_def):
                 continue
-
-            logger.debug(f"'EXPECTED MARKS FOUND' = {marker_names}")
 
             option_name = format_test_flag(test_def["name"])
             raw_value = metafunc.config.getoption(option_name)
@@ -102,6 +90,7 @@ def pytest_collection_modifyitems(config, items) -> None:
 
     # Go through the options given by pytest so we know which tests to run
     enabled_marker_sets: list = []
+    enabled_tests_names: list = []
     for test_def in iter_tests(config_data):
         logger.debug(f"Checking test '{test_def['name']}' if it has been selected")
 
@@ -109,28 +98,41 @@ def pytest_collection_modifyitems(config, items) -> None:
         opt_value = config.getoption(option_name)
         if opt_value:
             logger.debug(f"Pytest argument found = '{opt_value}'")
-            marks = frozenset(test_def["markers"])
-            logger.debug(f"Adding marks to the list = {marks}")
-            enabled_marker_sets.append(marks)
+
+            if "markers" in test_def:
+                marks = frozenset(test_def["markers"])
+                logger.debug(f"Adding marks to the list = {marks}")
+                enabled_marker_sets.append(marks)
+            elif "test_name" in test_def:
+                enabled_tests_names.append(test_def["test_name"])
+            else:
+                logger.error("Test definition has neither 'markers' nor 'test_name' field")
         else:
             logger.debug("No pytest argument was specified for this test.")
             logger.debug("'Skipping'")
 
     logger.debug(f"List of wanted marks = {enabled_marker_sets}")
+    logger.debug(f"List of wanted tests names = {enabled_tests_names}")
 
     # Keep only selected tests
     logger.debug("▶️ Filtering tests...")
     filtered_items = []
     for item in items:
+        test_name = item.name.split("[")[0]
         item_marks = frozenset(m.name for m in item.iter_markers() if m.name not in IGNORED_MARKERS)
 
         if item_marks in enabled_marker_sets:
-            logger.debug(f"Required marks found ({item_marks}), leaving the test")
+            logger.debug(f"Required marks found ({item_marks}), leaving the test '{test_name}'")
+            filtered_items.append(item)
+        elif test_name in enabled_tests_names:
+            logger.debug(f"Test name found ({test_name}), leaving the test '{test_name}'")
             filtered_items.append(item)
         else:
-            logger.debug("Test skipped")
+            logger.debug("TEST SKIPPED")
             logger.debug(f"Expected marks = {sorted(map(list, enabled_marker_sets))}")
             logger.debug(f"Have = {sorted(item_marks)}")
+            logger.debug(f"Expected test name = {enabled_tests_names}")
+            logger.debug(f"Have = {test_name}")
     items[:] = filtered_items
     logger.debug("✅ Tests filtered")
 
@@ -139,3 +141,43 @@ def pytest_collection_modifyitems(config, items) -> None:
 
     # This is the last function to run when preparing the test, hence this log
     logger.debug("---------------------------- PYTEST HOOKS ----------------------------")
+
+
+def compare_test(metafunc: Metafunc, test) -> bool:
+    if "markers" in test:
+        logger.debug("Found 'markers' argument in test definition")
+
+        metafunc_markers: set[str] = {
+            marker.name
+            for marker in metafunc.definition.iter_markers()
+            if marker.name not in IGNORED_MARKERS
+        }
+
+        test_markers = set(test.get("markers", []))
+
+        if test_markers != metafunc_markers:
+            logger.debug(f"This test has no expected 'marks' ({test['name']})")
+            logger.debug(f"Expected = {test_markers}")
+            logger.debug(f"Have = {metafunc_markers}")
+            return False
+
+        logger.debug(f"'EXPECTED MARKS FOUND' = {metafunc_markers}")
+        return True
+
+    if "test_name" in test:
+        logger.debug("Found 'test_name' argument in test definition")
+
+        metafunc_test_name = metafunc.function.__name__
+        test_name = test["test_name"]
+
+        if metafunc_test_name != test_name:
+            logger.debug("This test has no expected 'test name'")
+            logger.debug(f"Expected = {test_name}")
+            logger.debug(f"Have = {metafunc_test_name}")
+            return False
+
+        logger.debug(f"'EXPECTED TEST NAME FOUND' = {metafunc_test_name}")
+        return True
+
+    logger.error("Test definition has neither 'markers' nor 'test_name' field")
+    return False

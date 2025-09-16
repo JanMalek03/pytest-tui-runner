@@ -2,11 +2,12 @@ import json
 from pathlib import Path
 
 from textual.widget import Widget
-from textual.widgets import Label
 
 from pytest_gui.logging import logger
-from pytest_gui.utils.config import get_test_name_by_test_result
-from pytest_gui.utils.test_results import TestResult, extract_marks_with_results
+from pytest_gui.utils.config import (
+    get_test_result,
+)
+from pytest_gui.utils.test_results import TestResult, extract_tests_results
 from pytest_gui.utils.types.widgets import WidgetsDict
 
 
@@ -28,54 +29,27 @@ def reset_widgets_style(widgets: WidgetsDict) -> None:
 
 def mark_widgets_from_report(widgets: WidgetsDict, report_path: Path) -> None:
     """Update widget styles based on pytest JSON report outcomes."""
+    logger.debug("Loading report to mark widgets")
     if not report_path.exists():
         raise FileNotFoundError(f"Report file not found: {report_path}")
 
     with Path.open(report_path, encoding="utf-8") as f:
         report = json.load(f)
 
-    test_results = extract_marks_with_results(report)
-
-    for test_result in test_results:
-        test_name = get_test_name_by_test_result(test_result)
-        if not test_name:
-            continue
-
-        mark_widgets_based_on_test_result(widgets, test_name, test_result)
-
-
-def mark_widgets_based_on_test_result(
-    widgets: WidgetsDict,
-    test_name: str,
-    test_result: TestResult,
-) -> None:
-    """Find and process the widget corresponding to the given test name and result."""
-    logger.debug(f"Looking for widget with test name '{test_name}'")
+    logger.debug("▶️ Extracting test results from report...")
+    test_results: list[TestResult] = extract_tests_results(report)
+    logger.debug("✅ Test results extracted")
 
     for category in widgets.values():
         for subcategory in category.values():
             for widget_list in subcategory.values():
-                if (
-                    isinstance(widget_list, list)
-                    and widget_list
-                    and isinstance(widget_list[0], list)
-                ):
-                    for inner_list in widget_list:
-                        # TODO: inner_list muze byt jen widget
-                        widget_sample = inner_list[0]
-                        label = get_label_of_special_test_widget(widget_sample)
-                        if label != test_name:
-                            continue
+                for test in widget_list:
+                    test_result = get_test_result(test, test_results)
 
-                        parsed_args = parse_result_arg_values(test_result.args)
-                        if args_match_widget_values(parsed_args, inner_list):
-                            for widget in inner_list:
-                                process_widget(widget, test_result)
-                else:
-                    for widget in widget_list:
-                        if getattr(widget, "label", None) == test_name:
-                            process_widget(widget, test_result)
-                            return
+                    if not test_result:
+                        logger.debug("Widget does not have test result")
+                    else:
+                        process_widgets(test, test_result)
 
 
 def mark_widget_running(widget: Widget) -> None:
@@ -91,11 +65,20 @@ def mark_widget_list_running(widget_list: list[Widget]) -> None:
 
 def reset_widget_list(widgets: list[Widget]) -> None:
     """Remove all marks from widgets."""
+    logger.debug(f"Resetting widget styles {widgets}")
     for widget in widgets:
         widget.remove_class("running")
         widget.remove_class("passed")
         widget.remove_class("failed")
         widget.remove_class("skipped")
+
+
+def process_widgets(widgets: Widget | list[Widget], test_result: TestResult) -> None:
+    if isinstance(widgets, list):
+        for widget in widgets:
+            process_widget(widget, test_result)
+    else:
+        process_widget(widgets, test_result)
 
 
 def process_widget(widget: Widget, test_result: TestResult) -> None:
@@ -112,17 +95,7 @@ def process_widget(widget: Widget, test_result: TestResult) -> None:
         widget.remove_class("failed")
         widget.remove_class("skipped")
 
-
-def get_label_of_special_test_widget(widget: Widget) -> str | None:
-    """Get the label text of a special test widget."""
-    subcategory_content = widget.parent.parent.parent
-
-    for w in subcategory_content.children:
-        if isinstance(w, Label):
-            return w.renderable
-
-    logger.error(f"Label not found for special test widget {widget}.")
-    return None
+    # TODO: muze byt outcome i error pry
 
 
 def parse_result_arg_values(args: str) -> list[str]:
