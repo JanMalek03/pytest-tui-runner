@@ -31,6 +31,7 @@ def mark_widgets_from_report(widgets: WidgetsDict, report_path: Path) -> None:
     """Update widget styles based on pytest JSON report outcomes."""
     logger.debug("Loading report to mark widgets")
     if not report_path.exists():
+        logger.error(f"Report file not found: {report_path}")
         raise FileNotFoundError(f"Report file not found: {report_path}")
 
     with Path.open(report_path, encoding="utf-8") as f:
@@ -44,7 +45,9 @@ def mark_widgets_from_report(widgets: WidgetsDict, report_path: Path) -> None:
         for subcategory in category.values():
             for widget_list in subcategory.values():
                 for test in widget_list:
+                    logger.debug(f"▶️ Getting result for test {test}...")
                     test_result = get_test_result(test, test_results)
+                    logger.debug(f"✅ Result = {test_result}")
 
                     if not test_result:
                         logger.debug("Widget does not have test result")
@@ -74,6 +77,7 @@ def reset_widget_list(widgets: list[Widget]) -> None:
 
 
 def process_widgets(widgets: Widget | list[Widget], test_result: TestResult) -> None:
+    """Update widget styles based on test result."""
     if isinstance(widgets, list):
         for widget in widgets:
             process_widget(widget, test_result)

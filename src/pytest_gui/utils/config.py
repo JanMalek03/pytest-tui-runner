@@ -22,6 +22,7 @@ def get_test_result(
     test: Widget | TestArguments,
     test_results: list[TestResult],
 ) -> TestResult | None:
+    """Get the test result corresponding to the given widget or test arguments."""
     config_data: TestConfig = load_config(Paths.config())
 
     markers = None
@@ -41,12 +42,10 @@ def get_test_result(
             if result.args:
                 args = parse_result_arg_values(result.args)
                 if not args_match_widget_values(args, test):
-                    logger.debug("Found test result, bud args values dont match")
+                    logger.debug("Found test result, but args values dont match")
                     continue
             logger.debug(f"Found test result based on 'test_name' ({result})")
             return result
-
-        logger.debug(f"Neither markers nor test_name fits ({result})")
 
     logger.debug("Didn't found any test result for widget")
     return None
@@ -67,15 +66,17 @@ def args_match_widget_values(args: list[str], widgets: list[Widget]) -> bool:
 
 
 def get_test_markers_and_test_name(test_label: str, config_data: TestConfig):
+    """Get markers or test name for a given test label from config."""
+    logger.debug(f"Getting markers or test name for test label '{test_label}'")
     for test_def in iter_tests(config_data):
         if test_def["name"] == test_label:
             if "markers" in test_def:
-                logger.debug(f"Markers for widget: {test_def['markers']}")
-                logger.debug(f"Test name for widget: {None}")
+                logger.debug(f"MARKERS for widget: {test_def['markers']}")
+                logger.debug(f"TEST NAME for widget: {None}")
                 return test_def["markers"], None
             if "test_name" in test_def:
-                logger.debug(f"Markers for widget: {None}")
-                logger.debug(f"Test name for widget: {test_def['test_name']}")
+                logger.debug(f"MARKERS for widget: {None}")
+                logger.debug(f"TEST NAME for widget: {test_def['test_name']}")
                 return None, test_def["test_name"]
 
     logger.error(f"Test '{test_label}' has neither markers nor test name in config.")
@@ -84,6 +85,7 @@ def get_test_markers_and_test_name(test_label: str, config_data: TestConfig):
 
 def get_label_of_special_test_widget(widget: Widget) -> str | None:
     """Get the label text of a special test widget."""
+    logger.debug("Getting label for special test")
     subcategory_content = widget.parent.parent.parent
 
     for w in subcategory_content.children:

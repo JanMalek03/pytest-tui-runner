@@ -21,14 +21,18 @@ def extract_tests_results(report) -> list[TestResult]:
 
     tests = report.get("tests", [])
     for test in tests:
+        logger.debug(f"▶️ PROCESSING test result = {test} ...")
         test_result = test.get("outcome", "")
         keywords = test.get("keywords", [])
 
         if not keywords:
             logger.error("Test has no keywords.")
             continue
+        test_name = keywords[0]
 
-        logger.debug(f"Processing test with keywords: {keywords}")
+        logger.debug(f"Keywords: {keywords}")
+        logger.debug(f"Test name: '{test_name}'")
+        logger.debug(f"Test result: '{test_result}'")
 
         # Extract test marks
         marks = []
@@ -42,7 +46,6 @@ def extract_tests_results(report) -> list[TestResult]:
         logger.debug(f"Extracted marks: {marks}")
 
         # Check if test (first keyword) is test with arguments (has format test_name[args])
-        test_name = keywords[0]
         if "[" in test_name and test_name.endswith("]"):
             name_without_args, test_args = test_name.split("[", 1)
             test_args = test_args[:-1]  # Remove the closing ']'
@@ -61,7 +64,8 @@ def extract_tests_results(report) -> list[TestResult]:
             tests_results.append(
                 TestResult(test_name=test_name, markers=marks, outcome=test_result),
             )
+        logger.debug("✅ Test result processed")
 
-    logger.debug(f"Test results extracted: {tests_results}")
+    logger.debug(f"ALL Test results extracted: {tests_results}")
 
     return tests_results
