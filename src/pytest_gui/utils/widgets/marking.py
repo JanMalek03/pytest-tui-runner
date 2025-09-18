@@ -4,9 +4,7 @@ from pathlib import Path
 from textual.widget import Widget
 
 from pytest_gui.logging import logger
-from pytest_gui.utils.config import (
-    get_test_result,
-)
+from pytest_gui.utils.config import get_test_result
 from pytest_gui.utils.test_results import TestResult, extract_tests_results
 from pytest_gui.utils.types.widgets import WidgetsDict
 
@@ -94,12 +92,15 @@ def process_widget(widget: Widget, test_result: TestResult) -> None:
         widget.add_class("failed")
     elif outcome == "skipped":
         widget.add_class("skipped")
+    elif outcome == "xfailed":
+        widget.add_class("xfailed")
+    elif outcome == "error":
+        logger.error(f"Test with widget {widget} has error result")
+        widget.add_class("error")
     else:
         widget.remove_class("passed")
         widget.remove_class("failed")
         widget.remove_class("skipped")
-
-    # TODO: muze byt outcome i error pry
 
 
 def parse_result_arg_values(args: str) -> list[str]:

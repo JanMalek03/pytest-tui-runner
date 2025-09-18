@@ -63,3 +63,11 @@ Input, Select {
 .skipped {
     background: rgb(200, 131, 2);
 }
+
+.xfailed {
+    background: rgb(142, 62, 1);
+}
+
+.error{
+    background: rgb(97, 28, 28);
+}
