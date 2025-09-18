@@ -4,7 +4,7 @@ from textual.widget import Widget
 from textual.widgets import Checkbox, Input, Select
 
 from pytest_gui.logging import logger
-from pytest_gui.utils.types.config import Argument, ArgumentType, Test, TestConfig, TestType
+from pytest_gui.utils.types.config import Argument, ArgumentType, Test, TestConfig
 from pytest_gui.utils.types.saved_state import SavedState, SavedSubcat, TestValue
 from pytest_gui.utils.types.widgets import WidgetsDict
 from pytest_gui.utils.widgets.state_manager import read_json_state_file
@@ -53,9 +53,9 @@ def generate_widgets_from_config(config: TestConfig, state_path: Path | None = N
 
 def _create_test_widgets(test: Test, saved_subcat: SavedSubcat) -> list[Widget]:
     """Create a list of widgets by test type."""
-    logger.debug(f"Creating widgets for test = '{test.get('name')}', type = '{test.get('type')}'")
+    test_type = "special" if is_test_special(test) else "normal"
 
-    test_type: TestType = test.get("type")
+    logger.debug(f"Creating widgets for test = '{test.get('name')}', type = '{test_type}'")
 
     if test_type == "normal":
         return [Checkbox(test["name"])]
@@ -98,3 +98,8 @@ def _widget_from_argument(arg: Argument) -> Widget | None:
         )
     logger.error(f"Unexpected argument type: '{arg_type}'")
     return None
+
+
+def is_test_special(test: Test) -> bool:
+    """Check if the test is of special type."""
+    return "arguments" in test

@@ -51,7 +51,7 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 
     try:
         for test_def in iter_tests(config_data):
-            if test_def["type"] != "special":
+            if "arguments" not in test_def:
                 continue
 
             if not compare_test(metafunc, test_def):
