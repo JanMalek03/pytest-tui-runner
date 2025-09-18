@@ -5,7 +5,7 @@ from pathlib import Path
 import click
 
 from pytest_gui.logging import logger, setup_logger
-from pytest_gui.paths import Paths, find_project_root_by_tests
+from pytest_gui.paths import Paths, find_project_root_by_folder
 from pytest_gui.ui.tui.app import TestRunnerApp
 
 
@@ -23,7 +23,7 @@ def run(project_path: str | None) -> None:
             root = Path(project_path).resolve()
             Paths.set_user_root(root)
         else:
-            root = find_project_root_by_tests(Path.cwd())
+            root = find_project_root_by_folder(Path.cwd(), ["pytest_gui"])
             if root is None:
                 logger.error("Could not find project root (missing 'tests' directory).")
                 sys.exit(1)

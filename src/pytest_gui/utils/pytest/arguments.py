@@ -8,7 +8,7 @@ from pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
 from pytest_gui.utils.widgets.marking import mark_widget_running
 
 
-def build_pytest_arguments(widgets: dict, pytest_init_path: str = "") -> list[str]:
+def build_pytest_arguments(widgets: dict) -> list[str]:
     """Build a list of arguments for running pytest based on provided widgets and an optional pytest.ini path.
 
     Parameters
@@ -27,11 +27,8 @@ def build_pytest_arguments(widgets: dict, pytest_init_path: str = "") -> list[st
     # Default arguments to run pytest with uv
     args: list[str] = ["uv", "run", "pytest"]
 
-    # Custom pytest.ini path
-    if pytest_init_path:
-        args += ["-c", pytest_init_path]
-    else:
-        logger.debug("No custom pytest.ini path provided, using default.")
+    # Add flag to ignore unknows pytest markings in the user project
+    args += ["-W", "ignore::pytest.PytestUnknownMarkWarning"]
 
     # Additional arguments for pytest
     args += ["-s"]  # -s for capturing output

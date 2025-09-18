@@ -93,7 +93,7 @@ class ButtonHandler:
 
     def _build_test_command(self) -> list[str]:
         """Build the pytest command arguments."""
-        return build_pytest_arguments(self.widgets, Paths.pytest_ini())
+        return build_pytest_arguments(self.widgets)
 
     async def _execute_test_process(self, args: list[str], cwd: Path) -> None:
         """Run a subprocess for tests and stream output to terminal."""
