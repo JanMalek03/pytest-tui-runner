@@ -69,7 +69,7 @@ class ButtonHandler:
         logger.debug("------------------------- COMMAND EXECUTING -------------------------")
         logger.debug("'RUN TESTS' button pressed")
         logger.info("------------- Executing the tests -------------")
-        asyncio.create_task(self._run_tests_async())
+        self._test_task = asyncio.create_task(self._run_tests_async())
 
     async def _run_tests_async(self) -> None:
         if not self._validate_test_path(Paths.user_root()):
@@ -130,7 +130,8 @@ class ButtonHandler:
 
     async def _stream_process_output(self, process: Process) -> None:
         """Stream process stdout to terminal line by line."""
-        assert process.stdout is not None
+        if process.stdout is None:
+            raise RuntimeError("Process stdout is not available.")
         async for line in process.stdout:
             self.terminal_view.write_line(line.decode().rstrip())
 

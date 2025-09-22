@@ -4,8 +4,9 @@ from pathlib import Path
 
 
 def find_project_root_by_folder(start: Path, folder_names: Iterable[str]) -> Path | None:
+    """Find the project root by looking for specific folder names in parent directories."""
     current = start.resolve()
-    for parent in [current] + list(current.parents):
+    for parent in [current, *list(current.parents)]:
         for folder in folder_names:
             if (parent / folder).is_dir():
                 return parent
@@ -22,10 +23,12 @@ class Paths:
 
     @classmethod
     def set_user_root(cls, path: Path) -> None:
+        """Set the user project root path."""
         cls._user_root = path.resolve()
 
     @classmethod
     def user_root(cls) -> Path:
+        """Get the user project root path."""
         if cls._user_root is not None:
             return cls._user_root
 
@@ -39,18 +42,22 @@ class Paths:
 
     @classmethod
     def config(cls) -> Path:
+        """Path to the user configuration file."""
         return cls.user_root() / "pytest_gui" / "default.yaml"
 
     @classmethod
     def log_dir(cls) -> Path:
+        """Directory for log files."""
         return cls.user_root() / "pytest_gui" / "logs"
 
     @classmethod
     def state_file(cls) -> Path:
+        """Path to the file where the state of widgets is stored."""
         return cls.user_root() / "pytest_gui" / "widgets_state.json"
 
     @classmethod
     def log_file(cls) -> Path:
+        """Path to the main log file."""
         return cls.log_dir() / "app.log"
 
     @classmethod

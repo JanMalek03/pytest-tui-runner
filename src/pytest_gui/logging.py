@@ -65,7 +65,7 @@ def setup_logger(clear_log_file: bool = False) -> None:
             diagnose=True,
             filter=lambda record: record["level"].name == "TERMINAL",
         )
-    except Exception as e:
+    except ValueError as e:
         logger.warning(f"Failed to set up terminal logger: {e}")
 
     if clear_log_file:

@@ -9,7 +9,7 @@ from pytest_gui.utils.widgets.marking import mark_widget_running
 
 
 def build_pytest_arguments(widgets: dict) -> list[str]:
-    """Build a list of arguments for running pytest based on provided widgets and an optional pytest.ini path.
+    """Build a list of arguments for running pytest based on provided widgetsand an optional pytest.ini path.
 
     Parameters
     ----------

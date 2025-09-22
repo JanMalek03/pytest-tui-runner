@@ -9,7 +9,7 @@ from pytest_gui.utils.types.widgets import TestWidgets, WidgetsDict
 
 
 def load_widget_state(widgets: WidgetsDict, filename: Path) -> None:
-    """Retrieve the state of the widgets from the JSON file and set the values for the existing widgets."""
+    """Retrieve the state of the widgets from the JSON fileand set the values for the existing widgets."""
     logger.debug(f"Loading saved states from '{filename}' file")
     saved: SavedState = read_json_state_file(filename)
 
@@ -59,7 +59,7 @@ def write_json_state_file(filename: Path, data: SavedState) -> None:
     try:
         with Path.open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
-    except Exception as e:
+    except (OSError, TypeError) as e:
         logger.error(f"An error occurred while saving data: {e}", exc_info=True)
 
 
@@ -72,15 +72,12 @@ def _set_widgets_values(test_widgets: TestWidgets, saved_values: TestValue) -> N
     """Retrieve widget values from stored data."""
     # Simple checkbox
     if _test_value_is_checkbox(test_widgets):
-        if saved_values:
-            try:
-                test_widgets[0].value = saved_values[0]
-            except (TypeError, AttributeError) as e:
-                logger.error(f"Invalid checkbox value type: {e}", exc_info=True)
+        _set_checkbox_value(test_widgets, saved_values)
         return
 
     if not _test_value_is_test_arguments(test_widgets):
         logger.error(f"Saved values for widgets have invalid format = {test_widgets}")
+        return
 
     logger.debug(
         f"Number of instances the arguments found in state file: '{len(saved_values)}'",
@@ -109,6 +106,16 @@ def _set_widgets_values(test_widgets: TestWidgets, saved_values: TestValue) -> N
                 f"Error setting widget '{getattr(widget, 'name', '?')}': {e}",
                 exc_info=True,
             )
+
+
+def _set_checkbox_value(test_widgets: TestWidgets, saved_values: TestValue) -> None:
+    """Set the value for a simple checkbox widget."""
+    if not saved_values:
+        return
+    try:
+        test_widgets[0].value = saved_values[0]
+    except (TypeError, AttributeError) as e:
+        logger.error(f"Invalid checkbox value type: {e}", exc_info=True)
 
 
 def _serialize_test_widgets(widget_group: TestWidgets) -> TestValue:

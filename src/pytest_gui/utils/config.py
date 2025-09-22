@@ -65,7 +65,10 @@ def args_match_widget_values(args: list[str], widgets: list[Widget]) -> bool:
     return all(i < len(args) and args[i] == widget.value for i, widget in enumerate(widgets))
 
 
-def get_test_markers_and_test_name(test_label: str, config_data: TestConfig):
+def get_test_markers_and_test_name(
+    test_label: str,
+    config_data: TestConfig,
+) -> tuple[list[str] | None, str | None]:
     """Get markers or test name for a given test label from config."""
     logger.debug(f"Getting markers or test name for test label '{test_label}'")
     for test_def in iter_tests(config_data):

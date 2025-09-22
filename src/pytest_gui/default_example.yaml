@@ -5,28 +5,22 @@ categories:
         tests:
           - name: "Login button visible"
             markers: ["login"]
-            type: "normal"
           - name: "Login button clickable"
             markers: ["login", "logout"]
-            type: "normal"
           - name: "Login button enabled"
             markers: ["login", "testing"]
-            type: "normal"
       - name: "Navigation"
         tests:
           - name: "Navigation bar visible"
             markers: ["navigation"]
-            type: "normal"
           - name: "Navigation bar clickable"
             markers: ["navigation", "logout"]
-            type: "normal"
   - name: "Images"
     subcategories:
       - name: "Mode"
         tests:
           - name: "Image rendering"
             markers: ["images"]
-            type: "special"
             arguments:
               - name: "action"
                 arg_type: "select"

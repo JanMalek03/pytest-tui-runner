@@ -60,7 +60,8 @@ class WidgetManager:
     def generate(self) -> None:
         """Generate widgets from the provided configuration.
 
-        It will generate widgets based on the user configuration and also according to the saved state of the widgets.
+        It will generate widgets based on the user configuration
+        and also according to the saved state of the widgets.
         """
         logger.debug("▶️ Starting to generate widgets...")
         try:

@@ -1,3 +1,4 @@
+import pytest
 from _pytest.config.argparsing import Parser
 from _pytest.python import Metafunc
 
@@ -8,10 +9,11 @@ from pytest_gui.utils.config import iter_tests
 from pytest_gui.utils.pytest.arguments import format_test_flag
 from pytest_gui.utils.pytest.encoding import decode_variants
 from pytest_gui.utils.test_results import IGNORED_MARKERS
-from pytest_gui.utils.types.config import TestConfig
+from pytest_gui.utils.types.config import Test, TestConfig
 
 
 def pytest_addoption(parser: Parser) -> None:
+    """Add custom command-line options to pytest based on the user configuration."""
     # After running the test as a new process, it is necessary to set up the logger again.
     # This is the first function called when the test is run, so it's here
     setup_logger()
@@ -44,6 +46,7 @@ def pytest_addoption(parser: Parser) -> None:
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
+    """Dynamically parametrize tests based on the user configuration and command-line options."""
     test_name = metafunc.function.__name__
     logger.debug(f"▶️ GENERATE TESTS hook for '{(test_name)}' test")
 
@@ -82,7 +85,8 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         logger.debug("✅ GENERATE TESTS hook")
 
 
-def pytest_collection_modifyitems(config, items) -> None:
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    """Modify the collected test items to run only those selected by the user."""
     logger.debug("▶️ COLLECTION MODIFYITEMS hook")
     logger.debug(f"Test count before filtering = {len(items)}")
 
@@ -143,7 +147,8 @@ def pytest_collection_modifyitems(config, items) -> None:
     logger.debug("---------------------------- PYTEST HOOKS ----------------------------")
 
 
-def compare_test(metafunc: Metafunc, test) -> bool:
+def compare_test(metafunc: Metafunc, test: Test) -> bool:
+    """Compare the given test definition with the current metafunc."""
     if "markers" in test:
         logger.debug("Found 'markers' argument in test definition")
 
