@@ -9,14 +9,16 @@ Argument = dict[
     ArgumentName | ArgumentType | AdditionalInfo,
 ]
 
+TestLabel = str
 TestName = str
 Markers = list[str]
+TestIdentifier = TestName | Markers
 TestType = Literal["normal", "special"]
 Arguments = list[Argument] | None
 
 Test = dict[
     str,
-    TestName | Markers | TestType | Arguments,
+    TestLabel | TestIdentifier | Arguments,
 ]
 
 CategoryName = str
