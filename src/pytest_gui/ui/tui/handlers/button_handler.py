@@ -118,6 +118,7 @@ class ButtonHandler:
 
         await process.wait()
         self.terminal_view.write_line("\nTests finished.")
+        logger.info("✅ Tests finished")
 
         logger.debug("Enabling buttons after test run")
         await enable_buttons_after_test_finnished(self.buttons)
@@ -126,6 +127,7 @@ class ButtonHandler:
         logger.debug("▶️ Marking widgets according to the result...")
         mark_widgets_from_report(self.widgets, Paths.pytest_report())
         logger.debug("✅ Widgets marked")
+        logger.info("Results evaluated")
         logger.debug("------------------------- RESULTS EVALUATION -------------------------")
 
     async def _stream_process_output(self, process: Process) -> None:
