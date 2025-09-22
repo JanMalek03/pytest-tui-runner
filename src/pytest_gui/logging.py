@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+import yaml
 from loguru import logger
 
 from pytest_gui.paths import Paths
@@ -12,12 +13,22 @@ def setup_logger(clear_log_file: bool = False) -> None:
     """Configure the loguru logger with file and terminal handlers."""
     Paths.log_dir().mkdir(parents=True, exist_ok=True)
 
+    config = get_logger_config()
+
+    # CONFIGURATION
+    # ---------------------------------
     # file log format
-    log_format = (
+    log_format = config.get(
+        "format",
         "<green>{time:HH:mm:ss.SSS}</green> | "
         "<level>{level: <8}</level> | "
-        "Line{line: >4} ({file}): <b>{message}</b>"
+        "Line{line: >4} ({file}): <b>{message}</b>",
     )
+    level = config.get("level", "INFO")
+    rotation = config.get("rotation", "00:00")
+    retention = config.get("retention", 7)
+    # ---------------------------------
+
     # terminal log format
     stdout_format = "    <green>{time:HH:mm:ss}</green> | <b>{message}</b>"
 
@@ -27,16 +38,15 @@ def setup_logger(clear_log_file: bool = False) -> None:
     # Add new logger with new log format
     logger.add(
         Paths.log_file(),
-        level="INFO",
-        # level="DEBUG",
+        level=level,
         format=log_format,
         colorize=False,
         backtrace=True,
         diagnose=True,
         enqueue=True,
         filter=lambda record: record["level"].name != "TERMINAL",
-        rotation="00:00",
-        retention=7,
+        rotation=rotation,
+        retention=retention,
     )
 
     # Register a custom log level for terminal output
@@ -72,4 +82,15 @@ def setup_logger(clear_log_file: bool = False) -> None:
         Path.open(Paths.log_file(), "w").close()
 
 
-# setup_logger()
+def get_logger_config() -> dict:
+    """Get the content of the log configuration file if it exists."""
+    config_file = Paths.log_config_file()
+    if config_file.is_file():
+        try:
+            with config_file.open("r") as f:
+                return yaml.safe_load(f) or {}
+        except Exception as e:
+            logger.error(
+                f"Failed to read log configuration file: {e}. Using default configuration.",
+            )
+    return {}
