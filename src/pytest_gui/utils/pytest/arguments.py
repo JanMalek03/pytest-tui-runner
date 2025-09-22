@@ -32,6 +32,7 @@ def build_pytest_arguments(widgets: dict) -> list[str]:
 
     # Additional arguments for pytest
     args += ["-s"]  # -s for capturing output
+    args += ["-v"]  # -v for verbose output
 
     # Additional arguments for saving the pytest result to a json file
     args += [

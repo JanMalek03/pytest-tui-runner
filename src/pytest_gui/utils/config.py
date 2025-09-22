@@ -35,17 +35,14 @@ def get_test_result(
         markers, test_name = get_test_markers_and_test_name(test.label, config_data)
 
     for result in test_results:
-        if markers and frozenset(result.markers) == frozenset(markers):
-            logger.debug(f"Found test result based on 'markers' ({result})")
-            return result
-        if test_name and result.test_name == test_name:
-            if result.args:
-                args = parse_result_arg_values(result.args)
-                if not args_match_widget_values(args, test):
-                    logger.debug("Found test result, but args values dont match")
-                    continue
-            logger.debug(f"Found test result based on 'test_name' ({result})")
-            return result
+        if not test_result_mach(result, markers, test_name):
+            continue
+        if result.args:
+            args = parse_result_arg_values(result.args)
+            if not args_match_widget_values(args, test):
+                logger.debug("Found test result, but args values dont match")
+                continue
+        return result
 
     logger.debug("Didn't found any test result for widget")
     return None
@@ -97,3 +94,17 @@ def get_label_of_special_test_widget(widget: Widget) -> str | None:
 
     logger.error(f"Label not found for special test widget {widget}.")
     return None
+
+
+def test_result_mach(result, markers, test_name) -> bool:
+    if markers and frozenset(result.markers) == frozenset(markers):
+        logger.debug(f"Found test result based on 'markers' ({markers})")
+        return True
+
+    if test_name and result.test_name == test_name:
+        logger.debug(f"Found test result based on 'test_name' ({test_name})")
+        return True
+
+    return False
+    # logger.debug(f"❌ No match for result = {result}")
+    # logger.debug(f"Expected markers = {markers} or test_name = '{test_name}'")
