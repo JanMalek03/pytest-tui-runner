@@ -43,6 +43,7 @@ def pytest_addoption(parser: Parser) -> None:
             )
 
     logger.debug("✅ ADD OPTIONS hook")
+    logger.debug("-------------------------------------------------")
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
@@ -52,41 +53,24 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 
     config_data: TestConfig = load_config(Paths.config())
 
-    try:
-        for test_def in iter_tests(config_data):
-            if "arguments" not in test_def:
-                continue
+    for test_def in iter_tests(config_data):
+        if "arguments" not in test_def:
+            continue
 
-            if not compare_test(metafunc, test_def):
-                continue
+        if not compare_test(metafunc, test_def):
+            continue
 
-            option_name = format_test_flag(test_def["name"])
-            raw_value = metafunc.config.getoption(option_name)
+        logger.debug("❗ FOUND TEST TO PARAMETRIZE")
 
-            if not raw_value:
-                logger.error("No arguments value received")
-                return
+        parametrize_test(metafunc, test_def)
+        return
 
-            variants: list[dict[str, str]] = decode_variants(raw_value)
-            if not variants:
-                logger.error("Argument decoding returned nothing")
-                return
-
-            param_names = list(variants[0].keys())
-            param_values = [tuple(v[k] for k in param_names) for v in variants]
-
-            logger.debug(f"Parameters names = {param_names}")
-            logger.debug(f"Parameters values = {param_values}")
-
-            logger.debug("Executing parametrize function")
-            metafunc.parametrize(param_names, param_values)
-
-    finally:
-        logger.debug("✅ GENERATE TESTS hook")
+    logger.debug("❌ TEST NOT PARAMETRIZED")
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
     """Modify the collected test items to run only those selected by the user."""
+    logger.debug("-------------------------------------------------")
     logger.debug("▶️ COLLECTION MODIFYITEMS hook")
     logger.debug(f"Test count before filtering = {len(items)}")
 
@@ -150,8 +134,6 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 def compare_test(metafunc: Metafunc, test: Test) -> bool:
     """Compare the given test definition with the current metafunc."""
     if "markers" in test:
-        logger.debug("Found 'markers' argument in test definition")
-
         metafunc_markers: set[str] = {
             marker.name
             for marker in metafunc.definition.iter_markers()
@@ -161,24 +143,20 @@ def compare_test(metafunc: Metafunc, test: Test) -> bool:
         test_markers = set(test.get("markers", []))
 
         if test_markers != metafunc_markers:
-            logger.debug(f"This test has no expected 'marks' ({test['name']})")
-            logger.debug(f"Expected = {test_markers}")
-            logger.debug(f"Have = {metafunc_markers}")
+            logger.debug(
+                f"WRONG 'marks' for test: {test['name']} ({metafunc_markers} != {test_markers})",
+            )
             return False
 
         logger.debug(f"'EXPECTED MARKS FOUND' = {metafunc_markers}")
         return True
 
     if "test_name" in test:
-        logger.debug("Found 'test_name' argument in test definition")
-
         metafunc_test_name = metafunc.function.__name__
         test_name = test["test_name"]
 
         if metafunc_test_name != test_name:
-            logger.debug("This test has no expected 'test name'")
-            logger.debug(f"Expected = {test_name}")
-            logger.debug(f"Have = {metafunc_test_name}")
+            logger.debug(f"WRONG 'test name' ({metafunc_test_name} != {test_name})")
             return False
 
         logger.debug(f"'EXPECTED TEST NAME FOUND' = {metafunc_test_name}")
@@ -186,3 +164,28 @@ def compare_test(metafunc: Metafunc, test: Test) -> bool:
 
     logger.error("Test definition has neither 'markers' nor 'test_name' field")
     return False
+
+
+def parametrize_test(metafunc: Metafunc, test: Test) -> None:
+    option_name = format_test_flag(test["name"])
+    option_value = metafunc.config.getoption(option_name)
+
+    if not option_value:
+        logger.debug("❌ NO ARGUMENTS PROVIDED")
+        return
+
+    variants: list[dict[str, str]] = decode_variants(option_value)
+    if not variants:
+        logger.error("Argument decoding returned nothing")
+        return
+
+    param_names = list(variants[0].keys())
+    param_values = [tuple(v[k] for k in param_names) for v in variants]
+
+    logger.debug(f"Parameters names = {param_names}")
+    logger.debug(f"Parameters values = {param_values}")
+
+    logger.debug("Executing parametrize function")
+    metafunc.parametrize(param_names, param_values)
+    logger.debug("✅ TEST SUCCESSFULLY PARAMETRIZED")
+    return
