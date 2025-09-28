@@ -26,12 +26,14 @@ def compose_widgets(widgets: WidgetsDict) -> list[Vertical]:
 
 def compose_category(category_name: str, category: CategoryDict) -> Vertical:
     """Compose a Container layout for a category, including its subcategories."""
-    items: list[Widget] = [Label(category_name, classes="category_label")]
+    items: list[Widget] = []
 
     for subcategory_name, subcategory in category.items():
         items.append(compose_subcategory(subcategory_name, subcategory))
 
-    return Vertical(*items, classes="category")
+    category = Vertical(*items, classes="category")
+    category.border_title = category_name
+    return category
 
 
 def compose_subcategory(subcategory_name: str, subcategory: SubCategoryDict) -> Vertical:
@@ -77,7 +79,7 @@ def compose_test(test_name: str, widget_list: TestWidgets) -> Vertical:
     logger.debug("Special test widget created")
 
     return Vertical(
-        Label(test_name, classes="subcategory_label"),
+        Label(test_name, classes="test_label"),
         special_widget,
         classes="subcategory_content",
     )

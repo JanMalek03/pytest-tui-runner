@@ -104,9 +104,9 @@ class SpecialTestGroup(Vertical):
 
         for i, row in enumerate(self.rows):
             if i == len(self.rows) - 1:
-                button = Button("+", id=f"add_{i}", variant="success")
+                button = Button("+", id=f"add_{i}", classes="special_button success_button")
             else:
-                button = Button("-", id=f"remove_{i}", variant="error")
+                button = Button("-", id=f"remove_{i}", classes="special_button error_button")
 
             await row.mount(button, before=row.children[0] if row.children else None)
 
