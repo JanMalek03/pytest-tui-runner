@@ -106,5 +106,3 @@ def test_result_mach(result, markers, test_name) -> bool:
         return True
 
     return False
-    # logger.debug(f"❌ No match for result = {result}")
-    # logger.debug(f"Expected markers = {markers} or test_name = '{test_name}'")

@@ -6,6 +6,7 @@ import yaml
 
 from pytest_gui.logging import logger
 from pytest_gui.utils.types.config import TestConfig
+from pytest_gui.utils.types.config_validator import Config
 
 
 @lru_cache(maxsize=1)
@@ -26,11 +27,14 @@ def load_config(file_path: str) -> TestConfig:
     if path.suffix in {".yaml", ".yml"}:
         logger.debug("Parsing as YAML")
         with Path.open(path, encoding="utf-8") as file:
-            return yaml.safe_load(file)
+            raw = yaml.safe_load(file)
     elif path.suffix == ".json":
         logger.debug("Parsing as JSON")
         with Path.open(path, encoding="utf-8") as file:
-            return json.load(file)
+            raw = json.load(file)
     else:
         logger.error(f"Invalid config file format: '{path.suffix}'")
         raise ValueError("Only YAML and JSON files are supported.")
+
+    Config.model_validate(raw)
+    return raw
