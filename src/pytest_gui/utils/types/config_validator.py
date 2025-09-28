@@ -4,7 +4,7 @@ from pydantic import BaseModel, model_validator
 
 
 class Argument(BaseModel):
-    label: str
+    arg_name: str
     arg_type: Literal["select", "text_input"]
     options: list[str] | None = None
     placeholder: str | None = None

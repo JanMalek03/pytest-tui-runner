@@ -95,7 +95,7 @@ def _widget_from_argument(arg: Argument) -> Widget | None:
         return Select(
             [(opt, opt) for opt in arg["options"]],
             allow_blank=True,
-            name=arg["label"],
+            name=arg["arg_name"],
         )
     if arg_type == "text_input":
         if "placeholder" not in arg:
@@ -106,7 +106,7 @@ def _widget_from_argument(arg: Argument) -> Widget | None:
 
         return Input(
             placeholder=arg.get("placeholder", ""),
-            name=arg["label"],
+            name=arg["arg_name"],
         )
     logger.error(f"Unexpected argument type: '{arg_type}'")
     return None
