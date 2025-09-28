@@ -34,15 +34,15 @@ def generate_widgets_from_config(config: TestConfig, state_path: Path | None = N
     widgets: WidgetsDict = {}
 
     for category in config["categories"]:
-        cat_name: str = category["name"]
+        cat_name: str = category["label"]
         widgets[cat_name] = {}
 
         for subcat in category.get("subcategories", []):
-            subcat_name: str = subcat["name"]
+            subcat_name: str = subcat["label"]
             widgets[cat_name][subcat_name] = {}
 
             for test in subcat.get("tests", []):
-                widgets[cat_name][subcat_name][test["name"]] = _create_test_widgets(
+                widgets[cat_name][subcat_name][test["label"]] = _create_test_widgets(
                     test,
                     saved_state.get(cat_name, {}).get(subcat_name, {}),
                 )
@@ -58,11 +58,11 @@ def _create_test_widgets(test: Test, saved_subcat: SavedSubcat) -> list[Widget]:
     logger.debug(f"Creating widgets for test = '{test.get('name')}', type = '{test_type}'")
 
     if test_type == "normal":
-        return [Checkbox(test["name"])]
+        return [Checkbox(test["label"])]
 
     if test_type == "special":
         # Get the number of saved states of the test argument
-        saved_group: TestValue = saved_subcat.get(test["name"], [])
+        saved_group: TestValue = saved_subcat.get(test["label"], [])
         num_groups: int = max(1, len(saved_group))
         logger.debug(f"Number of instances of the arguments found in state file: '{num_groups}'")
 
@@ -95,7 +95,7 @@ def _widget_from_argument(arg: Argument) -> Widget | None:
         return Select(
             [(opt, opt) for opt in arg["options"]],
             allow_blank=True,
-            name=arg["name"],
+            name=arg["label"],
         )
     if arg_type == "text_input":
         if "placeholder" not in arg:
@@ -106,7 +106,7 @@ def _widget_from_argument(arg: Argument) -> Widget | None:
 
         return Input(
             placeholder=arg.get("placeholder", ""),
-            name=arg["name"],
+            name=arg["label"],
         )
     logger.error(f"Unexpected argument type: '{arg_type}'")
     return None

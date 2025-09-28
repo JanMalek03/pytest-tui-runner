@@ -69,7 +69,7 @@ def get_test_markers_and_test_name(
     """Get markers or test name for a given test label from config."""
     logger.debug(f"Getting markers or test name for test label '{test_label}'")
     for test_def in iter_tests(config_data):
-        if test_def["name"] == test_label:
+        if test_def["label"] == test_label:
             if "markers" in test_def:
                 logger.debug(f"MARKERS for widget: {test_def['markers']}")
                 logger.debug(f"TEST NAME for widget: {None}")

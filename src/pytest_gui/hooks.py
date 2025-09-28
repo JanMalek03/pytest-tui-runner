@@ -23,7 +23,7 @@ def pytest_addoption(parser: Parser) -> None:
     config: TestConfig = load_config(Paths.config())
 
     for test in iter_tests(config):
-        option_name: str = format_test_flag(test["name"])
+        option_name: str = format_test_flag(test["label"])
 
         # Special test with arguments
         if "arguments" in test:
@@ -31,7 +31,7 @@ def pytest_addoption(parser: Parser) -> None:
             parser.addoption(
                 option_name,
                 action="store",
-                help=f"Run '{test['name']}' test with arguments",
+                help=f"Run '{test['label']}' test with arguments",
             )
         else:
             logger.debug(f"Adding basic option = '{option_name}'")
@@ -39,7 +39,7 @@ def pytest_addoption(parser: Parser) -> None:
                 option_name,
                 action="store_true",
                 default=False,
-                help=f"Run '{test['name']}' test",
+                help=f"Run '{test['label']}' test",
             )
 
     logger.debug("✅ ADD OPTIONS hook")
@@ -80,9 +80,9 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     enabled_marker_sets: list = []
     enabled_tests_names: list = []
     for test_def in iter_tests(config_data):
-        logger.debug(f"Checking test '{test_def['name']}' if it has been selected")
+        logger.debug(f"Checking test '{test_def['label']}' if it has been selected")
 
-        option_name: str = format_test_flag(test_def["name"])
+        option_name: str = format_test_flag(test_def["label"])
         opt_value = config.getoption(option_name)
         if opt_value:
             logger.debug(f"Pytest argument found = '{opt_value}'")
@@ -144,7 +144,7 @@ def compare_test(metafunc: Metafunc, test: Test) -> bool:
 
         if test_markers != metafunc_markers:
             logger.debug(
-                f"WRONG 'marks' for test: {test['name']} ({metafunc_markers} != {test_markers})",
+                f"WRONG 'marks' for test: {test['label']} ({metafunc_markers} != {test_markers})",
             )
             return False
 
@@ -167,7 +167,7 @@ def compare_test(metafunc: Metafunc, test: Test) -> bool:
 
 
 def parametrize_test(metafunc: Metafunc, test: Test) -> None:
-    option_name = format_test_flag(test["name"])
+    option_name = format_test_flag(test["label"])
     option_value = metafunc.config.getoption(option_name)
 
     if not option_value:
