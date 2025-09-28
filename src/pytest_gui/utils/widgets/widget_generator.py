@@ -86,12 +86,24 @@ def _widget_from_argument(arg: Argument) -> Widget | None:
     """Create a single widget based on argument definition."""
     arg_type: ArgumentType = arg.get("arg_type")
     if arg_type == "select":
+        if "options" not in arg:
+            raise ValueError(
+                f"❌ Missing required 'options' in argument definition for '{arg.get('name', '<unknown>')}'. "
+                f"Please add an 'options' key to your config.",
+            )
+
         return Select(
             [(opt, opt) for opt in arg["options"]],
             allow_blank=True,
             name=arg["name"],
         )
     if arg_type == "text_input":
+        if "placeholder" not in arg:
+            raise ValueError(
+                f"❌ Missing required 'placeholder' in argument definition for '{arg.get('name', '<unknown>')}'. "
+                f"Please add a 'placeholder' key to your config.",
+            )
+
         return Input(
             placeholder=arg.get("placeholder", ""),
             name=arg["name"],
