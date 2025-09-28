@@ -57,8 +57,9 @@ class SpecialTestGroup(Vertical):
         to_clone: list[Widget] | None = None,
         *,
         update_initial: bool = True,
+        include_value: bool = True,
     ) -> None:
-        widgets = self._clone_widgets(to_clone)
+        widgets = self._clone_widgets(to_clone, include_value=include_value)
 
         row = Horizontal(classes="special_test_row")
         self.rows.append(row)
@@ -70,13 +71,13 @@ class SpecialTestGroup(Vertical):
         if update_initial:
             self._update_initial_rows()
 
-    def _clone_widgets(self, widgets: list[Widget]) -> list[Widget]:
+    def _clone_widgets(self, widgets: list[Widget], include_value: bool = True) -> list[Widget]:
         cloned = []
         for widget in widgets:
             if isinstance(widget, Input):
                 cloned.append(
                     Input(
-                        value=widget.value,
+                        value=widget.value if include_value else "",
                         name=widget.name,
                         placeholder=widget.placeholder,
                     ),
@@ -122,7 +123,7 @@ class SpecialTestGroup(Vertical):
 
         if btn_id.startswith("add_"):
             logger.debug("'ADD' button pressed")
-            await self._add_row(self.row_template)
+            await self._add_row(self.row_template, include_value=False)
             await self._refresh_buttons()
 
         elif btn_id.startswith("remove_"):
