@@ -72,8 +72,6 @@ class TestsView(Vertical):
 
         self.buttons: list[Button] = [
             Button("Run tests", id="run_tests", classes="button"),
-            Button("Check all", id="check_all", classes="button"),
-            Button("Uncheck all", id="uncheck_all", classes="button"),
             Button("Exit", id="exit", classes="button"),
         ]
 
@@ -94,10 +92,6 @@ class TestsView(Vertical):
         match event.button.id:
             case "run_tests":
                 self.button_handler.run_tests()
-            case "check_all":
-                self.button_handler.check_all()
-            case "uncheck_all":
-                self.button_handler.uncheck_all()
             case "add_button":
                 # TODO: presunout logger fo button_handler.add()
                 logger.info("Add button pressed")
