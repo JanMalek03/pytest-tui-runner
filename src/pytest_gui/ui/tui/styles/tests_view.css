@@ -110,3 +110,14 @@ Label {
         background: rgba(36, 109, 36, 0.65);
     }
 }
+
+
+.button_running {
+    color: rgb(52, 174, 255);
+    border: tall rgb(0, 132, 255);
+    text-style: bold italic;
+}
+
+.button_running:hover {
+    background: #003300;
+}
