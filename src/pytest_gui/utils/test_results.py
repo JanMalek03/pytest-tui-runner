@@ -15,7 +15,7 @@ class TestResult:
     test_name: str | None = None
 
 
-def extract_tests_results(report) -> list[TestResult]:
+def extract_tests_results(report: dict) -> list[TestResult]:
     """Extract test results and their markers from a pytest JSON report."""
     tests_results: list[TestResult] = []
 

@@ -34,7 +34,7 @@ def mark_widgets_from_report(widgets: WidgetsDict, report_path: Path) -> None:
         raise FileNotFoundError(f"Report file not found: {report_path}")
 
     with Path.open(report_path, encoding="utf-8") as f:
-        report = json.load(f)
+        report: dict = json.load(f)
 
     logger.debug("▶️ Extracting test results from report...")
     test_results: list[TestResult] = extract_tests_results(report)

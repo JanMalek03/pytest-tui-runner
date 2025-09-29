@@ -89,7 +89,7 @@ def get_logger_config() -> dict:
         try:
             with config_file.open("r") as f:
                 return yaml.safe_load(f) or {}
-        except Exception as e:
+        except (yaml.YAMLError, OSError) as e:
             logger.error(
                 f"Failed to read log configuration file: {e}. Using default configuration.",
             )

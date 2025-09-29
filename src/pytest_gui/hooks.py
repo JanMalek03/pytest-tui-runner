@@ -167,6 +167,7 @@ def compare_test(metafunc: Metafunc, test: Test) -> bool:
 
 
 def parametrize_test(metafunc: Metafunc, test: Test) -> None:
+    """Parametrize the given metafunc based on the test definition."""
     option_name = format_test_flag(test["label"])
     option_value = metafunc.config.getoption(option_name)
 

@@ -96,7 +96,8 @@ def get_label_of_special_test_widget(widget: Widget) -> str | None:
     return None
 
 
-def test_result_mach(result, markers, test_name) -> bool:
+def test_result_mach(result: TestResult, markers: list[str] | None, test_name: str | None) -> bool:
+    """Check if the test result matches the given markers or test name."""
     if markers and frozenset(result.markers) == frozenset(markers):
         logger.debug(f"Found test result based on 'markers' ({markers})")
         return True
