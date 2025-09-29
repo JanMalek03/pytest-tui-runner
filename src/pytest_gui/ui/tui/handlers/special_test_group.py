@@ -136,7 +136,7 @@ class SpecialTestGroup(Vertical):
 
         elif btn_id.startswith("remove_"):
             logger.debug("'REMOVE' button pressed")
-            index = int(btn_id.replace("remove_", ""))
+            index = int(btn_id.removeprefix("remove_").split("_", 1)[0])
             if 0 <= index < len(self.rows):
                 await self._remove_row(self.rows[index])
 
