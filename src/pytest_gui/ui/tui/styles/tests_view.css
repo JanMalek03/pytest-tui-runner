@@ -11,6 +11,10 @@ Input, Select {
     width: 1fr;
 }
 
+Checkbox:focus, Input:focus {
+    border: tall #191919;
+}
+
 #button_container {
     height: 5;
     padding: 1;

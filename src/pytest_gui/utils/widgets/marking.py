@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from textual.widget import Widget
+from textual.widgets import Select
 
 from pytest_gui.logging import logger
 from pytest_gui.utils.config import get_test_result
@@ -53,27 +54,6 @@ def mark_widgets_from_report(widgets: WidgetsDict, report_path: Path) -> None:
                         process_widgets(test, test_result)
 
 
-def mark_widget_running(widget: Widget) -> None:
-    """Mark widget as running."""
-    widget.add_class("running")
-
-
-def mark_widget_list_running(widget_list: list[Widget]) -> None:
-    """Mark all widgets as running."""
-    for widget in widget_list:
-        mark_widget_running(widget)
-
-
-def reset_widget_list(widgets: list[Widget]) -> None:
-    """Remove all marks from widgets."""
-    logger.debug(f"Resetting widget styles {widgets}")
-    for widget in widgets:
-        widget.remove_class("running")
-        widget.remove_class("passed")
-        widget.remove_class("failed")
-        widget.remove_class("skipped")
-
-
 def process_widgets(widgets: Widget | list[Widget], test_result: TestResult) -> None:
     """Update widget styles based on test result."""
     if isinstance(widgets, list):
@@ -87,20 +67,18 @@ def process_widget(widget: Widget, test_result: TestResult) -> None:
     """Update widget style based on test result."""
     outcome = test_result.outcome
     if outcome == "passed":
-        widget.add_class("passed")
+        add_class(widget, "passed")
     elif outcome == "failed":
-        widget.add_class("failed")
+        add_class(widget, "failed")
     elif outcome == "skipped":
-        widget.add_class("skipped")
+        add_class(widget, "skipped")
     elif outcome == "xfailed":
-        widget.add_class("xfailed")
+        add_class(widget, "xfailed")
     elif outcome == "error":
         logger.error(f"Test with widget {widget} has error result")
-        widget.add_class("error")
+        add_class(widget, "error")
     else:
-        widget.remove_class("passed")
-        widget.remove_class("failed")
-        widget.remove_class("skipped")
+        reset_widget(widget)
 
 
 def parse_result_arg_values(args: str) -> list[str]:
@@ -115,3 +93,56 @@ def parse_result_arg_values(args: str) -> list[str]:
 def args_match_widget_values(args: list[str], widgets: list[Widget]) -> bool:
     """Check if argument values match the values of the given widgets."""
     return all(i < len(args) and args[i] == widget.value for i, widget in enumerate(widgets))
+
+
+def mark_widget_running(widget: Widget) -> None:
+    """Mark widget as running."""
+    add_class(widget, "running")
+
+
+def mark_widget_list_running(widget_list: list[Widget]) -> None:
+    """Mark all widgets as running."""
+    for widget in widget_list:
+        mark_widget_running(widget)
+
+
+def reset_widget_list(widgets: list[Widget]) -> None:
+    """Remove all marks from widgets."""
+    logger.debug(f"Resetting widget styles {widgets}")
+    for widget in widgets:
+        reset_widget(widget)
+
+
+def reset_widget(widget: Widget) -> None:
+    """Remove all marks from widget."""
+    remove_classes(widget, ["running", "passed", "failed", "skipped", "xfailed", "error"])
+
+
+def add_class(widget: Widget, style: str) -> None:
+    """Add class to widget."""
+    if isinstance(widget, Select):
+        select_current = widget.query_one("SelectCurrent")
+        select_current.add_class(style)
+    else:
+        widget.add_class(style)
+
+
+def add_classes(widget: Widget, styles: list[str]) -> None:
+    """Add multiple classes to widget."""
+    for style in styles:
+        add_class(widget, style)
+
+
+def remove_class(widget: Widget, style: str) -> None:
+    """Remove class from widget."""
+    if isinstance(widget, Select):
+        select_current = widget.query_one("SelectCurrent")
+        select_current.remove_class(style)
+    else:
+        widget.remove_class(style)
+
+
+def remove_classes(widget: Widget, styles: list[str]) -> None:
+    """Remove multiple classes from widget."""
+    for style in styles:
+        remove_class(widget, style)
