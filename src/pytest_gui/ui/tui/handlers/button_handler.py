@@ -97,7 +97,19 @@ class ButtonHandler:
 
     async def _execute_test_process(self, args: list[str], cwd: Path) -> None:
         """Run a subprocess for tests and stream output to terminal."""
-        self.terminal_view.write_line("Running tests...\n")
+        self.terminal_view.write_line("\n")
+        self.terminal_view.write_line(
+            "==============================================================================\n",
+            style="#F39D2D",
+        )
+        self.terminal_view.write_line(
+            "                                 Running tests                                 \n",
+            style="#F39D2D",
+        )
+        self.terminal_view.write_line(
+            "==============================================================================\n",
+            style="#F39D2D",
+        )
 
         logger.debug("Disabling buttons during test run")
         await disable_buttons_after_test_runs(self.buttons)
@@ -117,7 +129,6 @@ class ButtonHandler:
         await self._stream_process_output(process)
 
         await process.wait()
-        self.terminal_view.write_line("\nTests finished.")
         logger.info("✅ Tests finished")
 
         logger.debug("Enabling buttons after test run")
