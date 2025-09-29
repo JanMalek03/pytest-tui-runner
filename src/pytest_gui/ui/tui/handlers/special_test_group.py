@@ -12,7 +12,7 @@ class SpecialTestGroup(Vertical):
     Allows cloning, adding, and removing rows, and keeps track of the initial input state.
     """
 
-    def __init__(self, initial_rows: list[list[Widget]]) -> None:
+    def __init__(self, initial_rows: list[list[Widget]], test_name: str) -> None:
         """Initialize the SpecialTestGroup with a list of initial widget rows.
 
         Args:
@@ -22,6 +22,7 @@ class SpecialTestGroup(Vertical):
         super().__init__(classes="special_test_class")
         logger.debug(f"Widgets len before clonning = '{len(initial_rows)}'")
 
+        self.test_name = test_name
         self.row_template: list[Widget] = (
             self._clone_widgets(initial_rows[0]) if initial_rows else []
         )
@@ -95,7 +96,6 @@ class SpecialTestGroup(Vertical):
                 )
         return cloned
 
-    # TODO: co se stane, kdyz bude vice specialTestGroup? Potom budou kolidovat id ne? Asi potreba zahrnout test name do id
     async def _refresh_buttons(self) -> None:
         logger.debug("Refreshing buttons (delete and set new)")
         for row in self.rows:
@@ -104,9 +104,17 @@ class SpecialTestGroup(Vertical):
 
         for i, row in enumerate(self.rows):
             if i == len(self.rows) - 1:
-                button = Button("+", id=f"add_{i}", classes="special_button success_button")
+                button = Button(
+                    "+",
+                    id=f"add_{i}_{self.test_name}",
+                    classes="special_button success_button",
+                )
             else:
-                button = Button("-", id=f"remove_{i}", classes="special_button error_button")
+                button = Button(
+                    "-",
+                    id=f"remove_{i}_{self.test_name}",
+                    classes="special_button error_button",
+                )
 
             await row.mount(button, before=row.children[0] if row.children else None)
 

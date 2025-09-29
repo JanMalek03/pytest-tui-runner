@@ -49,7 +49,6 @@ def build_pytest_arguments(widgets: dict) -> list[str]:
     logger.debug(f"Pytest arguments = {pytest_arguments}")
     args.extend(pytest_arguments)
 
-    # TODO: vypsat realny prikaz na spusteni a ne seznam argumentu
     logger.info(f"Command to start the tests = {args}")
     return args
 

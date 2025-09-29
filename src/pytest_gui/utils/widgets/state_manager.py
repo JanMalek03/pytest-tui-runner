@@ -25,7 +25,7 @@ def load_widget_state(widgets: WidgetsDict, filename: Path) -> None:
 
 def save_widget_state(widgets: WidgetsDict, filename: Path) -> None:
     """Save the state of the widgets from the JSON file."""
-    # TODO: logovani
+    logger.debug(f"Saving widgets states to '{filename}' file")
     saved: SavedState = {}
 
     for cat, subcats in widgets.items():
@@ -33,8 +33,11 @@ def save_widget_state(widgets: WidgetsDict, filename: Path) -> None:
         for subcat, tests in subcats.items():
             saved[cat][subcat] = {}
             for test_name, test_widgets in tests.items():
-                saved[cat][subcat][test_name] = _serialize_test_widgets(test_widgets)
+                value_to_save: TestValue = _serialize_test_widgets(test_widgets)
+                logger.debug(f"Value to save for test '{test_name}' = {value_to_save}")
+                saved[cat][subcat][test_name] = value_to_save
 
+    logger.debug(f"Saved widgets = {saved}")
     write_json_state_file(filename, saved)
 
 

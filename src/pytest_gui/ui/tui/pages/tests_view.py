@@ -92,9 +92,6 @@ class TestsView(Vertical):
         match event.button.id:
             case "run_tests":
                 self.button_handler.run_tests()
-            case "add_button":
-                # TODO: presunout logger fo button_handler.add()
-                logger.info("Add button pressed")
             case "exit":
                 self.widget_manager.save_state()
                 self.app.exit()
