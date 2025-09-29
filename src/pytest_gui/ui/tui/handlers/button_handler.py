@@ -147,25 +147,3 @@ class ButtonHandler:
             raise RuntimeError("Process stdout is not available.")
         async for line in process.stdout:
             self.terminal_view.write_line(line.decode().rstrip())
-
-    def check_all(self) -> None:
-        """Check all test option widgets.
-
-        Sets the value of all boolean widgets in the test options to True.
-        """
-        # for category in self.widgets.values():
-        #     for subcategory in category.values():
-        #         for widget in subcategory.values():
-        #             if hasattr(widget, "value") and isinstance(widget.value, bool):
-        #                 widget.value = True
-
-    def uncheck_all(self) -> None:
-        """Uncheck all test option widgets.
-
-        Sets the value of all boolean widgets in the test options to False.
-        """
-        # for category in self.widgets.values():
-        #     for subcategory in category.values():
-        #         for widget in subcategory.values():
-        #             if hasattr(widget, "value") and isinstance(widget.value, bool):
-        #                 widget.value = False

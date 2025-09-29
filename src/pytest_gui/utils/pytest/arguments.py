@@ -1,3 +1,5 @@
+import sys
+
 from textual.widget import Widget
 from textual.widgets import Checkbox
 
@@ -25,7 +27,7 @@ def build_pytest_arguments(widgets: dict) -> list[str]:
 
     """
     # Default arguments to run pytest with uv
-    args: list[str] = ["uv", "run", "pytest"]
+    args: list[str] = [sys.executable, "-m", "pytest"]
 
     # Add flag to ignore unknows pytest markings in the user project
     args += ["-W", "ignore::pytest.PytestUnknownMarkWarning"]
