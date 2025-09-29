@@ -2,7 +2,17 @@
 name = "pytest-gui"
 version = "0.1.0"
 description = "Pytest plugin with GUI and configuration support"
+authors = [
+    {name = "Jan Málek", email = "176jenda@gmail.com"}
+]
 readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["pytest", "gui", "tui", "plugin"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Framework :: Pytest",
+    ]
 requires-python = ">=3.10"
 dependencies = [
     "click>=8.2.1",
@@ -13,6 +23,10 @@ dependencies = [
     "pyyaml>=6.0.2",
     "textual>=3.0.0",
 ]
+
+[project.urls]
+Repository = "https://github.com/JanMalek03/pytest-gui"
+
 
 [tool.setuptools.packages.find]
 where = ["src"]
