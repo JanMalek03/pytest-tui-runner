@@ -103,16 +103,17 @@ class SpecialTestGroup(Vertical):
                 await row.children[0].remove()
 
         for i, row in enumerate(self.rows):
+            button_id = f"{i}_{self.test_name.replace(' ', '_')}"
             if i == len(self.rows) - 1:
                 button = Button(
                     "+",
-                    id=f"add_{i}_{self.test_name}",
+                    id=f"add_{button_id}",
                     classes="special_button success_button",
                 )
             else:
                 button = Button(
                     "-",
-                    id=f"remove_{i}_{self.test_name}",
+                    id=f"remove_{button_id}",
                     classes="special_button error_button",
                 )
 
