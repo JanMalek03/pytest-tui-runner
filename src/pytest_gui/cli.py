@@ -35,7 +35,6 @@ def run(project_path: str | None) -> None:
         logger.info(f"Path to user's project found: '{root}'")
 
         logger.info("▶️ Starting the application...")
-        # subprocess.run(["uv", "run", "-m", "pytest_gui.ui.tui.app"], check=True)
         app = TestRunnerApp()
         app.run()
 
