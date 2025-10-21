@@ -146,4 +146,4 @@ class ButtonHandler:
         if process.stdout is None:
             raise RuntimeError("Process stdout is not available.")
         async for line in process.stdout:
-            self.terminal_view.write_line(line.decode().rstrip())
+            self.terminal_view.write_line(line.decode(errors="replace").rstrip())

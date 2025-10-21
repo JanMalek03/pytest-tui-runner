@@ -1,7 +1,7 @@
 [project]
 name = "pytest-tui-runner"
-version = "0.1.0"
-description = "Pytest plugin with GUI and configuration support"
+version = "1.0.3"
+description = "Textual-based terminal UI for running pytest tests"
 authors = [
     {name = "Jan Málek", email = "176jenda@gmail.com"}
 ]
@@ -28,8 +28,15 @@ dependencies = [
 Repository = "https://github.com/JanMalek03/pytest-tui-runner"
 
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+pytest_tui_runner = ["ui/tui/styles/*.css"]
+
 
 [project.scripts]
 pytest-tui = "pytest_tui_runner.cli:cli"
