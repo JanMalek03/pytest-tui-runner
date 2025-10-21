@@ -3,12 +3,12 @@ from collections.abc import Iterator
 from textual.widget import Widget
 from textual.widgets import Label
 
-from pytest_gui.config import load_config
-from pytest_gui.logging import logger
-from pytest_gui.paths import Paths
-from pytest_gui.utils.test_results import TestResult
-from pytest_gui.utils.types.config import Test, TestConfig
-from pytest_gui.utils.types.widgets import TestArguments
+from pytest_tui_runner.config import load_config
+from pytest_tui_runner.logging import logger
+from pytest_tui_runner.paths import Paths
+from pytest_tui_runner.utils.test_results import TestResult
+from pytest_tui_runner.utils.types.config import Test, TestConfig
+from pytest_tui_runner.utils.types.widgets import TestArguments
 
 
 def iter_tests(config_data: TestConfig) -> Iterator[Test]:

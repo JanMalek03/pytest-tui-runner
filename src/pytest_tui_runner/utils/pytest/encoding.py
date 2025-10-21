@@ -2,9 +2,9 @@ from urllib.parse import quote, unquote
 
 from textual.widgets import Select
 
-from pytest_gui.logging import logger
-from pytest_gui.utils.types.widgets import TestArguments
-from pytest_gui.utils.widgets.marking import mark_widget_list_running
+from pytest_tui_runner.logging import logger
+from pytest_tui_runner.utils.types.widgets import TestArguments
+from pytest_tui_runner.utils.widgets.marking import mark_widget_list_running
 
 VARIANT_SEP = ";"
 PAIR_SEP = ","

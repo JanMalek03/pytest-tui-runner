@@ -4,10 +4,10 @@ from pathlib import Path
 from textual.widget import Widget
 from textual.widgets import Select
 
-from pytest_gui.logging import logger
-from pytest_gui.utils.config import get_test_result
-from pytest_gui.utils.test_results import TestResult, extract_tests_results
-from pytest_gui.utils.types.widgets import WidgetsDict
+from pytest_tui_runner.logging import logger
+from pytest_tui_runner.utils.config import get_test_result
+from pytest_tui_runner.utils.test_results import TestResult, extract_tests_results
+from pytest_tui_runner.utils.types.widgets import WidgetsDict
 
 
 def reset_widgets_style(widgets: WidgetsDict) -> None:

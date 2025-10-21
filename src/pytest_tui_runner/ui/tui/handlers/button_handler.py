@@ -5,16 +5,16 @@ from pathlib import Path
 
 from textual.widgets import Button
 
-from pytest_gui.logging import logger
-from pytest_gui.paths import Paths
-from pytest_gui.ui.tui.pages.terminal_view import TerminalView
-from pytest_gui.utils.pytest.arguments import build_pytest_arguments
-from pytest_gui.utils.types.widgets import WidgetsDict
-from pytest_gui.utils.widgets.buttons import (
+from pytest_tui_runner.logging import logger
+from pytest_tui_runner.paths import Paths
+from pytest_tui_runner.ui.tui.pages.terminal_view import TerminalView
+from pytest_tui_runner.utils.pytest.arguments import build_pytest_arguments
+from pytest_tui_runner.utils.types.widgets import WidgetsDict
+from pytest_tui_runner.utils.widgets.buttons import (
     disable_buttons_after_test_runs,
     enable_buttons_after_test_finnished,
 )
-from pytest_gui.utils.widgets.marking import mark_widgets_from_report, reset_widgets_style
+from pytest_tui_runner.utils.widgets.marking import mark_widgets_from_report, reset_widgets_style
 
 
 class ButtonHandler:
@@ -116,7 +116,7 @@ class ButtonHandler:
 
         process: Process = await asyncio.create_subprocess_exec(
             *args,
-            env={**os.environ, "PYTEST_GUI_ROOT": str(Paths.user_root())},
+            env={**os.environ, "PYTEST_TUI_RUNNER_ROOT": str(Paths.user_root())},
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
             cwd=cwd,

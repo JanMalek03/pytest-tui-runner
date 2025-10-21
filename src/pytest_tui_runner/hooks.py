@@ -2,14 +2,14 @@ import pytest
 from _pytest.config.argparsing import Parser
 from _pytest.python import Metafunc
 
-from pytest_gui.config import load_config
-from pytest_gui.logging import logger, setup_logger
-from pytest_gui.paths import Paths
-from pytest_gui.utils.config import iter_tests
-from pytest_gui.utils.pytest.arguments import format_test_flag
-from pytest_gui.utils.pytest.encoding import decode_variants
-from pytest_gui.utils.test_results import IGNORED_MARKERS
-from pytest_gui.utils.types.config import Test, TestConfig
+from pytest_tui_runner.config import load_config
+from pytest_tui_runner.logging import logger, setup_logger
+from pytest_tui_runner.paths import Paths
+from pytest_tui_runner.utils.config import iter_tests
+from pytest_tui_runner.utils.pytest.arguments import format_test_flag
+from pytest_tui_runner.utils.pytest.encoding import decode_variants
+from pytest_tui_runner.utils.test_results import IGNORED_MARKERS
+from pytest_tui_runner.utils.types.config import Test, TestConfig
 
 
 def pytest_addoption(parser: Parser) -> None:

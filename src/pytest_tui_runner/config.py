@@ -4,9 +4,9 @@ from pathlib import Path
 
 import yaml
 
-from pytest_gui.logging import logger
-from pytest_gui.utils.types.config import TestConfig
-from pytest_gui.utils.types.config_validator import Config
+from pytest_tui_runner.logging import logger
+from pytest_tui_runner.utils.types.config import TestConfig
+from pytest_tui_runner.utils.types.config_validator import Config
 
 
 @lru_cache(maxsize=1)

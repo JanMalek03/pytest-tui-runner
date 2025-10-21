@@ -1,5 +1,5 @@
 [project]
-name = "pytest-gui"
+name = "pytest-tui-runner"
 version = "0.1.0"
 description = "Pytest plugin with GUI and configuration support"
 authors = [
@@ -25,17 +25,17 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/JanMalek03/pytest-gui"
+Repository = "https://github.com/JanMalek03/pytest-tui-runner"
 
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [project.scripts]
-pytest-gui = "pytest_gui.cli:cli"
+pytest-tui = "pytest_tui_runner.cli:cli"
 
 [project.entry-points.pytest11]
-pytest-gui = "pytest_gui"
+pytest-tui = "pytest_tui_runner"
 
 [tool.ruff]
 line-length = 100

@@ -4,7 +4,7 @@ from pathlib import Path
 import yaml
 from loguru import logger
 
-from pytest_gui.paths import Paths
+from pytest_tui_runner.paths import Paths
 
 __all__ = ["logger", "setup_logger"]
 

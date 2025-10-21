@@ -1,13 +1,13 @@
 from textual.app import App, ComposeResult
 from textual.widgets import TabbedContent, TabPane
 
-from pytest_gui.logging import logger
-from pytest_gui.ui.tui.pages.terminal_view import TerminalView
-from pytest_gui.ui.tui.pages.tests_view import TestsView
+from pytest_tui_runner.logging import logger
+from pytest_tui_runner.ui.tui.pages.terminal_view import TerminalView
+from pytest_tui_runner.ui.tui.pages.tests_view import TestsView
 
 
 class TestRunnerApp(App):
-    """Main application class for the pytest-gui TUI.
+    """Main application class for the pytest-tui-runner TUI.
 
     Handles the layout and navigation between Tests and Terminal views.
     """

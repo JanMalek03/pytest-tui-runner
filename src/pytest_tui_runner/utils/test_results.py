@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from pytest_gui.logging import logger
+from pytest_tui_runner.logging import logger
 
 IGNORED_MARKERS = {"skip", "xfail"}
 

@@ -3,11 +3,11 @@ import sys
 from textual.widget import Widget
 from textual.widgets import Checkbox
 
-from pytest_gui.logging import logger
-from pytest_gui.paths import Paths
-from pytest_gui.utils.pytest.encoding import encode_variants
-from pytest_gui.utils.types.widgets import TestArguments, WidgetsDict
-from pytest_gui.utils.widgets.marking import mark_widget_running
+from pytest_tui_runner.logging import logger
+from pytest_tui_runner.paths import Paths
+from pytest_tui_runner.utils.pytest.encoding import encode_variants
+from pytest_tui_runner.utils.types.widgets import TestArguments, WidgetsDict
+from pytest_tui_runner.utils.widgets.marking import mark_widget_running
 
 
 def build_pytest_arguments(widgets: dict) -> list[str]:

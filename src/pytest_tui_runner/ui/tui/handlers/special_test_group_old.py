@@ -2,7 +2,7 @@ from textual.containers import Horizontal, Vertical
 from textual.widget import Widget
 from textual.widgets import Button, Input, Select
 
-from pytest_gui.logging import logger
+from pytest_tui_runner.logging import logger
 
 
 class SpecialTestGroup(Vertical):

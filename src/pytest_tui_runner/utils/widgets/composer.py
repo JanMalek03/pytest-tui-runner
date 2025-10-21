@@ -2,9 +2,14 @@ from textual.containers import Horizontal, Vertical
 from textual.widget import Widget
 from textual.widgets import Checkbox, Label
 
-from pytest_gui.logging import logger
-from pytest_gui.ui.tui.handlers.special_test_group import SpecialTestGroup
-from pytest_gui.utils.types.widgets import CategoryDict, SubCategoryDict, TestWidgets, WidgetsDict
+from pytest_tui_runner.logging import logger
+from pytest_tui_runner.ui.tui.handlers.special_test_group import SpecialTestGroup
+from pytest_tui_runner.utils.types.widgets import (
+    CategoryDict,
+    SubCategoryDict,
+    TestWidgets,
+    WidgetsDict,
+)
 
 MAX_ROW_LENGTH = 3
 
