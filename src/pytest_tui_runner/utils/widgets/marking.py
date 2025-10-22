@@ -28,7 +28,7 @@ def reset_widgets_style(widgets: WidgetsDict) -> None:
 
 def mark_widgets_from_report(widgets: WidgetsDict, report_path: Path) -> None:
     """Update widget styles based on pytest JSON report outcomes."""
-    logger.debug("Loading report to mark widgets")
+    logger.debug(f"Loading report to mark widgets from path: {report_path}")
     if not report_path.exists():
         logger.error(f"Report file not found: {report_path}")
         raise FileNotFoundError(f"Report file not found: {report_path}")

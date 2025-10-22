@@ -66,6 +66,9 @@ def extract_tests_results(report: dict) -> list[TestResult]:
             )
         logger.debug("✅ Test result processed")
 
+    if not tests_results:
+        logger.error("No test results found in the report.")
+
     logger.debug(f"ALL Test results extracted: {tests_results}")
 
     return tests_results
