@@ -133,7 +133,7 @@ my_project/
 
 Here’s how the TUI looks in action:
 
-![pytest-tui-runner main view](https://raw.githubusercontent.com/JanMalek03/pytest-tui-runner/default_tui/docs/MainScreen.png)
+![pytest-tui-runner main view](https://raw.githubusercontent.com/JanMalek03/pytest-tui-runner/docs/MainScreen.png)
 
 
 ## 🤝 Contributing
@@ -141,8 +141,8 @@ Here’s how the TUI looks in action:
 If you have ideas, feedback, or suggestions for improvements, I’d love to hear from you!  
 You can reach out directly via **email** or message me on **LinkedIn**:
 
-- Email: your.email@example.com  
-- LinkedIn: [Your Name](https://www.linkedin.com/in/janmalek436159283)  
+- Email: 176jenda@gmail.com  
+- LinkedIn: [Jan Málek](https://www.linkedin.com/in/janmalek436159283)  
 
 If you prefer, you can also open a discussion or issue on the [GitHub Issues](https://github.com/JanMalek03/pytest-tui-runner/issues) page.
 
