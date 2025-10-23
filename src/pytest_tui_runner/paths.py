@@ -43,7 +43,7 @@ class Paths:
     @classmethod
     def config(cls) -> Path:
         """Path to the user configuration file."""
-        return cls.user_root() / "pytest_tui_runner" / "default.yaml"
+        return cls.user_root() / "pytest_tui_runner" / "config.yaml"
 
     @classmethod
     def log_dir(cls) -> Path:

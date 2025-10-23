@@ -57,7 +57,7 @@ You can then:
 
 ## Configuration
 
-Inside the `pytest_tui_runner` folder, create a file named **`default.yaml`**.  
+Inside the `pytest_tui_runner` folder, create a file named **`config.yaml`**.  
 This is the main configuration file defining how your tests are grouped and displayed.
 
 ### Structure overview
@@ -119,7 +119,7 @@ categories:
 ```
 my_project/
 ├── pytest_tui_runner/
-│   └── default.yaml
+│   └── config.yaml
 ├── tests/
 │   ├── test_math.py
 │   └── test_login.py
