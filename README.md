@@ -133,7 +133,8 @@ my_project/
 
 Here’s how the TUI looks in action:
 
-![pytest-tui-runner main view](https://raw.githubusercontent.com/JanMalek03/pytest-tui-runner/docs/MainScreen.png)
+![pytest-tui-runner main view](https://raw.githubusercontent.com/JanMalek03/pytest-tui-runner/feature/default_tui/docs/MainScreen.png
+)
 
 
 ## 🤝 Contributing
