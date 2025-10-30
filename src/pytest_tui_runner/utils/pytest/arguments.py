@@ -26,7 +26,7 @@ def build_pytest_arguments(widgets: dict) -> list[str]:
         List of command-line arguments for pytest.
 
     """
-    # Default arguments to run pytest with uv
+    # Default arguments to run pytest
     args: list[str] = [sys.executable, "-m", "pytest"]
 
     # Add flag to ignore unknows pytest markings in the user project
