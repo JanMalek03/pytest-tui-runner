@@ -65,6 +65,7 @@ class ButtonHandler:
         """
         logger.debug("Resetting widget styles")
         reset_widgets_style(self.widgets)
+        Paths.delete_pytest_report()
 
         logger.debug("------------------------- COMMAND EXECUTING -------------------------")
         logger.debug("'RUN TESTS' button pressed")

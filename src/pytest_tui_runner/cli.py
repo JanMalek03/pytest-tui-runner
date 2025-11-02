@@ -16,16 +16,30 @@ def cli() -> None:
 
 @cli.command()
 @click.argument("project_path", required=False, type=click.Path(exists=True, file_okay=False))
-def run(project_path: str | None) -> None:
+@click.option(
+    "--init",
+    "-i",
+    is_flag=True,
+    default=False,
+    help="Creates a library folder and config file in the current directory.",
+)
+def run(project_path: str | None, init: bool) -> None:
     """Run the terminal application."""
     try:
+        if init:
+            setup_project()
+
         if project_path:
             root = Path(project_path).resolve()
             Paths.set_user_root(root)
         else:
             root = find_project_root_by_folder(Path.cwd(), ["pytest_tui_runner"])
             if root is None:
-                logger.error("Could not find project root (missing 'tests' directory).")
+                logger.error(
+                    """Could not find project root.
+You can run the application with the --init option, which will create in the current folder all the necessary things to run the application (the pytest_tui_runner folder and the config.yaml file).
+!!! However, you must be in the root directory of your project with tests, otherwise this initialization will be done in the wrong place.""",
+                )
                 sys.exit(1)
             Paths.set_user_root(root)
 
@@ -41,3 +55,30 @@ def run(project_path: str | None) -> None:
     except subprocess.CalledProcessError as e:
         logger.error(f"Error launching the application: {e}")
         sys.exit(1)
+
+
+def setup_project():
+    """Set up a default pytest_tui_runner folder and config file in the current directory."""
+    target_dir = Path.cwd() / "pytest_tui_runner"
+    config_file = target_dir / "config.yaml"
+
+    if not target_dir.exists():
+        target_dir.mkdir(parents=True)
+        click.echo(f"✅ Folder created: {target_dir}")
+    else:
+        click.echo(f"ℹ️ Folder '{target_dir}' already exists.")
+
+    if not config_file.exists():
+        config_file.write_text(
+            """categories:
+  - label: "Your category label"
+    subcategories:
+      - label: "Your subcategory label"
+        tests:
+          - label: "Your test label"
+            test_name: "your_test_name"
+""",
+        )
+        click.echo(f"✅ Created config file with some example data: {config_file}")
+    else:
+        click.echo(f"ℹ️ File '{config_file}' already exists.")
