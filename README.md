@@ -54,6 +54,31 @@ You can then:
 - Start the execution directly from the TUI  
 - Switch to the **terminal view** – you can copy text from it by holding **Shift** and dragging the mouse to select the desired output 
 
+### Quick setup with **--init**
+If your project does not yet contain the pytest_tui_runner folder (for example, if you’re setting up the plugin for the first time),
+you can quickly initialize it using the --init option:
+
+```bash
+pytest-tui run --init
+```
+
+This command will:
+- create the pytest_tui_runner/ folder in your current working directory,
+- generate a basic config.yaml file with a default structure,
+- and run the TUI application.
+<br/><br/>
+
+⚠️ Important:
+
+Make sure you run this command from the root of your project — otherwise, the folder and config will be created in the wrong place, and the application might not work correctly.
+
+After initialization, you can start the app normally using:
+
+```bash
+pytest-tui run
+```
+
+
 
 ## Configuration
 
