@@ -34,18 +34,24 @@ def get_test_result(
     else:
         markers, test_name = get_test_markers_and_test_name(test.label, config_data)
 
+    last_result = None
     for result in test_results:
+        logger.critical(result)
         if not test_result_mach(result, markers, test_name):
             continue
+
         if result.args:
             args = parse_result_arg_values(result.args)
             if not args_match_widget_values(args, test):
                 logger.debug("Found test result, but args values dont match")
                 continue
-        return result
 
-    logger.debug("Didn't found any test result for widget")
-    return None
+        if result.outcome != "passed":
+            return result
+
+        last_result = result
+
+    return last_result
 
 
 def parse_result_arg_values(args: str) -> list[str]:
