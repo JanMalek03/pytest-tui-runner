@@ -48,7 +48,7 @@ def get_test_result(
         if not test_result_mach(result, markers, test_name):
             continue
 
-        if result.args:
+        if result.args and isinstance(test, list):
             args = parse_result_arg_values(result.args)
             if not args_match_widget_values(args, test):
                 logger.debug("Found test result, but args values dont match")
