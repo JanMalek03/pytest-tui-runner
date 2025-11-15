@@ -34,9 +34,8 @@ def run(project_path: str | None, init: bool) -> None:
         elif init:
             root = Path.cwd().resolve()
             setup_project(root)
-            Paths.set_user_root(root)
         else:
-            root = find_project_root_by_folder(Path.cwd(), ["pytest_tui_runner"])
+            root = find_project_root_by_folder(Path.cwd(), [Paths.APP_FOLDER])
             if root is None:
                 logger.error(
                     """Could not find project root.
@@ -62,8 +61,10 @@ def run(project_path: str | None, init: bool) -> None:
 
 def setup_project(user_root: Path) -> None:
     """Set up a default pytest_tui_runner folder and config file in the current directory."""
-    target_dir = user_root / "pytest_tui_runner"
-    config_file = target_dir / "config.yaml"
+    Paths.set_user_root(user_root)
+
+    target_dir = Paths.app_dir()
+    config_file = Paths.config()
 
     if not target_dir.exists():
         target_dir.mkdir(parents=True)
