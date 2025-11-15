@@ -44,7 +44,7 @@ def save_widget_state(widgets: WidgetsDict, filename: Path) -> None:
 def read_json_state_file(filename: Path) -> SavedState:
     """Load saved widget states from file and return as a dictionary."""
     if not filename or not filename.is_file():
-        logger.error(f"Configuration file '{filename}' not found")
+        logger.debug(f"WARNING: Configuration file '{filename}' not found")
         return {}
     try:
         with Path.open(filename, encoding="utf-8") as f:
@@ -87,7 +87,7 @@ def _set_widgets_values(test_widgets: TestWidgets, saved_values: TestValue) -> N
     )
     for i, arguments_widgets in enumerate(test_widgets):
         if i >= len(saved_values):
-            logger.warning("Number of widgets is greater than the number of stored values")
+            logger.debug("WARNING: Number of widgets is greater than the number of stored values")
             continue
 
         saved_entry = saved_values[i]
@@ -102,7 +102,7 @@ def _set_widgets_values(test_widgets: TestWidgets, saved_values: TestValue) -> N
                     logger.debug(f"Setting value for widget {widget} = '{value}'")
                     widget.value = value
                 else:
-                    logger.warning(f"No value saved for this widget = {widget}")
+                    logger.debug(f"WARNING: No value saved for this widget = {widget}")
 
         except (TypeError, AttributeError) as e:
             logger.error(

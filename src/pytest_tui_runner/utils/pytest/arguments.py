@@ -90,8 +90,8 @@ def widget_to_argument(test_name: str, widgets: Widget | list[TestArguments]) ->
     if isinstance(widgets, list) and widgets:
         logger.debug("▶️ Encoding special test...")
         variant_strings: str = encode_variants(test_name, widgets)
-        logger.debug("✅ Special test encoded")
         if variant_strings is not None:
+            logger.debug("✅ Special test encoded")
             return f"{format_test_flag(test_name)}=" + variant_strings
 
     return None
