@@ -5,26 +5,60 @@
 
 ## Introdution
 
-When I was running tests with `pytest`, I often struggled to easily select and execute only the tests I needed.  
-Typing long and complex command-line arguments was error-prone and not very convenient.  
-That inspired me to create **`pytest-tui-runner`**, a plugin that makes working with tests much simpler and more interactive — right inside your terminal.
+When working with `pytest`, selecting the right combination of tests can be inconvenient, especially if you need to remember long command-line flags, markers, parameters, or custom arguments.
+
+**`pytest-tui-runner`** solves this by providing an interactive terminal interface (TUI) built specifically for running pytest tests in a clean, organized way.
+
+However, unlike test browsers that automatically load your entire test suite, this tool is intentionally designed to be **fully controlled by you** using a configuration file.
 
 
+Instead of overwhelming you with the large number of tests you might have in a project, the configuration file allows you to:
+
+- define exactly which tests appear in the interface,
+- group them into clear categories and subcategories,
+- assign human-friendly labels,
+- optionally attach arguments or dropdowns for parametrized tests.
+
+This keeps the interface clean, simple, and tailored to your workflow.
+
+
+
+
+
+<br/><br/>
 ## Features
-`pytest-tui-runner` allows you to create your own **text-based interface** that lists and organizes your tests exactly the way you want.  
-You can select tests, provide parameters, and run them. All from a user-friendly terminal interface.
+Once you define your test structure in **config.yaml** (explained in detail in the [Configuration](#configuration)), the TUI provides a clean and interactive way to work with your tests. The main features include:
 
-Main features:
-- **Interactive test selection** – check or uncheck which tests to run
-- **Color-coded test results** – 
-  - 🟢 Green → test passed  
-  - 🔴 Red → test failed  
-  - 🔵 Blue → test running
-- **Test parametrization** – easily provide test arguments via text inputs or dropdown menus  
-- **Integrated terminal output** – see real pytest logs while tests run  
-- **Persistent interface state** – the layout and widget values are saved in local files, so you can easily share or restore your test setup later.
+### **Interactive test selection**
+- Select or deselect tests using checkboxes
+- Each item corresponds exactly to what you define in your config
+
+### **Arguments for parametrized tests**
+- Support for **text_input** fields for free-form values.
+- Support for **select** dropdowns with predefined options.
+- Ability to add **multiple sets of arguments** for running the same test with different values.
+
+### **One-click test execution**
+- A single **Run tests** button executes all selected tests.
+- The tool constructs pytest arguments automatically — no need to remember flags or syntax.
+
+### **Live terminal output**
+- The interface includes a **Terminal tab** where you can see the real-time pytest output.
+- You can scroll through it or copy text using **Shift + mouse drag**.
+
+### **Color-coded test states**
+- 🟢 **Green** → test passed  
+- 🔴 **Red** → test failed  
+- 🔵 **Blue** → test is currently running
+  - If a widget remains blue *after all tests have finished*, it means the test result could not be linked back to that widget.
+
+  These visual indicators make it easy to follow progress without reading the full terminal log.
 
 
+
+
+
+<br/><br/>
 ## Instalation
 
 Install from PyPI using:
@@ -35,12 +69,13 @@ pip install pytest-tui-runner
 
 
 
+<br/><br/>
 ## Usage
 
 In the **root folder** of your project (where you have the `tests/` directory), create a folder named `pytest_tui_runner`.  
 This folder will store everything related to the plugin — logs, configuration files, and widget states.
 
-Once your configuration file is ready (see the *Configuration* section below), simply run:
+Once your configuration file is ready (see the [Configuration](#configuration) section), simply run:
 
 ```bash
 pytest-tui run
@@ -48,14 +83,14 @@ pytest-tui run
 
 The terminal interface will open.  
 You can then:
-- Check or uncheck individual tests to include or exclude them  
-- Fill in argument fields for parametrized tests  
-- Add additional parameter sets using the green **+** button (each click creates a new row of arguments)  
-- Start the execution directly from the TUI  
-- Switch to the **terminal view** – you can copy text from it by holding **Shift** and dragging the mouse to select the desired output 
+- select or deselect tests using checkboxes,
+- fill in argument fields for parametrized tests, 
+- add multiple parameter rows using the green **+** button, 
+- run selected tests with a single action,
+- switch to the **Terminal** tab to see live pytest output (copy using **Shift + mouse drag**).
 
 ### Quick setup with **--init**
-If your project does not yet contain the pytest_tui_runner folder (for example, if you’re setting up the plugin for the first time),
+If your project does not yet contain the **pytest_tui_runner** folder (for example, if you’re setting up the plugin for the first time),
 you can quickly initialize it using the --init option:
 
 ```bash
@@ -63,14 +98,16 @@ pytest-tui run --init
 ```
 
 This command will:
-- create the pytest_tui_runner/ folder in your current working directory,
+- create the `pytest_tui_runner/` folder in your current working directory,
 - generate a basic config.yaml file with a default structure,
 - and run the TUI application.
 <br/><br/>
 
-⚠️ Important:
+#### ⚠️ Important:
+`--init` **does NOT create a fully working configuration.**  
+It only generates a **template** that you must edit to match your project.
 
-Make sure you run this command from the root of your project — otherwise, the folder and config will be created in the wrong place, and the application might not work correctly.
+Also make sure you run this command from the root of your project — otherwise, the folder and config will be created in the wrong place, and the application might not work correctly.
 
 After initialization, you can start the app normally using:
 
@@ -79,39 +116,117 @@ pytest-tui run
 ```
 
 
-
+<br/><br/>
 ## Configuration
 
-Inside the `pytest_tui_runner` folder, create a file named **`config.yaml`**.  
-This is the main configuration file defining how your tests are grouped and displayed.
+Inside the `pytest_tui_runner` folder, you must create a file named **`config.yaml`**.  
+This file fully controls what appears in the TUI — without it, the interface will be empty.
+
+The purpose of the config is to give you complete control over which tests are shown, how they are grouped, and what parameters they accept.  
+Nothing is loaded automatically from your filesystem, so large test suites won’t overwhelm the interface.
+
 
 ### Structure overview
 
-Tests are organized into **categories**, each with a `label`.  
-Each category can contain one or more **subcategories**, which also have their own `label`.  
-Inside each subcategory, you define individual **tests**.
-
-Every test can be referenced in two ways:
-- Using `test_name` → must exactly match the real test function name.  
-  This means that **one checkbox in the TUI corresponds to one specific test function**.
-- Using `markers` → a list of pytest markers (e.g. `["setup", "login"]`) that will be used to find all matching tests.  
-  In this case, **a single checkbox can represent multiple tests** — all tests that contain the specified markers will be executed together.
+Your configuration is made of three levels, and **each level includes a `label` field**:
+1. **categories:** top-level groups
+2. **subcategories:** groups inside each category
+3. **tests:** individual test items or test groups based on markers
 
 
-You can also define **arguments** for parametrized tests.  
-Each argument must be described precisely using the following fields:
+### Referencing tests
+Each test can be referenced in two ways:
 
-- `arg_name` → must exactly match the argument name used in the referenced test function  
-- `arg_type` → specifies how the value will be entered in the TUI and must be one of:
-  - `"text_input"` – user can type a custom text value manually  
-  - `"select"` – user can choose from predefined options
-- Additional fields depending on the type:
-  - for `"text_input"` → include a `placeholder` field to show a hint in the input box  
-  - for `"select"` → include an `options` field, which is a list of selectable values  
+
+#### **1. Using `test_name`**  
+`test_name` must match the **actual Python test function name**, for example:
+
+```python
+def test_login_success():
+    ...
+```
+
+Your config must use:
+
+```yaml
+test_name: "test_login_success"
+```
+
+
+#### **2. Using `markers`**
+
+Instead of referencing a specific test, you can reference a **group of tests** using pytest markers.
+
+A checkbox defined this way will match **only tests that contain *all* of these markers*** — no more, no less.
+
+**Example:**
+
+Suppose you have:
+```python
+@pytest.mark.slow
+@pytest.mark.api
+def test_download():
+    ...
+
+@pytest.mark.slow
+def test_small_sleep():
+    ...
+```
+
+And your config contains:
+```yaml
+markers: ["slow", "api"]
+```
+
+Results:
+
+- ✅ `test_download` — matches exactly (`slow` + `api`)  
+- ❌ `test_small_sleep` — missing marker `api`
+
+Useful when you want to run groups of tests together (e.g., “all slow tests”).
+
+
+### Defining arguments for parametrized tests
+If your test function has parameters, for example:
+
+```python
+def test_compute(x, y):
+    ...
+```
+
+an `arguments:` list must be defined in the configuration so the TUI knows how values for these parameters should be entered.
+
+Each argument must include:
+
+- `arg_name`  
+  Must match the exact parameter name from the test function
+
+- `arg_type`  
+  specifies how the value will be entered in the TUI and must be one of:  
+  - `"text_input"` → free text field  
+  - `"select"` → a dropdown list with predefined options
+
+Depending on `arg_type`, you then add additional fields:
+
+- `"text_input"` → requires a `placeholder`
+- `"select"` → requires an `options: [...]` list
+
+
+**Example for a test with two parameters `x` and `y`:**
+
+```yaml
+arguments:
+  - arg_name: "x"
+    arg_type: "text_input"
+    placeholder: "Enter value for x"
+
+  - arg_name: "y"
+    arg_type: "select"
+    options: ["low", "medium", "high"]
+```
 
 These definitions allow the TUI to dynamically generate interactive input fields that correspond to real test parameters.
 
----
 
 ### Example configuration file
 
