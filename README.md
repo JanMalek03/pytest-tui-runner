@@ -69,7 +69,6 @@ pip install pytest-tui-runner
 
 
 
-<br/><br/>
 ## Usage
 
 In the **root folder** of your project (where you have the `tests/` directory), create a folder named `pytest_tui_runner`.  
@@ -114,6 +113,27 @@ After initialization, you can start the app normally using:
 ```bash
 pytest-tui run
 ```
+
+### Providing a project path manually
+By default, the tool searches for the project root automatically by looking for a folder named `pytest_tui_runner` upwards from the current working directory.
+
+However, you can also **explicitly specify the project directory** as a positional argument:
+
+```bash
+pytest-tui run path/to/your/project
+```
+
+This tells the tool exactly where your project is located, and all configuration, logs, and state files will be loaded from there.
+
+You can combine this with `--init`:
+
+```bash
+pytest-tui run --init path/to/your/project
+```
+
+In this case, the tool will perform all necessary setup directly within the directory you provided, not the one you are currently in.
+
+
 
 
 <br/><br/>
@@ -186,6 +206,8 @@ Results:
 Useful when you want to run groups of tests together (e.g., “all slow tests”).
 
 
+<br>
+
 ### Defining arguments for parametrized tests
 If your test function has parameters, for example:
 
@@ -253,6 +275,33 @@ categories:
                 options: ["add", "subtract", "multiply", "divide"]
 ```
 
+## Logging configuration
+
+The TUI application uses **Loguru** for all logging.  
+By default, logs are written into the `pytest_tui_runner/logs/` directory inside your project.
+
+You can customize how logs are written by creating an optional file named:
+**`pytest_tui_runner/config.yaml`**.
+
+This file allows you to change the log level, log format, file rotation, and retention.  
+All fields are optional — any missing values fall back to sensible defaults.
+
+⚠️ **Important:**  
+All values in this file are passed directly to **Loguru**.  
+For detailed explanations of formatting, rotation rules, or supported values, refer to the official Loguru documentation:  
+https://loguru.readthedocs.io/en/stable/api/logger.html
+
+
+### Example logging configuration
+
+```yaml
+level: INFO
+format: "<green>{time:HH:mm:ss.SSS}</green> | <level>{level}</level> | {message}"
+rotation: "00:00"
+retention: 7
+```
+
+
 
 ## Example Project Structure
 
@@ -269,7 +318,7 @@ my_project/
 
 
 
-## 🖼️ Screenshots
+## Screenshots
 
 Here’s how the TUI looks in action:
 
@@ -277,7 +326,31 @@ Here’s how the TUI looks in action:
 )
 
 
-## 🤝 Contributing
+## Known Problems and Limitations
+
+The following issues are currently known and may affect behavior in some situations:
+
+### 1. Limited compatibility with other pytest plugins
+When `pytest-tui-runner` is installed, it **replaces the standard pytest entry point** so that pytest always requires information about the user’s project root before it can run.  
+In other words, pytest is no longer started in its default way.
+
+Because of this hard override, **other plugins that assume the original pytest entry point or modify the pytest launch process may not work correctly**.  
+Compatibility improvements are planned for future versions.
+
+### 2. Duplicate argument sets may not map back correctly
+If a test is run with **multiple identical argument sets** (e.g., the same `(x, y)` combination more than once), the runner may not be able to correctly associate the pytest result with the corresponding widget.  
+In such cases, the widget may remain **blue** even though the test finished.
+
+### 3. Tests with native pytest parametrization may not color correctly
+If a test already uses **pytest parametrization** internally (e.g., `@pytest.mark.parametrize`), and this parametrization doesn't match the structure expected by the TUI, the tool may not be able to reliably link the results back to the correct widgets.  
+This can lead to incorrect or missing color updates.
+
+These limitations are known and will be addressed in future releases.  
+If you encounter additional issues, feel free to open a GitHub issue.
+
+
+
+## Contributing
 
 If you have ideas, feedback, or suggestions for improvements, I’d love to hear from you!  
 You can reach out directly via **email** or message me on **LinkedIn**:
