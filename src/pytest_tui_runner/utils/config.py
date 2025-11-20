@@ -30,17 +30,25 @@ def get_test_result(
     if isinstance(test, list):
         widgets_sample = test[0]
         label = get_label_of_special_test_widget(widgets_sample)
+        logger.debug(f"Label of special test widget: {label}")
+        if label is None:
+            logger.error("Could not get label of special test widget.")
+            return None
+
         markers, test_name = get_test_markers_and_test_name(label, config_data)
     else:
         markers, test_name = get_test_markers_and_test_name(test.label, config_data)
 
+    if markers is None and test_name is None:
+        logger.error("Could not get markers or test name for the given test.")
+        return None
+
     last_result = None
     for result in test_results:
-        logger.critical(result)
         if not test_result_mach(result, markers, test_name):
             continue
 
-        if result.args:
+        if result.args and isinstance(test, list):
             args = parse_result_arg_values(result.args)
             if not args_match_widget_values(args, test):
                 logger.debug("Found test result, but args values dont match")
@@ -92,11 +100,48 @@ def get_test_markers_and_test_name(
 def get_label_of_special_test_widget(widget: Widget) -> str | None:
     """Get the label text of a special test widget."""
     logger.debug("Getting label for special test")
-    subcategory_content = widget.parent.parent.parent
+
+    try:
+        subcategory_content = widget.parent.parent.parent
+    except AttributeError as e:
+        logger.error(f"Error accessing parent widgets: {e}")
+        return None
 
     for w in subcategory_content.children:
-        if isinstance(w, Label):
-            return w.renderable
+        if not isinstance(w, Label):
+            continue
+
+        # Stav widgetu
+        is_mounted = getattr(w, "is_mounted", True)
+        is_ready = getattr(w, "is_ready", True)
+
+        if not is_mounted:
+            logger.warning(f"Label {w!r} is not yet mounted — text may be unavailable.")
+        if not is_ready:
+            logger.warning(f"Label {w!r} is not yet ready — text may be unavailable.")
+
+        # Pokus o získání textu z různých zdrojů
+        text = getattr(w, "text", None)
+        if text is None:
+            text = getattr(w, "renderable", None)
+        if text is None:
+            text = getattr(w, "_text", None)  # fallback pro starší Textual verze
+
+        if not text:
+            logger.error(f"Label widget {w!r} has no 'text', 'renderable', or '_text' attribute.")
+            continue
+
+        logger.debug(f"Found label text for {widget!r}: {text!r}")
+        return str(text)
+
+    # for w in subcategory_content.children:
+    #     if isinstance(w, Label):
+    #         if not hasattr(w, "renderable"):
+    #             logger.error(f"Label widget {w} has no 'renderable' attribute.")
+    #             return None
+
+    #         logger.debug(f"Found label widget: {w.renderable}")
+    #         return w.renderable
 
     logger.error(f"Label not found for special test widget {widget}.")
     return None

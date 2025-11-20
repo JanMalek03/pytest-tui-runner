@@ -41,7 +41,7 @@ Label {
     margin-top: 1;
     margin-bottom: 1;
     height: auto;
-    border: round rgba(181, 118, 0, 0.52);
+    border: round rgb(109, 71, 0);
     border-title-color: rgb(243, 157, 45);
     border-title-style: italic;
 }
@@ -87,27 +87,27 @@ Label {
 
 
 .running {
-    background: rgba(47, 87, 152, 0.55)
+    background: rgb(33, 61, 107);
 }
 
 .failed {
-    background: rgba(181, 59, 59, 0.55);
+    background: rgb(129, 44, 44);
 }
 
 .passed {
-    background: rgba(36, 109, 36, 0.55);
+    background: rgb(30, 91, 30);
 }
 
 .skipped {
-    background: rgba(200, 131, 2, 0.55);
+    background: rgb(135, 88, 1);
 }
 
 .xfailed {
-    background: rgba(142, 62, 1, 0.55);
+    background: rgb(101, 44, 0);
 }
 
 .error{
-    background: rgba(97, 28, 28, 0.55);
+    background: rgb(71, 21, 21);
 }
 
 
@@ -124,18 +124,18 @@ Label {
 }
 
 .error_button {
-    background: rgba(250, 69, 69, 0.734);
+    background: rgb(159, 44, 44);
     color: white;
     &:hover {
-        background: rgba(209, 57, 57, 0.734);
+        background: rgb(145, 40, 40);
     }
 }
 
 .success_button {
-    background: rgba(36, 109, 36, 0.8);
+    background: rgb(31, 93, 31);
     color: white;
     &:hover {
-        background: rgba(36, 109, 36, 0.65);
+        background: rgb(28, 85, 28);
     }
 }
 
