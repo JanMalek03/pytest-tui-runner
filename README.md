@@ -71,7 +71,7 @@ pip install pytest-tui-runner
 
 ## Usage
 
-In the **root folder** of your project (where you have the `tests/` directory), create a folder named `pytest_tui_runner`.  
+In the **root folder** of your project (where you have the `tests/` directory), create a folder named `.pytest_tui_runner`.  
 This folder will store everything related to the plugin — logs, configuration files, and widget states.
 
 Once your configuration file is ready (see the [Configuration](#configuration) section), simply run:
@@ -89,7 +89,7 @@ You can then:
 - switch to the **Terminal** tab to see live pytest output (copy using **Shift + mouse drag**).
 
 ### Quick setup with **--init**
-If your project does not yet contain the **pytest_tui_runner** folder (for example, if you’re setting up the plugin for the first time),
+If your project does not yet contain the **.pytest_tui_runner** folder (for example, if you’re setting up the plugin for the first time),
 you can quickly initialize it using the --init option:
 
 ```bash
@@ -97,7 +97,7 @@ pytest-tui run --init
 ```
 
 This command will:
-- create the `pytest_tui_runner/` folder in your current working directory,
+- create the `.pytest_tui_runner/` folder in your current working directory,
 - generate a basic config.yaml file with a default structure,
 - and run the TUI application.
 <br/><br/>
@@ -115,7 +115,7 @@ pytest-tui run
 ```
 
 ### Providing a project path manually
-By default, the tool searches for the project root automatically by looking for a folder named `pytest_tui_runner` upwards from the current working directory.
+By default, the tool searches for the project root automatically by looking for a folder named `.pytest_tui_runner` upwards from the current working directory.
 
 However, you can also **explicitly specify the project directory** as a positional argument:
 
@@ -139,7 +139,7 @@ In this case, the tool will perform all necessary setup directly within the dire
 <br/><br/>
 ## Configuration
 
-Inside the `pytest_tui_runner` folder, you must create a file named **`config.yaml`**.  
+Inside the `.pytest_tui_runner` folder, you must create a file named **`config.yaml`**.  
 This file fully controls what appears in the TUI — without it, the interface will be empty.
 
 The purpose of the config is to give you complete control over which tests are shown, how they are grouped, and what parameters they accept.  
@@ -278,10 +278,10 @@ categories:
 ## Logging configuration
 
 The TUI application uses **Loguru** for all logging.  
-By default, logs are written into the `pytest_tui_runner/logs/` directory inside your project.
+By default, logs are written into the `.pytest_tui_runner/logs/` directory inside your project.
 
 You can customize how logs are written by creating an optional file named:
-**`pytest_tui_runner/config.yaml`**.
+**`.pytest_tui_runner/logs/config.yaml`**.
 
 This file allows you to change the log level, log format, file rotation, and retention.  
 All fields are optional — any missing values fall back to sensible defaults.
@@ -308,7 +308,7 @@ retention: 7
 
 ```
 my_project/
-├── pytest_tui_runner/
+├── .pytest_tui_runner/
 │   └── config.yaml
 ├── tests/
 │   ├── test_math.py

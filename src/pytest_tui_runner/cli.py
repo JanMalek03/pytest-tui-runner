@@ -39,7 +39,7 @@ def run(project_path: str | None, init: bool) -> None:
             if root is None:
                 logger.error(
                     """Could not find project root.
-    You can run the application with the --init option, which will create in the current folder all the necessary things to run the application (the pytest_tui_runner folder and the config.yaml file).
+    You can run the application with the --init option, which will create in the current folder all the necessary things to run the application (the .pytest_tui_runner folder and the config.yaml file).
     !!! However, you must be in the root directory of your project with tests, otherwise this initialization will be done in the wrong place.""",
                 )
                 sys.exit(1)
@@ -60,7 +60,7 @@ def run(project_path: str | None, init: bool) -> None:
 
 
 def setup_project(user_root: Path) -> None:
-    """Set up a default pytest_tui_runner folder and config file in the current directory."""
+    """Set up a default .pytest_tui_runner folder and config file in the current directory."""
     Paths.set_user_root(user_root)
 
     target_dir = Paths.app_dir()
