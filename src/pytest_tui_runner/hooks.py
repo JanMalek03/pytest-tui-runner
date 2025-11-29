@@ -214,6 +214,7 @@ def log_unused_options(used_options: dict) -> None:
             key_type = "Markers"
             after_key = "are"
         else:
+            key_str = key
             key_type = "Test_name"
             after_key = "is"
         logger.warning(
