@@ -68,17 +68,14 @@ def process_widget(widget: Widget, test_result: TestResult) -> None:
     outcome = test_result.outcome
     if outcome == "passed":
         add_class(widget, "passed")
-    elif outcome == "failed":
+    elif outcome in {"failed", "xpassed"}:
         add_class(widget, "failed")
     elif outcome == "skipped":
         add_class(widget, "skipped")
     elif outcome == "xfailed":
         add_class(widget, "xfailed")
-    elif outcome == "error":
-        logger.error(f"Test with widget {widget} has error result")
-        add_class(widget, "error")
     else:
-        reset_widget(widget)
+        logger.error(f"Unknown test outcome '{outcome}' for widget {widget}")
 
 
 def parse_result_arg_values(args: str) -> list[str]:
