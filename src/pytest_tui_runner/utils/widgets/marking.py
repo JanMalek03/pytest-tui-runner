@@ -74,6 +74,9 @@ def process_widget(widget: Widget, test_result: TestResult) -> None:
         add_class(widget, "skipped")
     elif outcome == "xfailed":
         add_class(widget, "xfailed")
+    elif outcome == "error":
+        logger.warning(f"Test resulted in error: {test_result}")
+        add_class(widget, "error")
     else:
         logger.error(f"Unknown test outcome '{outcome}' for widget {widget}")
 
