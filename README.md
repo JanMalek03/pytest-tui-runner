@@ -88,25 +88,27 @@ You can then:
 - run selected tests with a single action,
 - switch to the **Terminal** tab to see live pytest output (copy using **Shift + mouse drag**).
 
-### Quick setup with **--init**
+### Quick setup with **init**
 If your project does not yet contain the **.pytest_tui_runner** folder (for example, if you’re setting up the plugin for the first time),
-you can quickly initialize it using the --init option:
+you can quickly initialize it using the `init` command:
 
 ```bash
-pytest-tui run --init
+pytest-tui init
 ```
 
 This command will:
 - create the `.pytest_tui_runner/` folder in your current working directory,
-- generate a basic config.yaml file with a default structure,
-- and run the TUI application.
+- generate a basic config.yaml file with a default structure.
+
+It does not start the TUI; it only prepares the project for use.
 <br/><br/>
 
 #### ⚠️ Important:
-`--init` **does NOT create a fully working configuration.**  
+`pytest-tui init` **does NOT create a fully working configuration.**  
 It only generates a **template** that you must edit to match your project.
 
-Also make sure you run this command from the root of your project — otherwise, the folder and config will be created in the wrong place, and the application might not work correctly.
+Also make sure you run this command from the root of your project (or pass the correct project path),
+otherwise the folder and config may be created in the wrong place and the application might not work correctly.
 
 After initialization, you can start the app normally using:
 
@@ -123,17 +125,23 @@ However, you can also **explicitly specify the project directory** as a position
 pytest-tui run path/to/your/project
 ```
 
-This tells the tool exactly where your project is located, and all configuration, logs, and state files will be loaded from there.
+This tells the tool where to start looking for the project root. It searches upward from the given path for a
+`.pytest_tui_runner` folder, and then loads configuration, logs, and state files from that project root.
 
-You can combine this with `--init`:
+
+If you need to set up a project manually, you can initialize it using:
 
 ```bash
-pytest-tui run --init path/to/your/project
+pytest-tui init path/to/your/project
 ```
 
-In this case, the tool will perform all necessary setup directly within the directory you provided, not the one you are currently in.
+This creates the required .pytest_tui_runner folder and a default config.yaml in the specified directory.
+After initialization, you can launch the interface using:
 
 
+```bash
+pytest-tui run path/to/your/project
+```
 
 
 <br/><br/>

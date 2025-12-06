@@ -11,75 +11,121 @@ from pytest_tui_runner.ui.tui.app import TestRunnerApp
 
 @click.group(
     help=(
-        "pytest-tui-runner is a tool that provides a text-based interface (TUI) "
-        "for selecting and running pytest tests.\n\n"
-        "Basic usage:\n"
-        "  pytest-tui run [PROJECT_PATH]\n"
-        "\n"
-        "If PROJECT_PATH is omitted, the tool attempts to locate the project root "
-        "automatically. If initialization is needed, use --init to create the folder "
-        ".pytest_tui_runner with a default config.yaml.\n\n"
-        "Examples:\n\n"
-        "  pytest-tui run --init\n\n"
-        "  pytest-tui run C:/my/project\n\n"
-        "  pytest-tui run --init C:/my/project\n\n"
-        "\nRun 'pytest-tui run --help' for detailed information about the 'run' command."
+        "pytest-tui-runner provides a text-based interface (TUI) for selecting and running pytest tests.\n\n"
+        "Basic usage:\n\n"
+        "  pytest-tui init [PROJECT_PATH]   Create the configuration folder and config.yaml\n\n"
+        "  pytest-tui run [PROJECT_PATH]    Launch the TUI to execute tests\n\n"
+        "If PROJECT_PATH is omitted, commands operate on the current directory, or\n"
+        "in the case of 'run', the tool attempts to automatically locate the project root\n"
+        "by searching for a folder named '.pytest_tui_runner' in the current directory\n"
+        "and all parent directories.\n\n"
+        "Run 'pytest-tui <command> --help' for details."
     ),
 )
 def cli() -> None:
     """CLI for pytest-tui-runner plugin."""
 
 
+# ---------------------------------------------------------------------------
+# INIT COMMAND
+# ---------------------------------------------------------------------------
+
+
 @cli.command(
     help=(
-        "Run the text-based interface (TUI) for selecting and executing pytest tests.\n\n"
-        "PROJECT_PATH (optional)\n"
-        "  Directory containing the user's test suite. If omitted, the tool will try to "
-        "detect the project root automatically.\n\n"
-        "--init / -i\n"
-        "  Creates the .pytest_tui_runner folder and a default config.yaml in the chosen "
-        "project directory. Use this when running the tool for the first time.\n"
+        "Initialize the project for use with pytest-tui-runner.\n\n"
+        "This command creates the folder .pytest_tui_runner and a default config.yaml.\n"
+        "It does NOT launch the TUI.\n\n"
+        "PROJECT_PATH is optional and defaults to the current directory."
     ),
     epilog=(
         "Examples:\n"
-        "  pytest-tui run --init\n"
-        "      Create default configuration in the current directory and open the TUI.\n\n"
+        "  pytest-tui init\n"
+        "      Initialize the current directory.\n\n"
+        "  pytest-tui init C:/my/project\n"
+        "      Initialize a specific project directory."
+    ),
+)
+@click.argument("project_path", required=False, type=click.Path(file_okay=False))
+def init(project_path: str | None) -> None:
+    """Prepare the configuration folder and files but do not run the application."""
+    if project_path:
+        root = Path(project_path).resolve()
+    else:
+        root = Path.cwd().resolve()
+
+    setup_project(root)
+
+    click.echo("\nInitialization complete.")
+
+    click.echo("A default configuration has been created, but it must be adjusted")
+    click.echo("so that the test structure matches your project.")
+    click.echo()
+    click.echo("You can now start the interface using:")
+    click.echo(f"  pytest-tui run {root}")
+    click.echo()
+
+
+# ---------------------------------------------------------------------------
+# RUN COMMAND
+# ---------------------------------------------------------------------------
+
+
+@cli.command(
+    help=(
+        "Run the text-based interface (TUI) for selecting and executing pytest tests.\n\n"
+        "PROJECT_PATH (optional):\n"
+        "  Path to the root of the user's project, or any subdirectory inside it.\n"
+        "  The path is used only as a starting point for detecting the actual project root.\n\n"
+        "Project root detection:\n"
+        "  The tool searches upward from the starting directory and looks for a folder\n"
+        "  named '.pytest_tui_runner'. The directory containing this folder is considered\n"
+        "  the project root.\n\n"
+        "This means that both of the following work:\n\n"
+        "  • providing the real project root directly,\n\n"
+        "  • providing any path inside the project (the root will be found automatically).\n\n"
+        "If PROJECT_PATH is omitted, the search begins in the current working directory.\n"
+        "If no project root is found, the command exits with an error and suggests\n"
+        "running 'pytest-tui init' to create the configuration folder."
+    ),
+    epilog=(
+        "Examples:\n"
+        "  pytest-tui run\n"
+        "      Launch the TUI for the nearest configured project.\n\n"
         "  pytest-tui run C:/path/to/project\n"
-        "      Launch the TUI using the specified project directory.\n\n"
-        "  pytest-tui run --init C:/path/to/project\n"
-        "      Initialize configuration in the selected directory and run the TUI."
+        "      Search for '.pytest_tui_runner' upward from the provided directory and\n"
+        "      launch the TUI using the detected project root."
     ),
 )
 @click.argument("project_path", required=False, type=click.Path(exists=True, file_okay=False))
-@click.option(
-    "--init",
-    "-i",
-    is_flag=True,
-    default=False,
-    help="Creates a library folder and config file in the current directory.",
-)
-def run(project_path: str | None, init: bool) -> None:
-    """Run the terminal application."""
+def run(project_path: str | None) -> None:
+    """Launch the TUI for running tests."""
     try:
+        # -----------------------------------------
+        # Determine the starting directory
+        # -----------------------------------------
         if project_path:
-            root: Path = Path(project_path).resolve()
-            Paths.set_user_root(root)
-            if init:
-                setup_project(root)
-        elif init:
-            root = Path.cwd().resolve()
-            setup_project(root)
+            start_path = Path(project_path).resolve()
         else:
-            root = find_project_root_by_folder(Path.cwd(), [Paths.APP_FOLDER])
-            if root is None:
-                logger.error(
-                    """Could not find project root.
-    You can run the application with the --init option, which will create in the current folder all the necessary things to run the application (the .pytest_tui_runner folder and the config.yaml file).
-    !!! However, you must be in the root directory of your project with tests, otherwise this initialization will be done in the wrong place.""",
-                )
-                sys.exit(1)
-            Paths.set_user_root(root)
+            start_path = Path.cwd().resolve()
 
+        # -----------------------------------------
+        # Search for project root from that location
+        # -----------------------------------------
+        root = find_project_root_by_folder(start_path, [Paths.APP_FOLDER])
+        if root is None:
+            logger.error(
+                f"Could not locate project root starting from '{start_path}'.\n"
+                "Hint: run 'pytest-tui init' in your project to create the configuration folder.",
+            )
+            sys.exit(1)
+
+        # Now we know the correct root → set it
+        Paths.set_user_root(root)
+
+        # -----------------------------------------
+        # Start application
+        # -----------------------------------------
         setup_logger()
         logger.info("=============================== NEW RECORD ===============================")
         logger.debug("---------------------- APPLICATION PREPARATION ----------------------")
@@ -94,19 +140,26 @@ def run(project_path: str | None, init: bool) -> None:
         sys.exit(1)
 
 
+# ---------------------------------------------------------------------------
+# SHARED INITIALIZATION LOGIC
+# ---------------------------------------------------------------------------
+
+
 def setup_project(user_root: Path) -> None:
-    """Set up a default .pytest_tui_runner folder and config file in the current directory."""
+    """Create .pytest_tui_runner and config.yaml in the selected directory."""
     Paths.set_user_root(user_root)
 
     target_dir = Paths.app_dir()
     config_file = Paths.config()
 
+    # Create main folder
     if not target_dir.exists():
         target_dir.mkdir(parents=True)
         click.echo(f"✅ Folder created: {target_dir}")
     else:
         click.echo(f"ℹ️ Folder '{target_dir}' already exists.")
 
+    # Create configuration file
     if not config_file.exists():
         config_file.write_text(
             """categories:
@@ -118,6 +171,6 @@ def setup_project(user_root: Path) -> None:
             test_name: "your_test_name"
 """,
         )
-        click.echo(f"✅ Created config file with some example data: {config_file}")
+        click.echo(f"✅ Created config file with example data: {config_file}")
     else:
         click.echo(f"ℹ️ File '{config_file}' already exists.")
