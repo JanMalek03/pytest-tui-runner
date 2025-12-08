@@ -20,8 +20,10 @@ def load_config(file_path: str) -> TestConfig:
 
     if not path.exists():
         logger.error(f"Config file path does not exists: {file_path}")
-        raise FileNotFoundError(f"""Configuration file '{file_path}' does not exist.
-You can run the application with the '--init' option to create a default configuration file.""")
+        raise FileNotFoundError(
+            f"Configuration file '{file_path}' does not exist. "
+            "Use the command 'pytest-tui init' to create a default configuration.",
+        )
 
     logger.debug(f"Config file path set to: '{file_path}'")
 

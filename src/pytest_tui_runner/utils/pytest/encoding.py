@@ -50,11 +50,11 @@ def encode_variants(test_name: str, variants: list[TestArguments]) -> str | None
     # This part checks if the user has not entered duplicate arguments for the test,
     # which would cause the pytest result to be incorrectly processed for coloring the widgets.
     # But now there is no way to tell the user what is wrong (pop-up window),
-    # so this is commented out.
+    # so that's why the program continues.
 
-    # if has_duplicates(encoded_variants):
-    #     logger.error(f"Duplicate argument variants found for test '{test_name}'")
-    #     return None
+    if has_duplicates(encoded_variants):
+        logger.warning(f"Duplicate argument variants found for test '{test_name}'")
+        # return None
 
     logger.debug(f"Final variants of the arguments = {encoded_variants}")
     return VARIANT_SEP.join(encoded_variants)

@@ -101,3 +101,12 @@ def format_test_flag(test_name: str) -> str:
     """Format test name into a pytest CLI flag."""
     # Example: "My Test" → "--run-my-test"
     return f"--run-{test_name.lower().replace(' ', '-')}"
+
+
+def flag_to_test_name(flag: str) -> str:
+    """Convert a pytest CLI flag back to the original test name."""
+    # Example: "--run-my-test" → "My Test"
+    if flag.startswith("--run-"):
+        test_name = flag[len("--run-") :]
+        return test_name.replace("-", " ").title()
+    return flag

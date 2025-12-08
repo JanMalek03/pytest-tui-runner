@@ -99,17 +99,16 @@ Label {
 }
 
 .skipped {
-    background: rgb(135, 88, 1);
+    background: rgb(189, 123, 0);
 }
 
 .xfailed {
-    background: rgb(101, 44, 0);
+    background: rgb(133, 58, 0);
 }
 
-.error{
-    background: rgb(71, 21, 21);
+.error {
+    background: rgb(102, 0, 0);
 }
-
 
 /* ================================================= */
 /* 4. Custom buttons                                 */
