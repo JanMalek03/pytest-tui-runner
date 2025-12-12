@@ -185,7 +185,7 @@ test_name: "test_login_success"
 
 Instead of referencing a specific test, you can reference a **group of tests** using pytest markers.
 
-A checkbox defined this way will match **only tests that contain *all* of these markers*** — no more, no less.
+A checkbox defined this way will match **only tests that contain *all* of these markers** — no more, no less.
 
 **Example:**
 
